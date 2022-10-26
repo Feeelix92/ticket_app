@@ -43,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final Map _userAccerlerometer = {'x': 0, 'y': 0, 'z': 0};
   // gyroscope
   final Map _gyroscope = {'x': 0, 'y': 0, 'z': 0};
+  String _direction = "none";
   // magnetometer
   final Map _magnetometer = {'x': 0, 'y': 0, 'z': 0};
   late String _now;
@@ -83,6 +84,38 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    userAccelerometerEvents.listen((UserAccelerometerEvent event) {
+      setState(() {
+        _userAccerlerometer['x'] = event.x;
+        _userAccerlerometer['y'] = event.y;
+        _userAccerlerometer['z'] = event.z;
+      });
+    });
+    gyroscopeEvents.listen((GyroscopeEvent event) {
+      setState(() {
+        _gyroscope['x'] = event.x;
+        _gyroscope['y'] = event.y;
+        _gyroscope['z'] = event.z;
+        //rough calculation, you can use
+        //advance formula to calculate the orientation
+        if(_gyroscope['x'] > 0){
+          _direction = "back";
+        }else if(_gyroscope['x'] < 0){
+          _direction = "forward";
+        }else if(_gyroscope['y'] > 0){
+          _direction = "left";
+        }else if(_gyroscope['y'] < 0){
+          _direction = "right";
+        }
+      });
+    });
+    magnetometerEvents.listen((MagnetometerEvent event) {
+      setState(() {
+        _magnetometer['x'] = event.x;
+        _magnetometer['y'] = event.y;
+        _magnetometer['z'] = event.z;
+      });
+    });
     // sets first value
     _now = DateTime.now().second.toString();
     // defines a timer
@@ -90,27 +123,6 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _now = DateTime.now().second.toString();
         _updatePosition();
-        userAccelerometerEvents.listen((UserAccelerometerEvent event) {
-          setState(() {
-            _userAccerlerometer['x'] = event.x;
-            _userAccerlerometer['y'] = event.y;
-            _userAccerlerometer['z'] = event.z;
-          });
-        });
-        gyroscopeEvents.listen((GyroscopeEvent event) {
-          setState(() {
-            _gyroscope['x'] = event.x;
-            _gyroscope['y'] = event.y;
-            _gyroscope['z'] = event.z;
-          });
-        });
-        magnetometerEvents.listen((MagnetometerEvent event) {
-          setState(() {
-            _magnetometer['x'] = event.x;
-            _magnetometer['y'] = event.y;
-            _magnetometer['z'] = event.z;
-          });
-        });
       });
     });
   }
@@ -122,116 +134,122 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Sekunden: $_now',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    color: Colors.blueGrey,
-                  )
-              ),
-            ),
-            const Padding(
+      body: ListView(
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
-                    'GPS: ',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.green,
-                  )
+                  'Sekunden: $_now',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.blueGrey,
+                    )
                 ),
-            ),
-            Text(
-              'Latitude: $_latitude',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'Longitude: $_longitude',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'Altitude: $_altitude',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'Speed: $_speed',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                  'UserAccelerometer: ',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.blue,
-                  )
               ),
-            ),
-            Text(
-              'x: ${_userAccerlerometer['x']}',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'y: ${_userAccerlerometer['y']}',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'z: ${_userAccerlerometer['z']}',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                  'Gyroscope: ',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.purple,
-                  )
+              const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                      'GPS: ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.green,
+                    )
+                  ),
               ),
-            ),
-            Text(
-              'x: ${_gyroscope['x']}',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'y: ${_gyroscope['y']}',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'z: ${_gyroscope['z']}',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                  'Magnetometer: ',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.red,
-                  )
+              Text(
+                'Latitude: $_latitude',
+                style: Theme.of(context).textTheme.headline6,
               ),
-            ),
-            Text(
-              'x: ${_magnetometer['x']}',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'y: ${_magnetometer['y']}',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'z: ${_magnetometer['z']}',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            // const Text('Address: '),
-            //   Text(_address),
-          ],
-        ),
+              Text(
+                'Longitude: $_longitude',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                'Altitude: $_altitude',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                'Speed: $_speed',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                    'UserAccelerometer: ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.blue,
+                    )
+                ),
+              ),
+              Text(
+                'x: ${_userAccerlerometer['x']}',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                'y: ${_userAccerlerometer['y']}',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                'z: ${_userAccerlerometer['z']}',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                    'Gyroscope: ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.purple,
+                    )
+                ),
+              ),
+              Text(
+                'x: ${_gyroscope['x']}',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                'y: ${_gyroscope['y']}',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                'z: ${_gyroscope['z']}',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                'direction: ${_direction}',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                    'Magnetometer: ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.red,
+                    )
+                ),
+              ),
+              Text(
+                'x: ${_magnetometer['x']}',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                'y: ${_magnetometer['y']}',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                'z: ${_magnetometer['z']}',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              // const Text('Address: '),
+              //   Text(_address),
+            ],
+          ),
+        ],
       ),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: _updatePosition,
