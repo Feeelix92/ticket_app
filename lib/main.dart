@@ -45,6 +45,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final Map _gyroscope = {'x': 0, 'y': 0, 'z': 0};
   // magnetometer
   final Map _magnetometer = {'x': 0, 'y': 0, 'z': 0};
+  late String _now;
+  late Timer _everySecond;
 
   Future<void> _updatePosition() async {
     Position pos = await _determinePosition();
@@ -81,26 +83,34 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _updatePosition();
-    userAccelerometerEvents.listen((UserAccelerometerEvent event) {
+    // sets first value
+    _now = DateTime.now().second.toString();
+    // defines a timer
+    _everySecond = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       setState(() {
-        _userAccerlerometer['x'] = event.x;
-        _userAccerlerometer['y'] = event.y;
-        _userAccerlerometer['z'] = event.z;
-      });
-    });
-    gyroscopeEvents.listen((GyroscopeEvent event) {
-      setState(() {
-        _gyroscope['x'] = event.x;
-        _gyroscope['y'] = event.y;
-        _gyroscope['z'] = event.z;
-      });
-    });
-    magnetometerEvents.listen((MagnetometerEvent event) {
-      setState(() {
-        _magnetometer['x'] = event.x;
-        _magnetometer['y'] = event.y;
-        _magnetometer['z'] = event.z;
+        _now = DateTime.now().second.toString();
+        _updatePosition();
+        userAccelerometerEvents.listen((UserAccelerometerEvent event) {
+          setState(() {
+            _userAccerlerometer['x'] = event.x;
+            _userAccerlerometer['y'] = event.y;
+            _userAccerlerometer['z'] = event.z;
+          });
+        });
+        gyroscopeEvents.listen((GyroscopeEvent event) {
+          setState(() {
+            _gyroscope['x'] = event.x;
+            _gyroscope['y'] = event.y;
+            _gyroscope['z'] = event.z;
+          });
+        });
+        magnetometerEvents.listen((MagnetometerEvent event) {
+          setState(() {
+            _magnetometer['x'] = event.x;
+            _magnetometer['y'] = event.y;
+            _magnetometer['z'] = event.z;
+          });
+        });
       });
     });
   }
@@ -116,6 +126,16 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'Sekunden: $_now',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.blueGrey,
+                  )
+              ),
+            ),
             const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
