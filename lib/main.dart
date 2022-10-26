@@ -45,12 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
   // gyroscope
   final Map _gyroscope = {'x': 0, 'y': 0, 'z': 0};
   late  Map _tempGyro = {'x': 0, 'y': 0, 'z': 0};
-  String _direction = "none";
+  Map _direction = {'x': 'none', 'y': 'none', 'z': 'none'};
   // magnetometer
   final Map _magnetometer = {'x': 0, 'y': 0, 'z': 0};
   late Map _tempMag = {'x': 0, 'y': 0, 'z': 0};
   late String _now;
   late Timer _everySecond;
+  // decimal places
+  final int decimalPlaces = 2;
 
   Future<void> _updatePosition() async {
     Position pos = await _determinePosition();
@@ -99,17 +101,6 @@ class _MyHomePageState extends State<MyHomePage> {
         _gyroscope['x'] = event.x;
         _gyroscope['y'] = event.y;
         _gyroscope['z'] = event.z;
-        //rough calculation, you can use
-        //advance formula to calculate the orientation
-        if(_gyroscope['x'] > 0){
-          _direction = "back";
-        }else if(_gyroscope['x'] < 0){
-          _direction = "forward";
-        }else if(_gyroscope['y'] > 0){
-          _direction = "left";
-        }else if(_gyroscope['y'] < 0){
-          _direction = "right";
-        }
       });
     });
     magnetometerEvents.listen((MagnetometerEvent event) {
@@ -124,11 +115,18 @@ class _MyHomePageState extends State<MyHomePage> {
     // defines a timer
     _everySecond = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       setState(() {
+        print('Test 1 second');
         _now = DateTime.now().second.toString();
         _updatePosition();
-        _tempUserAcc = _userAccerlerometer;
-        _tempGyro = _gyroscope;
-        _tempMag = _magnetometer;
+        _tempUserAcc['x'] = _userAccerlerometer['x'].toStringAsFixed(decimalPlaces);
+        _tempUserAcc['y'] = _userAccerlerometer['y'].toStringAsFixed(decimalPlaces);
+        _tempUserAcc['z'] = _userAccerlerometer['z'].toStringAsFixed(decimalPlaces);
+        _tempGyro['x'] = _gyroscope['x'].toStringAsFixed(decimalPlaces);
+        _tempGyro['y'] = _gyroscope['y'].toStringAsFixed(decimalPlaces);
+        _tempGyro['z'] = _gyroscope['z'].toStringAsFixed(decimalPlaces);
+        _tempMag['x'] = _magnetometer['x'].toStringAsFixed(decimalPlaces);
+        _tempMag['y'] = _magnetometer['y'].toStringAsFixed(decimalPlaces);
+        _tempMag['z'] = _magnetometer['z'].toStringAsFixed(decimalPlaces);
       });
     });
   }
@@ -145,16 +143,6 @@ class _MyHomePageState extends State<MyHomePage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Sekunden: $_now',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.blueGrey,
-                    )
-                ),
-              ),
               const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
@@ -192,15 +180,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Text(
-                'x: ${_tempUserAcc['x'].toStringAsFixed(2)}',
+                'x: ${_tempUserAcc['x']}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'y: ${_tempUserAcc['y'].toStringAsFixed(2)}',
+                'y: ${_tempUserAcc['y']}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'z: ${_tempUserAcc['z'].toStringAsFixed(2)}',
+                'z: ${_tempUserAcc['z']}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               const Padding(
@@ -214,19 +202,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Text(
-                'x: ${_tempGyro['x'].toStringAsFixed(2)}',
+                'x: ${_tempGyro['x']}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'y: ${_tempGyro['y'].toStringAsFixed(2)}',
+                'y: ${_tempGyro['y']}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'z: ${_tempGyro['z'].toStringAsFixed(2)}',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              Text(
-                'direction: ${_direction}',
+                'z: ${_tempGyro['z']}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               const Padding(
@@ -240,15 +224,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Text(
-                'x: ${_tempMag['x'].toStringAsFixed(2)}',
+                'x: ${_tempMag['x']}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'y: ${_tempMag['y'].toStringAsFixed(2)}',
+                'y: ${_tempMag['y']}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'z: ${_tempMag['z'].toStringAsFixed(2)}',
+                'z: ${_tempMag['z']}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               // const Text('Address: '),
@@ -257,11 +241,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _updatePosition,
-      //   tooltip: 'GET GPS position',
-      //   child: const Icon(Icons.change_circle_outlined),
-      // ),
+      floatingActionButton: FloatingActionButton(
+         onPressed: _updatePosition,
+         tooltip: 'GET GPS position',
+         child: const Icon(Icons.change_circle_outlined),
+      ),
     );
   }
 }
