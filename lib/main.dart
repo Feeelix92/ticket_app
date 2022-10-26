@@ -41,11 +41,14 @@ class _MyHomePageState extends State<MyHomePage> {
   final Color _backgroundColor = Colors.white;
   // accelerometer
   final Map _userAccerlerometer = {'x': 0, 'y': 0, 'z': 0};
+  late Map _tempUserAcc = {'x': 0, 'y': 0, 'z': 0};
   // gyroscope
   final Map _gyroscope = {'x': 0, 'y': 0, 'z': 0};
+  late  Map _tempGyro = {'x': 0, 'y': 0, 'z': 0};
   String _direction = "none";
   // magnetometer
   final Map _magnetometer = {'x': 0, 'y': 0, 'z': 0};
+  late Map _tempMag = {'x': 0, 'y': 0, 'z': 0};
   late String _now;
   late Timer _everySecond;
 
@@ -123,6 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _now = DateTime.now().second.toString();
         _updatePosition();
+        _tempUserAcc = _userAccerlerometer;
+        _tempGyro = _gyroscope;
+        _tempMag = _magnetometer;
       });
     });
   }
@@ -186,15 +192,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Text(
-                'x: ${_userAccerlerometer['x']}',
+                'x: ${_tempUserAcc['x'].toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'y: ${_userAccerlerometer['y']}',
+                'y: ${_tempUserAcc['y'].toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'z: ${_userAccerlerometer['z']}',
+                'z: ${_tempUserAcc['z'].toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               const Padding(
@@ -208,15 +214,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Text(
-                'x: ${_gyroscope['x']}',
+                'x: ${_tempGyro['x'].toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'y: ${_gyroscope['y']}',
+                'y: ${_tempGyro['y'].toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'z: ${_gyroscope['z']}',
+                'z: ${_tempGyro['z'].toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
@@ -234,15 +240,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Text(
-                'x: ${_magnetometer['x']}',
+                'x: ${_tempMag['x'].toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'y: ${_magnetometer['y']}',
+                'y: ${_tempMag['y'].toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Text(
-                'z: ${_magnetometer['z']}',
+                'z: ${_tempMag['z'].toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.headline6,
               ),
               // const Text('Address: '),
