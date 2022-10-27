@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late Position _currentPosition;
   LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.best, //accuracy of the location data
-    distanceFilter: 0, //minimum distance (measured in meters) a
+    distanceFilter: 2, //minimum distance (measured in meters) a
     //device must move horizontally before an update event is generated;
   );
   late StreamSubscription<Position> positionStream;
@@ -105,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       Placemark place = placemarks[0];
       setState(() {
-        _address = "${place.street}, ${place.}, \n${place.postalCode} ${place.locality} \n ${place.administrativeArea}, ${place.country}";
+        _address = "${place.street}, \n${place.postalCode} ${place.locality} \n ${place.administrativeArea}, ${place.country}";
       });
     } catch (e) {
       print(e);
