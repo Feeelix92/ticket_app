@@ -194,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(servicestatus? "Status: active": "Status: disabled.",
                   style: const TextStyle(fontSize: 20)
               ),
-              Text(haspermission? "Permissions accepted": "Permissions denied.",
+              Text(haspermission? "Permissions: accepted": "Permissions: denied.",
                   style: const TextStyle(fontSize: 20)
               ),
               const Text('-------'),
@@ -215,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: Theme.of(context).textTheme.headline6,
               ),
               const Padding(
-                padding: EdgeInsets.all(10.0),
+                padding: EdgeInsets.all(5.0),
                 child: Text(
                     'Address: ',
                     style: TextStyle(
@@ -226,7 +226,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Text(_address),
               const Padding(
-                padding: EdgeInsets.all(10.0),
+                padding: EdgeInsets.all(5.0),
                 child: Text(
                     'UserAccelerometer: ',
                     style: TextStyle(
@@ -248,7 +248,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: Theme.of(context).textTheme.headline6,
               ),
               const Padding(
-                padding: EdgeInsets.all(10.0),
+                padding: EdgeInsets.all(5.0),
                 child: Text(
                     'Gyroscope: ',
                     style: TextStyle(
@@ -270,7 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: Theme.of(context).textTheme.headline6,
               ),
               const Padding(
-                padding: EdgeInsets.all(10.0),
+                padding: EdgeInsets.all(5.0),
                 child: Text(
                     'Magnetometer: ',
                     style: TextStyle(
