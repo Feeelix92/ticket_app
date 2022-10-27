@@ -197,6 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Text(haspermission? "Permissions accepted": "Permissions denied.",
                   style: const TextStyle(fontSize: 20)
               ),
+              const Text('-------'),
               Text(
                 'Latitude: $_latitude',
                 style: Theme.of(context).textTheme.headline6,
