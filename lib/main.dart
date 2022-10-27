@@ -105,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       Placemark place = placemarks[0];
       setState(() {
-        _address = "${place.street}, \n${place.postalCode} ${place.locality} \n ${place.administrativeArea}, ${place.country}";
+        _address = "${place.street}, ${place.}, \n${place.postalCode} ${place.locality} \n ${place.administrativeArea}, ${place.country}";
       });
     } catch (e) {
       print(e);
