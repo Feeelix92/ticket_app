@@ -217,10 +217,21 @@ class _MyHomePageState extends State<MyHomePage> {
               const Padding(
                 padding: EdgeInsets.all(10.0),
                 child: Text(
-                    'UserAccelerometer: ',
+                    'Address: ',
                     style: TextStyle(
                       fontSize: 20,
                       color: Colors.blue,
+                    )
+                ),
+              ),
+              Text(_address),
+              const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                    'UserAccelerometer: ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.purple,
                     )
                 ),
               ),
@@ -242,7 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     'Gyroscope: ',
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.purple,
+                      color: Colors.red,
                     )
                 ),
               ),
@@ -264,7 +275,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     'Magnetometer: ',
                     style: TextStyle(
                       fontSize: 20,
-                      color: Colors.red,
+                      color: Colors.orange,
                     )
                 ),
               ),
@@ -280,17 +291,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 'z: ${_tempMag['z']}',
                 style: Theme.of(context).textTheme.headline6,
               ),
-              const Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                    'Address: ',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.orange,
-                    )
-                ),
-              ),
-              Text(_address),
             ],
           ),
         ],
