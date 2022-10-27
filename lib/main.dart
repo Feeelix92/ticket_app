@@ -33,62 +33,101 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // Colors
+  final Color _backgroundColor = Colors.white;
+  // GPS
+  bool servicestatus = false;
+  bool haspermission = false;
+  late LocationPermission permission;
+  late Position _currentPosition;
+  LocationSettings locationSettings = const LocationSettings(
+    accuracy: LocationAccuracy.best, //accuracy of the location data
+    distanceFilter: 0, //minimum distance (measured in meters) a
+    //device must move horizontally before an update event is generated;
+  );
+  late StreamSubscription<Position> positionStream;
   var _latitude = "";
   var _longitude = "";
   var _altitude = "";
   var _speed = "";
   var _address = "";
-  final Color _backgroundColor = Colors.white;
   // accelerometer
   final Map _userAccerlerometer = {'x': 0, 'y': 0, 'z': 0};
-  late Map _tempUserAcc = {'x': 0, 'y': 0, 'z': 0};
-  // gyroscope
+  late final Map _tempUserAcc = {'x': 0, 'y': 0, 'z': 0};
+  // gyroscopes
   final Map _gyroscope = {'x': 0, 'y': 0, 'z': 0};
-  late  Map _tempGyro = {'x': 0, 'y': 0, 'z': 0};
-  Map _direction = {'x': 'none', 'y': 'none', 'z': 'none'};
+  late final  Map _tempGyro = {'x': 0, 'y': 0, 'z': 0};
+  final Map _direction = {'x': 'none', 'y': 'none', 'z': 'none'};
   // magnetometer
   final Map _magnetometer = {'x': 0, 'y': 0, 'z': 0};
-  late Map _tempMag = {'x': 0, 'y': 0, 'z': 0};
+  late final Map _tempMag = {'x': 0, 'y': 0, 'z': 0};
   late String _now;
   late Timer _everySecond;
   // decimal places
   final int decimalPlaces = 2;
 
-  Future<void> _updatePosition() async {
-    Position pos = await _determinePosition();
-    List pm = await placemarkFromCoordinates(pos.latitude, pos.longitude);
-    setState(() {
-      _latitude = pos.latitude.toString();
-      _longitude = pos.longitude.toString();
-      _altitude = pos.altitude.toString();
-      _speed = pos.speed.toString();
-      _address = pm[0].toString();
-    });
-  }
+  checkGps() async {
+    servicestatus = await Geolocator.isLocationServiceEnabled();
+    if(servicestatus){
+      permission = await Geolocator.checkPermission();
 
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled){
-      return Future.error('Location service are disabled');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied){
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied){
-        return Future.error('Location permissions are denied');
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          print('Location permissions are denied');
+        }else if(permission == LocationPermission.deniedForever){
+          print("'Location permissions are permanently denied");
+        }else{
+          haspermission = true;
+        }
+      }else{
+        haspermission = true;
       }
+      if(haspermission){
+        setState(() {
+          //refresh the UI
+        });
+      }
+    }else{
+      print("GPS Service is not enabled, turn on GPS location");
     }
-    if (permission == LocationPermission.deniedForever){
-      return Future.error('Location permissions are permanently denied, we cannot request püermissions.');
+
+    setState(() {
+      //refresh the UI
+    });
+
+  }
+  _getAddressFromLatLng() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentPosition.latitude,
+          _currentPosition.longitude
+      );
+      Placemark place = placemarks[0];
+      setState(() {
+        _address = "${place.street}, \n${place.postalCode} ${place.locality} \n ${place.administrativeArea}, ${place.country}";
+      });
+    } catch (e) {
+      print(e);
     }
-    return await Geolocator.getCurrentPosition();
   }
 
   @override
   void initState() {
+    checkGps();
     super.initState();
+
+    Geolocator.getPositionStream(
+        locationSettings: locationSettings).listen((Position position) {
+      setState(() {
+        _currentPosition = position;
+        _getAddressFromLatLng();
+        _latitude = position.latitude.toString();
+        _longitude = position.longitude.toString();
+        _altitude = position.altitude.toString();
+        _speed = position.speed.toString();
+      });
+    });
     userAccelerometerEvents.listen((UserAccelerometerEvent event) {
       setState(() {
         _userAccerlerometer['x'] = event.x;
@@ -114,10 +153,9 @@ class _MyHomePageState extends State<MyHomePage> {
     _now = DateTime.now().second.toString();
     // defines a timer
     _everySecond = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      print('Test 1 second');
       setState(() {
-        print('Test 1 second');
         _now = DateTime.now().second.toString();
-        _updatePosition();
         _tempUserAcc['x'] = _userAccerlerometer['x'].toStringAsFixed(decimalPlaces);
         _tempUserAcc['y'] = _userAccerlerometer['y'].toStringAsFixed(decimalPlaces);
         _tempUserAcc['z'] = _userAccerlerometer['z'].toStringAsFixed(decimalPlaces);
@@ -144,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               const Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(10.0),
                   child: Text(
                       'GPS: ',
                     style: TextStyle(
@@ -152,6 +190,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: Colors.green,
                     )
                   ),
+              ),
+              Text(servicestatus? "Status: active": "Status: disabled.",
+                  style: const TextStyle(fontSize: 20)
+              ),
+              Text(haspermission? "Permissions accepted": "Permissions denied.",
+                  style: const TextStyle(fontSize: 20)
               ),
               Text(
                 'Latitude: $_latitude',
@@ -170,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: Theme.of(context).textTheme.headline6,
               ),
               const Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(10.0),
                 child: Text(
                     'UserAccelerometer: ',
                     style: TextStyle(
@@ -192,7 +236,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: Theme.of(context).textTheme.headline6,
               ),
               const Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(10.0),
                 child: Text(
                     'Gyroscope: ',
                     style: TextStyle(
@@ -214,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: Theme.of(context).textTheme.headline6,
               ),
               const Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(10.0),
                 child: Text(
                     'Magnetometer: ',
                     style: TextStyle(
@@ -235,17 +279,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 'z: ${_tempMag['z']}',
                 style: Theme.of(context).textTheme.headline6,
               ),
-              const Text('Address: '),
-                 Text(_address),
+              const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                    'Address: ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.orange,
+                    )
+                ),
+              ),
+              Text(_address),
             ],
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-         onPressed: _updatePosition,
-         tooltip: 'GET GPS position',
-         child: const Icon(Icons.change_circle_outlined),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _updatePosition,
+      //   tooltip: 'GET GPS position',
+      //   child: const Icon(Icons.change_circle_outlined),
+      // ),
     );
   }
 }
