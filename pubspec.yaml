@@ -39,6 +39,7 @@ dependencies:
   geolocator: ^9.0.2
   geocoding: ^2.0.5
   sensors_plus: ^2.0.1
+  workmanager: ^0.5.1
 
 dev_dependencies:
   flutter_test:
