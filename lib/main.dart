@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -29,6 +31,42 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
+
+class QRCode extends StatefulWidget {
+  const QRCode({Key? key, required this.lang, required this.long}) : super(key: key);
+
+  final String lang;
+  final String long;
+
+  @override
+  State<QRCode> createState() => _QRCodeState();
+}
+
+class _QRCodeState extends State<QRCode> {
+  @override
+  Widget build(BuildContext context) {
+    return QrImage(
+        data: 'Eingestiegen in ${widget.lang}, ${widget.long}',
+        gapless: true,
+        version: QrVersions.auto,
+        size: 300,
+        embeddedImage: const AssetImage('assets/images/thm.svg'),
+        embeddedImageStyle: QrEmbeddedImageStyle(
+          size: const Size(50, 50),
+        ),
+        errorStateBuilder: (cxt, err) {
+          return Container(
+            child: const Center(
+              child: Text(
+                "Etwas läuft schief...",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        });
+  }
+}
+
 
 class _MyHomePageState extends State<MyHomePage> {
   var _latitude = "";
@@ -105,6 +143,10 @@ class _MyHomePageState extends State<MyHomePage> {
               'Speed: $_speed',
               style: Theme.of(context).textTheme.headline6,
             ),
+            Visibility(
+              visible: _longitude != "",
+              child:  QRCode(lang: _latitude, long: _longitude),
+            )
             // const Text('Address: '),
             //   Text(_address),
           ],
