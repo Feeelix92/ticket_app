@@ -15,11 +15,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Easy Ticket',
+      title: 'Flutter Sensor Demo',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.green,
       ),
-      home: const MyHomePage(title: 'Easy Ticket'),
+      home: const MyHomePage(title: 'Flutter Sensor Demo'),
     );
   }
 }
