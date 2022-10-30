@@ -217,14 +217,16 @@ class _MyHomePageState extends State<MyHomePage> {
               const Padding(
                 padding: EdgeInsets.all(5.0),
                 child: Text(
-                    'Address: ',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.blue,
-                    )
+                  'Address: ',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.blue,
+                  )
                 ),
               ),
-              Text(_address),
+              Text(_address,
+                  textAlign: TextAlign.center
+              ),
               const Padding(
                 padding: EdgeInsets.all(5.0),
                 child: Text(
