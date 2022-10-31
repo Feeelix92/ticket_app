@@ -50,9 +50,9 @@ class _QRCodeState extends State<QRCode> {
         gapless: true,
         version: QrVersions.auto,
         size: 300,
-        embeddedImage: const AssetImage('assets/images/thm.svg'),
+        embeddedImage: const AssetImage('assets/images/thm.png'),
         embeddedImageStyle: QrEmbeddedImageStyle(
-          size: const Size(50, 50),
+          size: const Size(80,80),
         ),
         errorStateBuilder: (cxt, err) {
           return Container(
