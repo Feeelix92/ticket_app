@@ -4,15 +4,16 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:background_locator_2/location_dto.dart';
+import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
+import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+//import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:background_locator_2/background_locator.dart';
-import 'package:app_settings/app_settings.dart';
 
 
 void main() {
@@ -118,18 +119,20 @@ class _MyHomePageState extends State<MyHomePage> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         autoStop: false,
-        iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.bestForNavigation, distanceFilter: 0),
-        androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.bestForNavigation,
+        iosSettings: const IOSSettings(
+            accuracy: LocationAccuracy.HIGH, distanceFilter: 0),
+        androidSettings: const AndroidSettings(
+            accuracy: LocationAccuracy.HIGH,
             interval: 5,
             distanceFilter: 0,
-            );
+            )
+    );
   }
 
   ////////
 
 
+  /*
   Future<void> _updatePosition() async {
     Position pos = await _determinePosition();
     List pm = await placemarkFromCoordinates(pos.latitude, pos.longitude);
@@ -141,7 +144,9 @@ class _MyHomePageState extends State<MyHomePage> {
       _address = pm[0].toString();
     });
   }
+   */
 
+  /*
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -162,6 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return await Geolocator.getCurrentPosition();
   }
 
+  */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -214,7 +220,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _updatePosition,
+        onPressed: startLocationService,
         tooltip: 'GET GPS position',
         child: const Icon(Icons.change_circle_outlined),
       ),
