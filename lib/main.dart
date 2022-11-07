@@ -146,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _updatePosition,
+        onPressed: _test,
         tooltip: 'GET GPS position',
         child: const Icon(Icons.change_circle_outlined),
       ),
