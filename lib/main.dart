@@ -74,10 +74,10 @@ class _MyHomePageState extends State<MyHomePage> {
     const oneSec = Duration(seconds:1);
     Timer.periodic(oneSec, (Timer t) => setState(() {
       _counter = _counter+1;
-      _updatePosition();
-      print(_currentPosition);
+      //_updatePosition();
       print(_counter);
-      print(_address);
+      print(_currentPosition);
+      // print(_address);
     }));
   }
 
