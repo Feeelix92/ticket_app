@@ -52,14 +52,48 @@ class _MyHomePageState extends State<MyHomePage> {
   var _speed = "";
   var _address = "";
   var _counter = 0;
+  late Position _currentPosition;
+  LocationSettings locationSettings = const LocationSettings(
+    accuracy: LocationAccuracy.best, //accuracy of the location data
+    distanceFilter: 2, //minimum distance (measured in meters) a
+    //device must move horizontally before an update event is generated;
+  );
 
   Future<void> _test()async{
+    Geolocator.getPositionStream(
+        locationSettings: locationSettings).listen((Position position) {
+      setState(() {
+        _currentPosition = position;
+        _getAddressFromLatLng();
+        _latitude = position.latitude.toString();
+        _longitude = position.longitude.toString();
+        _altitude = position.altitude.toString();
+        _speed = position.speed.toString();
+      });
+    });
     const oneSec = Duration(seconds:1);
     Timer.periodic(oneSec, (Timer t) => setState(() {
       _counter = _counter+1;
       _updatePosition();
+      print(_currentPosition);
       print(_counter);
+      print(_address);
     }));
+  }
+
+  _getAddressFromLatLng() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentPosition.latitude,
+          _currentPosition.longitude
+      );
+      Placemark place = placemarks[0];
+      setState(() {
+        _address = "${place.street}, \n${place.postalCode} ${place.locality} \n ${place.administrativeArea}, ${place.country}";
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> _updatePosition() async {
@@ -72,7 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _speed = pos.speed.toString();
       _address = pm[0].toString();
     });
-    print('$_latitude $_longitude');
   }
 
   Future<Position> _determinePosition() async {
