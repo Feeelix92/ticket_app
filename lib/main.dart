@@ -72,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _speed = pos.speed.toString();
       _address = pm[0].toString();
     });
+    print('$_latitude $_longitude');
   }
 
   Future<Position> _determinePosition() async {
