@@ -1,8 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:workmanager/workmanager.dart';
+@pragma('vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) {
+    print("Native called background task:"); //simpleTask will be emitted here.
+    return Future.value(true);
+  });
+}
 
 void main() {
+  Workmanager().initialize(
+      callbackDispatcher, // The top level function, aka callbackDispatcher
+      isInDebugMode: true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+  );
+  Workmanager().registerOneOffTask("_MyHomePageState","_test");
   runApp(const MyApp());
 }
 
@@ -36,6 +51,16 @@ class _MyHomePageState extends State<MyHomePage> {
   var _altitude = "";
   var _speed = "";
   var _address = "";
+  var _counter = 0;
+
+  Future<void> _test()async{
+    const oneSec = Duration(seconds:1);
+    Timer.periodic(oneSec, (Timer t) => setState(() {
+      _counter = _counter+1;
+      _updatePosition();
+      print(_counter);
+    }));
+  }
 
   Future<void> _updatePosition() async {
     Position pos = await _determinePosition();
@@ -105,6 +130,16 @@ class _MyHomePageState extends State<MyHomePage> {
               'Speed: $_speed',
               style: Theme.of(context).textTheme.headline6,
             ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(fontSize: 20),
+              ),
+              onPressed: _test,
+              child: const Text('Hintergrund'),
+            ),
+            Text(
+              'Test: $_counter'
+            )
             // const Text('Address: '),
             //   Text(_address),
           ],
