@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:workmanager/workmanager.dart';
-@pragma('vm:entry-point') // Mandatory if the App is obfuscated or using Flutter 3.1+
+
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
     print("Native called background task:"); //simpleTask will be emitted here.
@@ -13,6 +13,7 @@ void callbackDispatcher() {
 }
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   Workmanager().initialize(
       callbackDispatcher, // The top level function, aka callbackDispatcher
       isInDebugMode: true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
@@ -20,6 +21,7 @@ void main() {
   Workmanager().registerOneOffTask("_MyHomePageState","_test");
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -61,26 +63,18 @@ class _MyHomePageState extends State<MyHomePage> {
     distanceFilter: 2, //minimum distance (measured in meters) a
     //device must move horizontally before an update event is generated;
   );
+  late StreamSubscription<Position> _positionStream;
+  var _counter = 0;
 
   Future<void> _test() async{
-    Geolocator.getPositionStream(
-        locationSettings: locationSettings).listen((Position position) {
-      setState(() {
-        _currentPosition = position;
-        _getAddressFromLatLng();
-        _latitude = position.latitude.toString();
-        _longitude = position.longitude.toString();
-        _altitude = position.altitude.toString();
-        _speed = position.speed.toString();
-      });
-    });
-    //const oneSec = Duration(seconds:1);
-    //Timer.periodic(oneSec, (Timer t) => setState(() {
-      //_counter = _counter+1;
-      //_updatePosition();
+    const oneSec = Duration(seconds:10);
+    Timer.periodic(oneSec, (Timer t) => setState(() {
+      _counter = _counter+1;
+      print(_counter);
+      print(_positionStream.isPaused);
       print(_currentPosition);
       // print(_address);
-    //}));
+    }));
   }
 
   _getAddressFromLatLng() async {
@@ -133,6 +127,17 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     _checkGps();
     super.initState();
+     _positionStream = Geolocator.getPositionStream(
+        locationSettings: locationSettings).listen((Position position) {
+      setState(() {
+        _currentPosition = position;
+        _getAddressFromLatLng();
+        _latitude = position.latitude.toString();
+        _longitude = position.longitude.toString();
+        _altitude = position.altitude.toString();
+        _speed = position.speed.toString();
+      });
+    });
     _test();
   }
 
@@ -149,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
-                    'Your last know location is: ',
+                    'Your current location is: ',
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.green,
@@ -174,6 +179,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               'Adresse: $_address'
+            ),
+            Text(
+                'Counter: $_counter'
             )
             // const Text('Address: '),
             //   Text(_address),
