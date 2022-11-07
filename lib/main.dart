@@ -46,12 +46,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // GPS
+  bool servicestatus = false;
+  bool haspermission = false;
+  late LocationPermission permission;
   var _latitude = "";
   var _longitude = "";
   var _altitude = "";
   var _speed = "";
   var _address = "";
-  var _counter = 0;
   late Position _currentPosition;
   LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.best, //accuracy of the location data
@@ -59,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //device must move horizontally before an update event is generated;
   );
 
-  Future<void> _test()async{
+  Future<void> _test() async{
     Geolocator.getPositionStream(
         locationSettings: locationSettings).listen((Position position) {
       setState(() {
@@ -71,14 +74,13 @@ class _MyHomePageState extends State<MyHomePage> {
         _speed = position.speed.toString();
       });
     });
-    const oneSec = Duration(seconds:1);
-    Timer.periodic(oneSec, (Timer t) => setState(() {
-      _counter = _counter+1;
+    //const oneSec = Duration(seconds:1);
+    //Timer.periodic(oneSec, (Timer t) => setState(() {
+      //_counter = _counter+1;
       //_updatePosition();
-      print(_counter);
       print(_currentPosition);
       // print(_address);
-    }));
+    //}));
   }
 
   _getAddressFromLatLng() async {
@@ -96,36 +98,42 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future<void> _updatePosition() async {
-    Position pos = await _determinePosition();
-    List pm = await placemarkFromCoordinates(pos.latitude, pos.longitude);
-    setState(() {
-      _latitude = pos.latitude.toString();
-      _longitude = pos.longitude.toString();
-      _altitude = pos.altitude.toString();
-      _speed = pos.speed.toString();
-      _address = pm[0].toString();
-    });
-  }
+  _checkGps() async {
+    servicestatus = await Geolocator.isLocationServiceEnabled();
+    if(servicestatus){
+      permission = await Geolocator.checkPermission();
 
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled){
-      return Future.error('Location service are disabled');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied){
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied){
-        return Future.error('Location permissions are denied');
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          print('Location permissions are denied');
+        }else if(permission == LocationPermission.deniedForever){
+          print("'Location permissions are permanently denied");
+        }else{
+          haspermission = true;
+        }
+      }else{
+        haspermission = true;
       }
+      if(haspermission){
+        setState(() {
+          //refresh the UI
+        });
+      }
+    }else{
+      print("GPS Service is not enabled, turn on GPS location");
     }
-    if (permission == LocationPermission.deniedForever){
-      return Future.error('Location permissions are permanently denied, we cannot request püermissions.');
-    }
-    return await Geolocator.getCurrentPosition();
+
+    setState(() {
+      //refresh the UI
+    });
+
+  }
+  @override
+  void initState() {
+    _checkGps();
+    super.initState();
+    _test();
   }
 
   @override
@@ -164,25 +172,13 @@ class _MyHomePageState extends State<MyHomePage> {
               'Speed: $_speed',
               style: Theme.of(context).textTheme.headline6,
             ),
-            TextButton(
-              style: TextButton.styleFrom(
-                textStyle: const TextStyle(fontSize: 20),
-              ),
-              onPressed: _test,
-              child: const Text('Hintergrund'),
-            ),
             Text(
-              'Test: $_counter'
+              'Adresse: $_address'
             )
             // const Text('Address: '),
             //   Text(_address),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _test,
-        tooltip: 'GET GPS position',
-        child: const Icon(Icons.change_circle_outlined),
       ),
     );
   }
