@@ -85,6 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var _altitude = "";
   var _speed = "";
   var _address = "";
+  var _data;
 
   /////////////
   static const String _isolateName = "LocatorIsolate";
@@ -98,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
     port.listen((dynamic data) {
-      // do something with data
+      _data = data;
     });
     initPlatformState();
   }
@@ -116,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void startLocationService(){
     BackgroundLocator.registerLocationUpdate(LocationCallbackHandler.callback,
         initCallback: LocationCallbackHandler.initCallback,
-        initDataCallback: data,
+        //initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         autoStop: false,
         iosSettings: const IOSSettings(
@@ -214,6 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
               visible: _longitude != "",
               child:  QRCode(lang: _latitude, long: _longitude),
             ),
+            Text('Daten: $_data')
             // const Text('Address: '),
             //   Text(_address),
           ],
