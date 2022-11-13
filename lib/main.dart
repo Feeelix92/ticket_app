@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: generateMaterialColor(color: primaryColor),
       ),
-      home: const MyHomePage(title: 'Easy Ticket'),
+      home: const MyHomePage(title: 'Easy-Ticket'),
     );
   }
 }
