@@ -1,15 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:workmanager/workmanager.dart';
-
-Color  primaryColor = const Color(0xff1b998b);
-Color  secondaryColor = const Color(0xffff0022);
-Color  accentColor1 = const Color(0xff1b4079);
-Color  accentColor2 = const Color(0xffc9f9ff);
-Color  accentColor3 = const Color(0xffedf2f4);
+import 'colors.dart';
+import 'package:material_color_generator/material_color_generator.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
@@ -22,12 +17,12 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Workmanager().initialize(
       callbackDispatcher, // The top level function, aka callbackDispatcher
-      isInDebugMode: true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
-  );
-  Workmanager().registerOneOffTask("_MyHomePageState","_test");
+      isInDebugMode:
+          true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+      );
+  Workmanager().registerOneOffTask("_MyHomePageState", "_test");
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -36,9 +31,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Easy Ticket',
+      title: 'Easy-Ticket',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: generateMaterialColor(color: primaryColor),
       ),
       home: const MyHomePage(title: 'Easy Ticket'),
     );
@@ -72,26 +67,27 @@ class _MyHomePageState extends State<MyHomePage> {
   late StreamSubscription<Position> _positionStream;
   var _counter = 0;
 
-  Future<void> _test() async{
-    const oneSec = Duration(seconds:10);
-    Timer.periodic(oneSec, (Timer t) => setState(() {
-      _counter = _counter+1;
-      print(_counter);
-      print(_positionStream.isPaused);
-      print(_currentPosition);
-      // print(_address);
-    }));
+  Future<void> _test() async {
+    const oneSec = Duration(seconds: 10);
+    Timer.periodic(
+        oneSec,
+        (Timer t) => setState(() {
+              _counter = _counter + 1;
+              print(_counter);
+              print(_positionStream.isPaused);
+              print(_currentPosition);
+              // print(_address);
+            }));
   }
 
   _getAddressFromLatLng() async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
-          _currentPosition.latitude,
-          _currentPosition.longitude
-      );
+          _currentPosition.latitude, _currentPosition.longitude);
       Placemark place = placemarks[0];
       setState(() {
-        _address = "${place.street}, \n${place.postalCode} ${place.locality} \n ${place.administrativeArea}, ${place.country}";
+        _address =
+            "${place.street}, \n${place.postalCode} ${place.locality} \n ${place.administrativeArea}, ${place.country}";
       });
     } catch (e) {
       print(e);
@@ -100,41 +96,42 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _checkGps() async {
     servicestatus = await Geolocator.isLocationServiceEnabled();
-    if(servicestatus){
+    if (servicestatus) {
       permission = await Geolocator.checkPermission();
 
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           print('Location permissions are denied');
-        }else if(permission == LocationPermission.deniedForever){
+        } else if (permission == LocationPermission.deniedForever) {
           print("'Location permissions are permanently denied");
-        }else{
+        } else {
           haspermission = true;
         }
-      }else{
+      } else {
         haspermission = true;
       }
-      if(haspermission){
+      if (haspermission) {
         setState(() {
           //refresh the UI
         });
       }
-    }else{
+    } else {
       print("GPS Service is not enabled, turn on GPS location");
     }
 
     setState(() {
       //refresh the UI
     });
-
   }
+
   @override
   void initState() {
     _checkGps();
     super.initState();
-     _positionStream = Geolocator.getPositionStream(
-        locationSettings: locationSettings).listen((Position position) {
+    _positionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position position) {
       setState(() {
         _currentPosition = position;
         _getAddressFromLatLng();
@@ -155,17 +152,48 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                    'Your current location is: ',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.green,
-                  )
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Padding(
+                  padding: EdgeInsets.all(10.0),
                 ),
+                Text('Max Mustermann'),
+                Text('Ticket-ID: 123456789'),
+                Text('Datum: 14.11.2022'),
+                Text('Uhrzeit: 10:00 Uhr'),
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                ),
+                Text(
+                  'QR-Code',
+                  style: TextStyle(
+                    fontSize: 30
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(50),
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+              ElevatedButton(
+                onPressed: null,
+                child: Text('FAHRT STARTEN'),
+              ),
+              ElevatedButton(
+                onPressed: null,
+                child: Text('FAHRT BEENDEN'),
+              ),
+              Padding(
+                padding: EdgeInsets.all(10),
+              ),
+              ],
             ),
             Text(
               'Latitude: $_latitude',
@@ -183,12 +211,8 @@ class _MyHomePageState extends State<MyHomePage> {
               'Speed: $_speed',
               style: Theme.of(context).textTheme.headline6,
             ),
-            Text(
-              'Adresse: $_address'
-            ),
-            Text(
-                'Counter: $_counter'
-            )
+            Text('Adresse: $_address'),
+            Text('Counter: $_counter')
             // const Text('Address: '),
             //   Text(_address),
           ],
