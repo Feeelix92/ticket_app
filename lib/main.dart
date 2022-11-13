@@ -5,11 +5,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:workmanager/workmanager.dart';
 
-var primaryColor = const Color(0xff1b998b);
-var secondaryColor = const Color(0xffff0022);
-var accentColor1 = const Color(0xff1b4079);
-var accentColor2 = const Color(0xffc9f9ff);
-var accentColor3 = const Color(0xffedf2f4);
+Color  primaryColor = const Color(0xff1b998b);
+Color  secondaryColor = const Color(0xffff0022);
+Color  accentColor1 = const Color(0xff1b4079);
+Color  accentColor2 = const Color(0xffc9f9ff);
+Color  accentColor3 = const Color(0xffedf2f4);
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
