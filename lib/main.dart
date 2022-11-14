@@ -201,16 +201,34 @@ class _MyHomePageState extends State<MyHomePage> {
                   const Padding(
                     padding: EdgeInsets.all(10.0),
                   ),
-                  const Text('Max Mustermann'),
-                  const Text('Ticket-ID: 123456789'),
-                  const Text('Datum: 14.11.2022'),
-                  const Text('Uhrzeit: 10:00 Uhr'),
+                  Text('Max Mustermann',
+                    style: TextStyle(
+                      color: accentColor1,
+                    )
+                  ),
+                  Text('Ticket-ID: 123456789',
+                      style: TextStyle(
+                        color: accentColor1,
+                      )
+                  ),
+                  Text('Datum: 14.11.2022',
+                      style: TextStyle(
+                        color: accentColor1,
+                      )
+                  ),
+                  Text('Uhrzeit: 10:00 Uhr',
+                      style: TextStyle(
+                        color: accentColor1,
+                      )
+                  ),
                   const Padding(
                     padding: EdgeInsets.all(10.0),
                   ),
                   const Text(
                     'QR-Code',
-                    style: TextStyle(fontSize: 30),
+                    style: TextStyle(
+                        fontSize: 30
+                    ),
                   ),
                   Visibility(
                     visible: _longitude != "",
