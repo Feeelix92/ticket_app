@@ -282,28 +282,23 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
-            label: 'Home',
+            icon: const Icon(Icons.airplane_ticket),
+            label: 'Ticket',
             backgroundColor: primaryColor,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.business),
-            label: 'Business',
+            icon: const Icon(Icons.map),
+            label: 'Karte',
             backgroundColor: primaryColor,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.school),
-            label: 'School',
-            backgroundColor: primaryColor,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.settings),
-            label: 'Settings',
+            icon: const Icon(Icons.history),
+            label: 'Historie',
             backgroundColor: primaryColor,
           ),
         ],
         currentIndex: 0,
-        selectedItemColor: accentColor2,
+        selectedItemColor: secondaryColor,
         onTap: null,
       ),
     );
