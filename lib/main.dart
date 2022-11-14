@@ -5,6 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:workmanager/workmanager.dart';
 import 'colors.dart';
 import 'package:material_color_generator/material_color_generator.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
@@ -47,6 +48,43 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
+
+class QRCode extends StatefulWidget {
+  const QRCode({Key? key, required this.lat, required this.long, required this.address}) : super(key: key);
+
+  final String lat;
+  final String long;
+  final String address;
+
+  @override
+  State<QRCode> createState() => _QRCodeState();
+}
+
+class _QRCodeState extends State<QRCode> {
+  @override
+  Widget build(BuildContext context) {
+    return QrImage(
+        data: 'Eingestiegen in ${widget.lat}, ${widget.long}. Ort: ${widget.address}',
+        gapless: true,
+        version: QrVersions.auto,
+        size: 300,
+        foregroundColor: primaryColor,
+        //embeddedImage: const AssetImage('assets/images/thm.png'),
+        //embeddedImageStyle: QrEmbeddedImageStyle(
+          //size: const Size(80,80),
+        //),
+        errorStateBuilder: (cxt, err) {
+          return const Center(
+            child: Text(
+              "Etwas läuft schief...",
+              textAlign: TextAlign.center,
+            ),
+          );
+        });
+  }
+}
+
+
 
 class _MyHomePageState extends State<MyHomePage> {
   // GPS
@@ -150,72 +188,76 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Padding(
-                  padding: EdgeInsets.all(10.0),
-                ),
-                Text('Max Mustermann'),
-                Text('Ticket-ID: 123456789'),
-                Text('Datum: 14.11.2022'),
-                Text('Uhrzeit: 10:00 Uhr'),
-                Padding(
-                  padding: EdgeInsets.all(10.0),
-                ),
-                Text(
-                  'QR-Code',
-                  style: TextStyle(
-                    fontSize: 30
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(10.0),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(50),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-              ElevatedButton(
-                onPressed: null,
-                child: Text('FAHRT STARTEN'),
+                  const Text('Max Mustermann'),
+                  const Text('Ticket-ID: 123456789'),
+                  const Text('Datum: 14.11.2022'),
+                  const Text('Uhrzeit: 10:00 Uhr'),
+                  const Padding(
+                    padding: EdgeInsets.all(10.0),
+                  ),
+                  const Text(
+                    'QR-Code',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  Visibility(
+                    visible: _longitude != "",
+                    child: QRCode(lat: _latitude, long: _longitude, address: _address),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(50),
+                  ),
+                ],
               ),
-              ElevatedButton(
-                onPressed: null,
-                child: Text('FAHRT BEENDEN'),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  ElevatedButton(
+                    onPressed: null,
+                    child: Text('FAHRT STARTEN'),
+                  ),
+                  ElevatedButton(
+                    onPressed: null,
+                    child: Text('FAHRT BEENDEN'),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                  ),
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.all(10),
+              Text(
+                'Latitude: $_latitude',
+                style: Theme.of(context).textTheme.headline6,
               ),
-              ],
-            ),
-            Text(
-              'Latitude: $_latitude',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'Longitude: $_longitude',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'Altitude: $_altitude',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text(
-              'Speed: $_speed',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            Text('Adresse: $_address'),
-            Text('Counter: $_counter')
-            // const Text('Address: '),
-            //   Text(_address),
-          ],
+              Text(
+                'Longitude: $_longitude',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                'Altitude: $_altitude',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text(
+                'Speed: $_speed',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              Text('Adresse: $_address'),
+              Text('Counter: $_counter')
+              // const Text('Address: '),
+              //   Text(_address),
+            ],
+          ),
         ),
       ),
     );
