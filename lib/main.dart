@@ -6,6 +6,7 @@ import 'package:workmanager/workmanager.dart';
 import 'colors.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:sqflite/sqflite.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
