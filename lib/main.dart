@@ -69,7 +69,7 @@ class _QRCodeState extends State<QRCode> {
         gapless: true,
         version: QrVersions.auto,
         size: 300,
-        foregroundColor: primaryColor,
+        foregroundColor: accentColor1,
         //embeddedImage: const AssetImage('assets/images/thm.png'),
         //embeddedImageStyle: QrEmbeddedImageStyle(
           //size: const Size(80,80),
@@ -260,6 +260,33 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.home),
+            label: 'Home',
+            backgroundColor: primaryColor,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.business),
+            label: 'Business',
+            backgroundColor: primaryColor,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.school),
+            label: 'School',
+            backgroundColor: primaryColor,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.settings),
+            label: 'Settings',
+            backgroundColor: primaryColor,
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: accentColor2,
+        onTap: null,
       ),
     );
   }
