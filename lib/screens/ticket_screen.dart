@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../colors.dart';
 
 
-class TicketScreen extends StatelessWidget {
+class TicketScreen extends StatefulWidget {
   const TicketScreen({
     Key? key,
     required String longitude,
@@ -21,6 +21,11 @@ class TicketScreen extends StatelessWidget {
   final String _speed;
   final int _counter;
 
+  @override
+  State<TicketScreen> createState() => _TicketScreenState();
+}
+
+class _TicketScreenState extends State<TicketScreen> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -59,8 +64,8 @@ class TicketScreen extends StatelessWidget {
                   padding: EdgeInsets.all(5.0),
                 ),
                 Visibility(
-                  visible: _longitude != "",
-                  child: QRCode(lat: _latitude, long: _longitude, address: _address),
+                  visible: widget._longitude != "",
+                  child: QRCode(lat: widget._latitude, long: widget._longitude, address: widget._address),
                 ),
               ],
             ),
@@ -81,23 +86,23 @@ class TicketScreen extends StatelessWidget {
               ],
             ),
             Text(
-              'Latitude: $_latitude',
+              'Latitude: ${widget._latitude}',
               style: Theme.of(context).textTheme.headline6,
             ),
             Text(
-              'Longitude: $_longitude',
+              'Longitude: ${widget._longitude}',
               style: Theme.of(context).textTheme.headline6,
             ),
             Text(
-              'Altitude: $_altitude',
+              'Altitude: ${widget._altitude}',
               style: Theme.of(context).textTheme.headline6,
             ),
             Text(
-              'Speed: $_speed',
+              'Speed: ${widget._speed}',
               style: Theme.of(context).textTheme.headline6,
             ),
-            Text('Adresse: $_address'),
-            Text('Counter: $_counter')
+            Text('Adresse: ${widget._address}'),
+            Text('Counter: ${widget._counter}')
             // const Text('Address: '),
             //   Text(_address),
           ],

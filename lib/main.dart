@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:ticket_app/screens/ticket_screen.dart';
+import 'package:ticket_app/screens/loading_screen.dart';
 import 'package:workmanager/workmanager.dart';
 import 'colors.dart';
 import 'package:material_color_generator/material_color_generator.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 
 void callbackDispatcher() {
@@ -37,22 +37,23 @@ class MyApp extends StatelessWidget {
       title: 'Easy-Ticket',
       theme: ThemeData(
         primarySwatch: generateMaterialColor(color: primaryColor),
+        fontFamily: "Montserrat",
       ),
-      home: const MyHomePage(title: 'Easy-Ticket'),
+      home: LoadingScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class MyBottomNavigationBar extends StatefulWidget {
+  const MyBottomNavigationBar({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyBottomNavigationBar> createState() => _MyBottomNavigationBarState();
 }
 
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   // GPS
   bool servicestatus = false;
   bool haspermission = false;
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late StreamSubscription<Position> _positionStream;
   var _counter = 0;
 
-  Future<void> _test() async {
+  Future<void> _backgroundTracking() async {
     const oneSec = Duration(seconds: 10);
     Timer.periodic(
         oneSec,
@@ -145,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _speed = position.speed.toString();
       });
     });
-    _test();
+    _backgroundTracking();
   }
 
 
