@@ -1,6 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'databaseLocalManager.dart';
+import 'dart:async';
 
 class Location {
   final int id;
@@ -33,8 +34,6 @@ class Location {
     };
   }
 
-  // Implement toString to make it easier to see information about
-  // each location
   @override
   String toString() {
     return 'Dog{id: $id, latitude: $latitude, longitude: $longitude, altitude: $altitude, speed: $speed, ticketid: $ticketid, address: $address,}';
@@ -42,8 +41,7 @@ class Location {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-// Open the database and store the reference.
+  //WidgetsFlutterBinding.ensureInitialized(); Already in main
   final database = openDatabase(
     // Set the path to the database. Note: Using the `join` function from the
     // `path` package is best practice to ensure the path is correctly
@@ -59,7 +57,7 @@ void main() async {
 // Set the version. This executes the onCreate function and provides a
 // path to perform database upgrades and downgrades.
     version: 1,
-  )
+  );
 
 
   Future<void> insertLocation(Location location) async {
@@ -86,7 +84,7 @@ void main() async {
 
     // Convert the List<Map<String, dynamic> into a List<Dog>.
     return List.generate(maps.length, (i) {
-      return location(
+      return Location(
         id: maps[i]['id'],
         latitude: maps[i]['latitude'],
         longitude: maps[i]['longitude'],
