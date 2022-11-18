@@ -224,18 +224,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   const Padding(
                     padding: EdgeInsets.all(10.0),
                   ),
-                  const Text(
-                    'QR-Code',
-                    style: TextStyle(
-                        fontSize: 30
-                    ),
-                  ),
                   Visibility(
                     visible: _longitude != "",
                     child: QRCode(lat: _latitude, long: _longitude, address: _address),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(50),
                   ),
                 ],
               ),
@@ -280,21 +271,18 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: const Icon(Icons.airplane_ticket),
+            icon: Icon(Icons.airplane_ticket),
             label: 'Ticket',
-            backgroundColor: primaryColor,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.map),
+            icon: Icon(Icons.map),
             label: 'Karte',
-            backgroundColor: primaryColor,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.history),
+            icon: Icon(Icons.history),
             label: 'Historie',
-            backgroundColor: primaryColor,
           ),
         ],
         currentIndex: 0,
