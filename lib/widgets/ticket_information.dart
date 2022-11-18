@@ -29,25 +29,22 @@ class TicketInformation extends StatefulWidget {
 class _TicketInformationState extends State<TicketInformation> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(10.0),
-        ),
-        TicketText(text: widget._ticketHolderName,),
-        TicketText(text: 'Ticket-ID: ${widget._ticketId}'),
-        TicketText(text: 'Datum: ${widget._ticketDate}'),
-        TicketText(text: 'Uhrzeit: ${widget._ticketTime}'),
-        const Padding(
-          padding: EdgeInsets.all(5.0),
-        ),
-        Visibility(
-          visible: widget._longitude != "",
-          child: QRCode(
-              lat: widget._latitude, long: widget._longitude, address: widget._address),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TicketText(text: widget._ticketHolderName,),
+          TicketText(text: 'Ticket-ID: ${widget._ticketId}'),
+          TicketText(text: 'Datum: ${widget._ticketDate}'),
+          TicketText(text: 'Uhrzeit: ${widget._ticketTime}'),
+          Visibility(
+            visible: widget._longitude != "",
+            child: QRCode(
+                lat: widget._latitude, long: widget._longitude, address: widget._address),
+          ),
+        ],
+      ),
     );
   }
 }

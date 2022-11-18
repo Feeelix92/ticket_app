@@ -5,6 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/bold_styled_text.dart';
 import '../widgets/ticket_information.dart';
 
 class TicketScreen extends StatefulWidget {
@@ -122,43 +123,50 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            TicketInformation(ticketHolderName:"Max Mustermann", ticketId: "12345", ticketDate: "14.11.2022", ticketTime: "10:00 Uhr", longitude: _longitude, latitude: _latitude, address: _address),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                ElevatedButton(
-                  onPressed: null,
-                  child: Text('FAHRT STARTEN'),
-                ),
-                ElevatedButton(
-                  onPressed: null,
-                  child: Text('FAHRT BEENDEN'),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(10),
-                ),
-              ],
+            TicketInformation(
+                ticketHolderName: "Max Mustermann",
+                ticketId: "12345",
+                ticketDate: "14.11.2022",
+                ticketTime: "10:00 Uhr",
+                longitude: _longitude,
+                latitude: _latitude,
+                address: _address),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  ElevatedButton(
+                    onPressed: null,
+                    child: Text('FAHRT STARTEN'),
+                  ),
+                  ElevatedButton(
+                    onPressed: null,
+                    child: Text('FAHRT BEENDEN'),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                  ),
+                ],
+              ),
             ),
-            Text(
-              'Latitude: $_latitude',
-              style: Theme.of(context).textTheme.headline6,
+            BoldStyledText(
+                text: 'Latitude: $_latitude'
             ),
-            Text(
-              'Longitude: $_longitude',
-              style: Theme.of(context).textTheme.headline6,
+            BoldStyledText(
+                text: 'Longitude: $_longitude'
             ),
-            Text(
-              'Altitude: $_altitude',
-              style: Theme.of(context).textTheme.headline6,
+            BoldStyledText(
+              text: 'Altitude: $_altitude',
             ),
-            Text(
-              'Speed: $_speed',
-              style: Theme.of(context).textTheme.headline6,
+            BoldStyledText(
+              text: 'Speed: $_speed',
             ),
             Text('Adresse: $_address'),
             Text('Counter: $_counter')
