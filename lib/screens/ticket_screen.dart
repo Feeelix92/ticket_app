@@ -34,7 +34,7 @@ class _TicketScreenState extends State<TicketScreen> {
   var _counter = 0;
 
   Future<void> _backgroundTracking() async {
-    Timer(const Duration(seconds: 1), () {
+    Timer.periodic(const Duration(seconds: 10), (timer) {
       setState(() {
         _counter = _counter + 1;
         if (kDebugMode) {
