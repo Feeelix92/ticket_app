@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:ticket_app/widgets/qr.dart';
 import 'package:flutter/material.dart';
-import '../colors.dart';
+
+import '../widgets/ticket_information.dart';
 
 class TicketScreen extends StatefulWidget {
   const TicketScreen({super.key});
@@ -127,38 +127,7 @@ class _TicketScreenState extends State<TicketScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(10.0),
-                ),
-                Text('Max Mustermann',
-                    style: TextStyle(
-                      color: accentColor1,
-                    )),
-                Text('Ticket-ID: 123456789',
-                    style: TextStyle(
-                      color: accentColor1,
-                    )),
-                Text('Datum: 14.11.2022',
-                    style: TextStyle(
-                      color: accentColor1,
-                    )),
-                Text('Uhrzeit: 10:00 Uhr',
-                    style: TextStyle(
-                      color: accentColor1,
-                    )),
-                const Padding(
-                  padding: EdgeInsets.all(5.0),
-                ),
-                Visibility(
-                  visible: _longitude != "",
-                  child: QRCode(
-                      lat: _latitude, long: _longitude, address: _address),
-                ),
-              ],
-            ),
+            TicketInformation(ticketHolderName:"Max Mustermann", ticketId: "12345", ticketDate: "14.11.2022", ticketTime: "10:00 Uhr", longitude: _longitude, latitude: _latitude, address: _address),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: const [
