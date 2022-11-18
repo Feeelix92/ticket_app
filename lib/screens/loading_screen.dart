@@ -9,14 +9,15 @@ class LoadingScreen extends StatefulWidget {
   State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
-
 class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const MyBottomNavigationBar(title: 'Easy-Ticket',),
+        builder: (context) => const MyBottomNavigationBar(
+          title: 'Easy-Ticket',
+        ),
       ));
     });
   }
@@ -30,9 +31,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
           width: double.infinity,
           decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
-                Theme.of(context).primaryColor,
-                Theme.of(context).colorScheme.secondary
-              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+            Theme.of(context).primaryColor,
+            Theme.of(context).colorScheme.secondary
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
           child: const Text(
             "Easy-Ticket",
             style: TextStyle(

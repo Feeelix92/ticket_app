@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:ticket_app/screens/map_screen.dart';
+import 'package:ticket_app/screens/ticket_history_screen.dart';
 import 'package:ticket_app/screens/ticket_screen.dart';
 import 'package:ticket_app/screens/loading_screen.dart';
 import 'package:workmanager/workmanager.dart';
@@ -9,7 +12,9 @@ import 'package:sqflite/sqflite.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
-    print("Native called background task:"); //simpleTask will be emitted here.
+    if (kDebugMode) {
+      print("Native called background task:");
+    } //simpleTask will be emitted here.
     return Future.value(true);
   });
 }
@@ -52,13 +57,25 @@ class MyBottomNavigationBar extends StatefulWidget {
 }
 
 class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
+
+  int _currentIndex = 0;
+  final List<Widget> _children = [
+    const TicketScreen(),
+    const MapScreen(),
+    const TicketHistory(),
+  ];
+  void onTappedBar(int index){
+    setState(() {
+      _currentIndex = index;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: const TicketScreen(),
+      body: _children [_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -74,9 +91,9 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
             label: 'Historie',
           ),
         ],
-        currentIndex: 0,
+        currentIndex: _currentIndex,
         selectedItemColor: secondaryColor,
-        onTap: null,
+        onTap: onTappedBar,
       ),
     );
   }

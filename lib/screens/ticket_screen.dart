@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ticket_app/widgets/qr.dart';
@@ -38,10 +39,12 @@ class _TicketScreenState extends State<TicketScreen> {
         oneSec,
         (Timer t) => setState(() {
               _counter = _counter + 1;
-              print(_counter);
-              print(_positionStream.isPaused);
-              print(_currentPosition);
-              // print(_address);
+              if (kDebugMode) {
+                print(_counter);
+                print(_positionStream.isPaused);
+                print(_currentPosition);
+                // print(_address);
+              }
             }));
   }
 
@@ -55,7 +58,9 @@ class _TicketScreenState extends State<TicketScreen> {
             "${place.street}, \n${place.postalCode} ${place.locality} \n ${place.administrativeArea}, ${place.country}";
       });
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 
@@ -67,9 +72,13 @@ class _TicketScreenState extends State<TicketScreen> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          print('Location permissions are denied');
+          if (kDebugMode) {
+            print('Location permissions are denied');
+          }
         } else if (permission == LocationPermission.deniedForever) {
-          print("'Location permissions are permanently denied");
+          if (kDebugMode) {
+            print("'Location permissions are permanently denied");
+          }
         } else {
           haspermission = true;
         }
@@ -82,7 +91,9 @@ class _TicketScreenState extends State<TicketScreen> {
         });
       }
     } else {
-      print("GPS Service is not enabled, turn on GPS location");
+      if (kDebugMode) {
+        print("GPS Service is not enabled, turn on GPS location");
+      }
     }
 
     setState(() {
@@ -166,7 +177,7 @@ class _TicketScreenState extends State<TicketScreen> {
               ],
             ),
             Text(
-              'Latitude: ${_latitude}',
+              'Latitude: $_latitude',
               style: Theme.of(context).textTheme.headline6,
             ),
             Text(
