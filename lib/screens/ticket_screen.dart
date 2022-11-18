@@ -34,18 +34,17 @@ class _TicketScreenState extends State<TicketScreen> {
   var _counter = 0;
 
   Future<void> _backgroundTracking() async {
-    const oneSec = Duration(seconds: 10);
-    Timer.periodic(
-        oneSec,
-        (Timer t) => setState(() {
-              _counter = _counter + 1;
-              if (kDebugMode) {
-                print(_counter);
-                print(_positionStream.isPaused);
-                print(_currentPosition);
-                // print(_address);
-              }
-            }));
+    Timer(const Duration(seconds: 1), () {
+      setState(() {
+        _counter = _counter + 1;
+        if (kDebugMode) {
+          print(_counter);
+          print(_positionStream.isPaused);
+          print(_currentPosition);
+          // print(_address);
+        }
+      });
+    });
   }
 
   _getAddressFromLatLng() async {
