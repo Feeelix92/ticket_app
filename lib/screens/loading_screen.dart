@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../main.dart';
+import '../widgets/bottom_navigation_bar.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
