@@ -3,7 +3,9 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../colors.dart';
 
 class QRCode extends StatefulWidget {
-  const QRCode({Key? key, required this.lat, required this.long, required this.address}) : super(key: key);
+  const QRCode(
+      {Key? key, required this.lat, required this.long, required this.address})
+      : super(key: key);
 
   final String lat;
   final String long;
@@ -17,7 +19,8 @@ class _QRCodeState extends State<QRCode> {
   @override
   Widget build(BuildContext context) {
     return QrImage(
-        data: 'Eingestiegen in ${widget.lat}, ${widget.long}. Ort: ${widget.address}',
+        data:
+            'Eingestiegen in ${widget.lat}, ${widget.long}. Ort: ${widget.address}',
         gapless: true,
         version: QrVersions.auto,
         size: 300,
