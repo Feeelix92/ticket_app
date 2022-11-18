@@ -156,24 +156,56 @@ class _TicketScreenState extends State<TicketScreen> {
                 ],
               ),
             ),
-            BoldStyledText(
-                text: 'Latitude: $_latitude'
-            ),
-            BoldStyledText(
-                text: 'Longitude: $_longitude'
-            ),
-            BoldStyledText(
-              text: 'Altitude: $_altitude',
-            ),
-            BoldStyledText(
-              text: 'Speed: $_speed',
-            ),
-            Text('Adresse: $_address'),
-            Text('Counter: $_counter')
-            // const Text('Address: '),
-            //   Text(_address),
+            GpsTestData(latitude: _latitude, longitude: _longitude, altitude: _altitude, speed: _speed, address: _address, counter: _counter),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class GpsTestData extends StatelessWidget {
+  const GpsTestData({
+    Key? key,
+    required String latitude,
+    required String longitude,
+    required String altitude,
+    required String speed,
+    required String address,
+    required int counter,
+  }) : _latitude = latitude, _longitude = longitude, _altitude = altitude, _speed = speed, _address = address, _counter = counter, super(key: key);
+
+  final String _latitude;
+  final String _longitude;
+  final String _altitude;
+  final String _speed;
+  final String _address;
+  final int _counter;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          BoldStyledText(
+              text: 'Latitude: $_latitude'
+          ),
+          BoldStyledText(
+              text: 'Longitude: $_longitude'
+          ),
+          BoldStyledText(
+            text: 'Altitude: $_altitude',
+          ),
+          BoldStyledText(
+            text: 'Speed: $_speed',
+          ),
+          Text('Adresse: $_address'),
+          Text('Counter: $_counter')
+        // const Text('Address: '),
+        //   Text(_address),
+        ],
       ),
     );
   }
