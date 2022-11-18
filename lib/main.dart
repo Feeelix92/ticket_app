@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:ticket_app/widgets/qr.dart';
 import 'package:workmanager/workmanager.dart';
 import 'colors.dart';
 import 'package:material_color_generator/material_color_generator.dart';
@@ -49,42 +50,6 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-
-class QRCode extends StatefulWidget {
-  const QRCode({Key? key, required this.lat, required this.long, required this.address}) : super(key: key);
-
-  final String lat;
-  final String long;
-  final String address;
-
-  @override
-  State<QRCode> createState() => _QRCodeState();
-}
-
-class _QRCodeState extends State<QRCode> {
-  @override
-  Widget build(BuildContext context) {
-    return QrImage(
-        data: 'Eingestiegen in ${widget.lat}, ${widget.long}. Ort: ${widget.address}',
-        gapless: true,
-        version: QrVersions.auto,
-        size: 300,
-        foregroundColor: accentColor1,
-        //embeddedImage: const AssetImage('assets/images/thm.png'),
-        //embeddedImageStyle: QrEmbeddedImageStyle(
-          //size: const Size(80,80),
-        //),
-        errorStateBuilder: (cxt, err) {
-          return const Center(
-            child: Text(
-              "Etwas läuft schief...",
-              textAlign: TextAlign.center,
-            ),
-          );
-        });
-  }
-}
-
 
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -183,6 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _test();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -222,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       )
                   ),
                   const Padding(
-                    padding: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(5.0),
                   ),
                   Visibility(
                     visible: _longitude != "",
@@ -273,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.airplane_ticket),
+            icon: Icon(Icons.confirmation_num_outlined),
             label: 'Ticket',
           ),
           BottomNavigationBarItem(
