@@ -36,7 +36,7 @@ class LocationPoint {
 
   @override
   String toString() {
-    return 'Dog{id: $id, latitude: $latitude, longitude: $longitude, altitude: $altitude, speed: $speed, ticketid: $ticketid, address: $address,}';
+    return 'LocationPoint{id: $id, latitude: $latitude, longitude: $longitude, altitude: $altitude, speed: $speed, ticketid: $ticketid, address: $address,}';
   }
 }
 
