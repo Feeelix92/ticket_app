@@ -3,7 +3,7 @@ import 'package:path/path.dart';
 import 'databaseLocalManager.dart';
 import 'dart:async';
 
-class Location {
+class LocationPoint {
   final int id;
   final double latitude;
   final double longitude;
@@ -12,7 +12,7 @@ class Location {
   final double ticketid;
   final String address;
 
-  const Location({
+  const LocationPoint({
     required this.id,
     required this.latitude,
     required this.longitude,
@@ -59,8 +59,7 @@ void main() async {
     version: 1,
   );
 
-
-  Future<void> insertLocation(Location location) async {
+  Future<void> insertLocation(LocationPoint locationPoint) async {
     // Get a reference to the database.
     final db = await database;
 
@@ -70,12 +69,29 @@ void main() async {
     // In this case, replace any previous data.
     await db.insert(
       'location',
-      location.toMap(),
+      locationPoint.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<List<Location>> locations() async {
+  //should insert all Locations into the database
+  Future<void> insertLocations(List<LocationPoint> locationPoints) async {
+    final db = await database;
+
+    // Insert the Dog into the correct table. You might also specify the
+    // `conflictAlgorithm` to use in case the same dog is inserted twice.
+    //
+    // In this case, replace any previous data.
+    for (LocationPoint locationPoint in locationPoints) {
+      await db.insert(
+        'location',
+        locationPoint.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+  }
+
+  Future<List<LocationPoint>> locations() async {
     // Get a reference to the database.
     final db = await database;
 
@@ -84,7 +100,7 @@ void main() async {
 
     // Convert the List<Map<String, dynamic> into a List<Dog>.
     return List.generate(maps.length, (i) {
-      return Location(
+      return LocationPoint(
         id: maps[i]['id'],
         latitude: maps[i]['latitude'],
         longitude: maps[i]['longitude'],
@@ -97,19 +113,21 @@ void main() async {
   }
 
   //returns all Locations to a specific ticket
-  Future<List<Location>> locationsFromTicketid(int ticketid) async {
+  Future<List<LocationPoint>> locationsFromTicketid(int ticketid) async {
     // Get a reference to the database.
     final db = await database;
 
     // Query the table for all The Dogs.
-    final List<Map<String, dynamic>> maps = await db.query('location',
+    final List<Map<String, dynamic>> maps = await db.query(
+      'location',
       where: 'ticketid = ?',
       // Pass the Dog's id as a whereArg to prevent SQL injection.
-      whereArgs: [ticketid],);
+      whereArgs: [ticketid],
+    );
 
     // Convert the List<Map<String, dynamic> into a List<Dog>.
     return List.generate(maps.length, (i) {
-      return Location(
+      return LocationPoint(
         id: maps[i]['id'],
         latitude: maps[i]['latitude'],
         longitude: maps[i]['longitude'],
@@ -135,4 +153,3 @@ void main() async {
     );
   }
 }
-

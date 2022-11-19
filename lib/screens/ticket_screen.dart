@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:ticket_app/widgets/qr.dart';
 import 'package:flutter/material.dart';
 import '../colors.dart';
+import '../locationPoint.dart';
 
 class TicketScreen extends StatefulWidget {
   const TicketScreen({super.key});
@@ -19,6 +20,7 @@ class _TicketScreenState extends State<TicketScreen> {
   bool servicestatus = false;
   bool haspermission = false;
   late LocationPermission permission;
+  late List<LocationPoint> _ride;
   var _latitude = "";
   var _longitude = "";
   var _altitude = "";
@@ -115,6 +117,8 @@ class _TicketScreenState extends State<TicketScreen> {
         _longitude = position.longitude.toString();
         _altitude = position.altitude.toString();
         _speed = position.speed.toString();
+        //Todo
+        _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
       });
     });
     _backgroundTracking();
