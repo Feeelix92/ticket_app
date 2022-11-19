@@ -96,6 +96,31 @@ void main() async {
     });
   }
 
+  //returns all Locations to a specific ticket
+  Future<List<Location>> locationsFromTicketid(int ticketid) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Query the table for all The Dogs.
+    final List<Map<String, dynamic>> maps = await db.query('location',
+      where: 'ticketid = ?',
+      // Pass the Dog's id as a whereArg to prevent SQL injection.
+      whereArgs: [ticketid],);
+
+    // Convert the List<Map<String, dynamic> into a List<Dog>.
+    return List.generate(maps.length, (i) {
+      return Location(
+        id: maps[i]['id'],
+        latitude: maps[i]['latitude'],
+        longitude: maps[i]['longitude'],
+        altitude: maps[i]['altitude'],
+        speed: maps[i]['speed'],
+        ticketid: maps[i]['ticketid'],
+        address: maps[i]['address'],
+      );
+    });
+  }
+
   Future<void> deletelocation(int id) async {
     // Get a reference to the database.
     final db = await database;
