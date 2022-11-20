@@ -77,12 +77,14 @@ class _TicketScreenState extends State<TicketScreen> {
   _startTrip() async {
     if (kDebugMode) {
       print('trip started');
+      print(_currentPosition);
     }
   }
 
   Future<void> _stopTrip() async {
     if (kDebugMode) {
       print('trip stopped');
+      print(_currentPosition);
     }
   }
 
