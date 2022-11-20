@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
-import '../colors.dart';
+import 'package:ticket_app/colors.dart';
 import '../locationPoint.dart';
 
 import '../widgets/bold_styled_text.dart';
@@ -35,14 +35,21 @@ class _TicketScreenState extends State<TicketScreen> {
     //device must move horizontally before an update event is generated;
   );
   late StreamSubscription<Position> _positionStream;
-  var _counter = 0;
 
   Future<void> _backgroundTracking() async {
-    Timer.periodic(const Duration(seconds: 10), (timer) {
+    _positionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position position) {
       setState(() {
-        _counter = _counter + 1;
+        _currentPosition = position;
+        _getAddressFromLatLng();
+        _latitude = position.latitude.toString();
+        _longitude = position.longitude.toString();
+        _altitude = position.altitude.toString();
+        _speed = position.speed.toString();
+        //Todo
+        // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
         if (kDebugMode) {
-          print(_counter);
           print(_positionStream.isPaused);
           print(_currentPosition);
           // print(_address);
@@ -64,6 +71,18 @@ class _TicketScreenState extends State<TicketScreen> {
       if (kDebugMode) {
         print(e);
       }
+    }
+  }
+
+  _startTrip() async {
+    if (kDebugMode) {
+      print('trip started');
+    }
+  }
+
+  Future<void> _stopTrip() async {
+    if (kDebugMode) {
+      print('trip stopped');
     }
   }
 
@@ -106,23 +125,13 @@ class _TicketScreenState extends State<TicketScreen> {
 
   @override
   void initState() {
-    _checkGps();
     super.initState();
-    _positionStream =
-        Geolocator.getPositionStream(locationSettings: locationSettings)
-            .listen((Position position) {
-      setState(() {
-        _currentPosition = position;
-        _getAddressFromLatLng();
-        _latitude = position.latitude.toString();
-        _longitude = position.longitude.toString();
-        _altitude = position.altitude.toString();
-        _speed = position.speed.toString();
-        //Todo
-        _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
-      });
-    });
-    _backgroundTracking();
+    if (mounted) {
+      _checkGps();
+      _backgroundTracking();
+    }
+    //Todo
+    // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
   }
 
   @override
@@ -146,22 +155,60 @@ class _TicketScreenState extends State<TicketScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  ElevatedButton(
-                    onPressed: null,
-                    child: Text('FAHRT STARTEN'),
+                children: [
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 200,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _startTrip();
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(primaryColor),
+                          ),
+                          child: const Text(
+                            'Fahrt starten',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                  ElevatedButton(
-                    onPressed: null,
-                    child: Text('FAHRT BEENDEN'),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(10),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 200,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _stopTrip();
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(secondaryColor),
+                          ),
+                          child: const Text(
+                            'Fahrt beenden',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-            GpsTestData(latitude: _latitude, longitude: _longitude, altitude: _altitude, speed: _speed, address: _address, counter: _counter),
+            GpsTestData(
+                latitude: _latitude,
+                longitude: _longitude,
+                altitude: _altitude,
+                speed: _speed,
+                address: _address),
           ],
         ),
       ),
@@ -177,15 +224,18 @@ class GpsTestData extends StatelessWidget {
     required String altitude,
     required String speed,
     required String address,
-    required int counter,
-  }) : _latitude = latitude, _longitude = longitude, _altitude = altitude, _speed = speed, _address = address, _counter = counter, super(key: key);
+  })  : _latitude = latitude,
+        _longitude = longitude,
+        _altitude = altitude,
+        _speed = speed,
+        _address = address,
+        super(key: key);
 
   final String _latitude;
   final String _longitude;
   final String _altitude;
   final String _speed;
   final String _address;
-  final int _counter;
 
   @override
   Widget build(BuildContext context) {
@@ -194,12 +244,8 @@ class GpsTestData extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BoldStyledText(
-              text: 'Latitude: $_latitude'
-          ),
-          BoldStyledText(
-              text: 'Longitude: $_longitude'
-          ),
+          BoldStyledText(text: 'Latitude: $_latitude'),
+          BoldStyledText(text: 'Longitude: $_longitude'),
           BoldStyledText(
             text: 'Altitude: $_altitude',
           ),
@@ -207,9 +253,8 @@ class GpsTestData extends StatelessWidget {
             text: 'Speed: $_speed',
           ),
           Text('Adresse: $_address'),
-          Text('Counter: $_counter')
-        // const Text('Address: '),
-        //   Text(_address),
+          // const Text('Address: '),
+          //   Text(_address),
         ],
       ),
     );

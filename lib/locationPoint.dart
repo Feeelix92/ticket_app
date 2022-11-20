@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'databaseLocalManager.dart';
+// import 'databaseLocalManager.dart';
 import 'dart:async';
 
 class LocationPoint {
