@@ -156,50 +156,8 @@ class _TicketScreenState extends State<TicketScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        width: 200,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _startTrip();
-                          },
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(primaryColor),
-                          ),
-                          child: const Text(
-                            'Fahrt starten',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        width: 200,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _stopTrip();
-                          },
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(secondaryColor),
-                          ),
-                          child: const Text(
-                            'Fahrt beenden',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  buildTripButton(_startTrip, 'Fahrt starten', primaryColor),
+                  buildTripButton(_stopTrip, 'Fahrt beenden', secondaryColor),
                 ],
               ),
             ),
@@ -210,6 +168,28 @@ class _TicketScreenState extends State<TicketScreen> {
                 speed: _speed,
                 address: _address),
           ],
+        ),
+      ),
+    );
+  }
+
+  Center buildTripButton(tripFunction, text, color) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          width: 200,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: tripFunction,
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(color),
+            ),
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 20),
+            ),
+          ),
         ),
       ),
     );
