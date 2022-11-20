@@ -51,7 +51,7 @@ class _TicketScreenState extends State<TicketScreen> {
             //Todo
             // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
             if (kDebugMode) {
-              print(_positionStream.isPaused);
+              print('position update:');
               print(_currentPosition);
               // print(_address);
             }
@@ -82,6 +82,8 @@ class _TicketScreenState extends State<TicketScreen> {
     }
     if (kDebugMode) {
       print('trip started');
+      print('Stream is paused:');
+      print(_positionStream.isPaused);
       print(_currentPosition);
     }
   }
@@ -90,6 +92,8 @@ class _TicketScreenState extends State<TicketScreen> {
     _positionStream.pause();
     if (kDebugMode) {
       print('trip stopped');
+      print('Stream is paused:');
+      print(_positionStream.isPaused);
       print(_currentPosition);
     }
   }
