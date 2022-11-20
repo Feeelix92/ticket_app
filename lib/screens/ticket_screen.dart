@@ -225,6 +225,7 @@ class GpsTestData extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const BoldStyledText(text: 'Test Data:'),
             BoldStyledText(text: 'Latitude: $_latitude'),
             BoldStyledText(text: 'Longitude: $_longitude'),
             BoldStyledText(
