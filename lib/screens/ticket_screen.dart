@@ -221,21 +221,23 @@ class GpsTestData extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BoldStyledText(text: 'Latitude: $_latitude'),
-          BoldStyledText(text: 'Longitude: $_longitude'),
-          BoldStyledText(
-            text: 'Altitude: $_altitude',
-          ),
-          BoldStyledText(
-            text: 'Speed: $_speed',
-          ),
-          Text('Adresse: $_address'),
-          // const Text('Address: '),
-          //   Text(_address),
-        ],
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BoldStyledText(text: 'Latitude: $_latitude'),
+            BoldStyledText(text: 'Longitude: $_longitude'),
+            BoldStyledText(
+              text: 'Altitude: $_altitude',
+            ),
+            BoldStyledText(
+              text: 'Speed: $_speed',
+            ),
+            Text('Adresse: $_address'),
+            // const Text('Address: '),
+            //   Text(_address),
+          ],
+        ),
       ),
     );
   }

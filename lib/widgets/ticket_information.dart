@@ -31,19 +31,21 @@ class _TicketInformationState extends State<TicketInformation> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TicketText(text: widget._ticketHolderName,),
-          TicketText(text: 'Ticket-ID: ${widget._ticketId}'),
-          TicketText(text: 'Datum: ${widget._ticketDate}'),
-          TicketText(text: 'Uhrzeit: ${widget._ticketTime}'),
-          Visibility(
-            visible: widget._longitude != "",
-            child: QRCode(
-                lat: widget._latitude, long: widget._longitude, address: widget._address),
-          ),
-        ],
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TicketText(text: widget._ticketHolderName,),
+            TicketText(text: 'Ticket-ID: ${widget._ticketId}'),
+            TicketText(text: 'Datum: ${widget._ticketDate}'),
+            TicketText(text: 'Uhrzeit: ${widget._ticketTime}'),
+            Visibility(
+              visible: widget._longitude != "",
+              child: QRCode(
+                  lat: widget._latitude, long: widget._longitude, address: widget._address),
+            ),
+          ],
+        ),
       ),
     );
   }
