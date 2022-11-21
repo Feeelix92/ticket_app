@@ -33,7 +33,7 @@ class Ticket {
     return 'Ticket{id: $id, startTime: $startTime, endTime: $endTime, startStation: $startStation, endStation: $endStation}';
   }
 }
-class TicketDatabseHelper {
+class TicketDatabaseHelper {
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(

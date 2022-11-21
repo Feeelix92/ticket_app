@@ -91,8 +91,8 @@ class _TicketScreenState extends State<TicketScreen> {
       var locationPoint = LocationPoint(id: 1, latitude: 123.00, longitude: 123.00, altitude: 1200, speed: 1.4, ticketid: ticket.id, address: '');
       print(ticket);
       print(locationPoint);
-      var ticketHelper = TicketDatabseHelper();
-      var locationHelper = LocationPointDatabseHelper();
+      var ticketHelper = TicketDatabaseHelper();
+      var locationHelper = LocationPointDatabaseHelper();
       ticketHelper.insertTicket(ticket);
       locationHelper.insertLocation(locationPoint);
     }

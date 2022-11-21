@@ -41,7 +41,7 @@ class LocationPoint {
 }
 
 
-class LocationPointDatabseHelper {
+class LocationPointDatabaseHelper {
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
