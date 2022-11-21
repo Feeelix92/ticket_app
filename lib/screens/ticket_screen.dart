@@ -5,7 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
-import '../locationPoint.dart';
+import '../models/locationPoint.dart';
 
 import '../widgets/bold_styled_text.dart';
 import '../widgets/ticket_information.dart';
