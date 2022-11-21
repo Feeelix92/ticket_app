@@ -33,29 +33,23 @@ class Ticket {
     return 'Ticket{id: $id, startTime: $startTime, endTime: $endTime, startStation: $startStation, endStation: $endStation}';
   }
 }
-
-void main() async {
-  //WidgetsFlutterBinding.ensureInitialized(); Already in main
-  final database = openDatabase(
-    // Set the path to the database. Note: Using the `join` function from the
-    // `path` package is best practice to ensure the path is correctly
-    // constructed for each platform.
-    join(await getDatabasesPath(), 'location_database.db'),
-
-    onCreate: (db, version) {
-// Run the CREATE TABLE statement on the database.
-      return db.execute(
-        'CREATE TABLE ticket(id INTEGER PRIMARY KEY, startTime String, endTime String, startStation String, endStation String)',
-      );
-    },
-// Set the version. This executes the onCreate function and provides a
-// path to perform database upgrades and downgrades.
-    version: 1,
-  );
+class TicketDatabseHelper {
+  Future<Database> initializeDB() async {
+    String path = await getDatabasesPath();
+    return openDatabase(
+      join(path, 'location_database.db'),
+      onCreate: (database, version) async {
+        await database.execute(
+          'CREATE TABLE ticket(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, startTime String, endTime String, startStation String, endStation String)',
+        );
+      },
+      version: 1,
+    );
+  }
 
   Future<void> insertTicket(Ticket ticket) async {
     // Get a reference to the database.
-    final db = await database;
+    final db = await initializeDB();
 
     // Insert the Dog into the correct table. You might also specify the
     // `conflictAlgorithm` to use in case the same dog is inserted twice.
@@ -70,7 +64,7 @@ void main() async {
 
   Future<List<Ticket>> tickets() async {
     // Get a reference to the database.
-    final db = await database;
+    final db = await initializeDB();
 
     // Query the table for all The Dogs.
     final List<Map<String, dynamic>> maps = await db.query('ticket');
@@ -89,7 +83,7 @@ void main() async {
 
   Future<void> deleteticket(int id) async {
     // Get a reference to the database.
-    final db = await database;
+    final db = await initializeDB();
 
     // Remove the Dog from the database.
     await db.delete(

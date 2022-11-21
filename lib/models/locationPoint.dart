@@ -9,7 +9,7 @@ class LocationPoint {
   final double longitude;
   final double altitude;
   final double speed;
-  final double ticketid;
+  final int ticketid;
   final String address;
 
   const LocationPoint({
@@ -40,28 +40,24 @@ class LocationPoint {
   }
 }
 
-void main() async {
-  //WidgetsFlutterBinding.ensureInitialized(); Already in main
-  final database = openDatabase(
-    // Set the path to the database. Note: Using the `join` function from the
-    // `path` package is best practice to ensure the path is correctly
-    // constructed for each platform.
-    join(await getDatabasesPath(), 'location_database.db'),
 
-    onCreate: (db, version) {
-// Run the CREATE TABLE statement on the database.
-      return db.execute(
-        'CREATE TABLE location(id INTEGER PRIMARY KEY, latitude DOUBLE, longitude DOUBLE, altitude DOUBLE, speed DOUBLE, ticketid DOUBLE, address STRING)',
-      );
-    },
-// Set the version. This executes the onCreate function and provides a
-// path to perform database upgrades and downgrades.
-    version: 1,
-  );
+class LocationPointDatabseHelper {
+  Future<Database> initializeDB() async {
+    String path = await getDatabasesPath();
+    return openDatabase(
+      join(path, 'location_database.db'),
+      onCreate: (database, version) async {
+        await database.execute(
+          'CREATE TABLE location(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, latitude DOUBLE, longitude DOUBLE, altitude DOUBLE, speed DOUBLE, ticketid DOUBLE, address STRING)',
+        );
+      },
+      version: 1,
+    );
+  }
 
   Future<void> insertLocation(LocationPoint locationPoint) async {
     // Get a reference to the database.
-    final db = await database;
+    final db = await initializeDB();
 
     // Insert the Dog into the correct table. You might also specify the
     // `conflictAlgorithm` to use in case the same dog is inserted twice.
@@ -76,7 +72,7 @@ void main() async {
 
   //should insert all Locations into the database
   Future<void> insertLocations(List<LocationPoint> locationPoints) async {
-    final db = await database;
+    final db = await initializeDB();
 
     // Insert the Dog into the correct table. You might also specify the
     // `conflictAlgorithm` to use in case the same dog is inserted twice.
@@ -93,7 +89,7 @@ void main() async {
 
   Future<List<LocationPoint>> locations() async {
     // Get a reference to the database.
-    final db = await database;
+    final db = await initializeDB();
 
     // Query the table for all The Dogs.
     final List<Map<String, dynamic>> maps = await db.query('location');
@@ -115,7 +111,7 @@ void main() async {
   //returns all Locations to a specific ticket
   Future<List<LocationPoint>> locationsFromTicketid(int ticketid) async {
     // Get a reference to the database.
-    final db = await database;
+    final db = await initializeDB();
 
     // Query the table for all The Dogs.
     final List<Map<String, dynamic>> maps = await db.query(
@@ -141,7 +137,7 @@ void main() async {
 
   Future<void> deletelocation(int id) async {
     // Get a reference to the database.
-    final db = await database;
+    final db = await initializeDB();
 
     // Remove the Dog from the database.
     await db.delete(

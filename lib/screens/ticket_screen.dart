@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
 import '../models/locationPoint.dart';
 
+import '../models/ticket.dart';
 import '../widgets/bold_styled_text.dart';
 import '../widgets/ticket_information.dart';
 
@@ -85,6 +87,14 @@ class _TicketScreenState extends State<TicketScreen> {
       print('Stream is paused:');
       print(_positionStream.isPaused);
       print(_currentPosition);
+      var ticket = const Ticket(id: 1, startTime: '10:00', endTime: '10:30', startStation: 'Friedberg Bahnhof', endStation: 'Gießen Bahnhof');
+      var locationPoint = LocationPoint(id: 1, latitude: 123.00, longitude: 123.00, altitude: 1200, speed: 1.4, ticketid: ticket.id, address: '');
+      print(ticket);
+      print(locationPoint);
+      var ticketHelper = TicketDatabseHelper();
+      var locationHelper = LocationPointDatabseHelper();
+      ticketHelper.insertTicket(ticket);
+      locationHelper.insertLocation(locationPoint);
     }
   }
 
