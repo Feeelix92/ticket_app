@@ -36,7 +36,7 @@ class _MapScreenState extends State<MapScreen> {
               Polyline(
                 points: [LatLng(50.3249, 8.7409), LatLng(50.4978, 8.6629), LatLng(50.5841, 8.6784),],
                 color: Colors.blue,
-                strokeWidth: 2.0
+                strokeWidth: 3.0
               ),
             ],
           ),
