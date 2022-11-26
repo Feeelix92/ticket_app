@@ -11,6 +11,23 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Text('Mapscreen');
+    return FlutterMap(
+        options: MapOptions(
+          zoom: 9,
+          maxZoom: 13,
+          keepAlive: true
+        ),
+        nonRotatedChildren: [
+          AttributionWidget.defaultWidget(
+            source: 'OpenStreetMap contributors',
+            onSourceTapped: null,
+          ),
+        ],
+        children: [
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            userAgentPackageName: 'dev.easy-ticket.map',
+          )
+        ]);
   }
 }
