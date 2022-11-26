@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -13,9 +14,10 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return FlutterMap(
         options: MapOptions(
-          zoom: 9,
+          zoom: 12,
           maxZoom: 13,
-          keepAlive: true
+          keepAlive: true,
+          center: LatLng(50.3249, 8.7409)
         ),
         nonRotatedChildren: [
           AttributionWidget.defaultWidget(
