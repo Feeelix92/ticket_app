@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../widgets/bottom_navigation_bar.dart';
+import '../widgets/navigation_bar.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -15,7 +15,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     super.initState();
     Timer(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const MyBottomNavigationBar(
+        builder: (context) => const MyNavigationBar(
           title: 'Easy-Ticket',
         ),
       ));
