@@ -1,4 +1,5 @@
 import 'package:csv/csv.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class CsvReader{
@@ -6,7 +7,9 @@ class CsvReader{
   loadAsset() async {
     final csvTable = await rootBundle.loadString("assets/RMV_Haltestellen.csv");
     List<List<dynamic>> rmvData = const CsvToListConverter().convert(csvTable);
-    print(rmvData[2]);
+    if (kDebugMode) {
+      print(rmvData[2]);
+    }
   }
 
 }

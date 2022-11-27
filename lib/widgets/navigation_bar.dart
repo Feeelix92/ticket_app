@@ -4,16 +4,16 @@ import 'package:ticket_app/screens/ticket_history_screen.dart';
 import 'package:ticket_app/screens/ticket_screen.dart';
 import '../colors.dart';
 
-class MyBottomNavigationBar extends StatefulWidget {
-  const MyBottomNavigationBar({Key? key, required this.title})
+class MyNavigationBar extends StatefulWidget {
+  const MyNavigationBar({Key? key, required this.title})
       : super(key: key);
   final String title;
 
   @override
-  State<MyBottomNavigationBar> createState() => _MyBottomNavigationBarState();
+  State<MyNavigationBar> createState() => _MyNavigationBarState();
 }
 
-class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
+class _MyNavigationBarState extends State<MyNavigationBar> {
 
   int _currentIndex = 0;
   final List<Widget> _children = [
@@ -29,6 +29,36 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: primaryColor,
+              ),
+              child: const Text('Profil'),
+            ),
+            ListTile(
+              title: const Text('Item 1'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Item 2'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Text(widget.title),
       ),
