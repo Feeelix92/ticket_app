@@ -29,6 +29,9 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
       endDrawer: Drawer(
         child: ListView(
           // Important: Remove any padding from the ListView.
@@ -58,9 +61,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
             ),
           ],
         ),
-      ),
-      appBar: AppBar(
-        title: Text(widget.title),
       ),
       body: _children [_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
