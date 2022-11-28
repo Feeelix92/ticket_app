@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+
 // import 'databaseLocalManager.dart';
 import 'dart:async';
 
@@ -40,19 +41,37 @@ class LocationPoint {
   }
 }
 
-
 class LocationPointDatabaseHelper {
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
-      join(path, 'location_database.db'),
-      onCreate: (database, version) async {
-        await database.execute(
-          'CREATE TABLE location(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, latitude DOUBLE, longitude DOUBLE, altitude DOUBLE, speed DOUBLE, ticketid DOUBLE, address STRING)',
-        );
-      },
+      join(path, 'location_database1.db'),
       version: 1,
     );
+  }
+
+  Future<LocationPoint> createLocationPoint(double latitude, double longitude,
+      double altitude, double speed, int ticketid, String address) async {
+    final db = await initializeDB();
+
+    final data = {
+      'latitude': latitude,
+      'longitude': longitude,
+      'altitude': altitude,
+      'speed': speed,
+      'ticketid': ticketid,
+      'address': address
+    };
+    final id = await db.insert('location', data,
+        conflictAlgorithm: ConflictAlgorithm.replace);
+    return LocationPoint(
+        id: id,
+        latitude: latitude,
+        longitude: longitude,
+        altitude: altitude,
+        speed: speed,
+        ticketid: ticketid,
+        address: address);
   }
 
   Future<void> insertLocation(LocationPoint locationPoint) async {
