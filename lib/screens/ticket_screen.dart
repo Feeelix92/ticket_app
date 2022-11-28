@@ -39,29 +39,33 @@ class _TicketScreenState extends State<TicketScreen> {
     //device must move horizontally before an update event is generated;
   );
   late StreamSubscription<Position> _positionStream;
+  var ticketHelper = TicketDatabaseHelper();
+  late var ticketFuture ;
+  late Ticket ticket ;
 
   Future<void> _backgroundTracking() async {
-    _positionStream =
-        Geolocator.getPositionStream(locationSettings: locationSettings)
-            .listen((Position position) {
-        if (mounted) {
-          setState(() {
-            _currentPosition = position;
-            _getAddressFromLatLng();
-            _latitude = position.latitude.toString();
-            _longitude = position.longitude.toString();
-            _altitude = position.altitude.toString();
-            _speed = position.speed.toString();
-            //Todo
-            // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
-            if (kDebugMode) {
-              print('position update:');
-              print(_currentPosition);
-              // print(_address);
-            }
-          });
-        }
-    });
+
+
+    _positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
+          if (mounted) {
+            setState(() {
+              _currentPosition = position;
+              _getAddressFromLatLng();
+              _latitude = position.latitude.toString();
+              _longitude = position.longitude.toString();
+              _altitude = position.altitude.toString();
+              _speed = position.speed.toString();
+              //Todo
+              _saveLocationPoint(_currentPosition);
+              // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
+              if (kDebugMode) {
+                print('position update:');
+                print(_currentPosition);
+                // print(_address);
+              }
+            });
+          }
+        });
   }
 
   _getAddressFromLatLng() async {
@@ -71,7 +75,8 @@ class _TicketScreenState extends State<TicketScreen> {
       Placemark place = placemarks[0];
       setState(() {
         _address =
-            "${place.street}, \n${place.postalCode} ${place.locality} \n ${place.administrativeArea}, ${place.country}";
+        "${place.street}, \n${place.postalCode} ${place.locality} \n ${place
+            .administrativeArea}, ${place.country}";
       });
     } catch (e) {
       if (kDebugMode) {
@@ -80,8 +85,17 @@ class _TicketScreenState extends State<TicketScreen> {
     }
   }
 
+  _saveLocationPoint(Position position){
+    var id = ticket.id;
+    var locationHelper = LocationPointDatabaseHelper();
+    var locationPointFuture = locationHelper.createLocationPoint(
+        position.latitude, position.longitude, position.altitude,
+        position.speed, id, '');
+    print( locationPointFuture);
+}
+
   _startTrip() async {
-    if(_positionStream.isPaused){
+    if (_positionStream.isPaused) {
       _positionStream.resume();
     }
     if (kDebugMode) {
@@ -89,16 +103,16 @@ class _TicketScreenState extends State<TicketScreen> {
       print('Stream is paused:');
       print(_positionStream.isPaused);
       //print(_currentPosition);
-      var locationHelper = LocationPointDatabaseHelper();
-      var ticketHelper = TicketDatabaseHelper();
-      initDatabase().initializeDB();
+      //var locationHelper = LocationPointDatabaseHelper();
+      //var ticketHelper = TicketDatabaseHelper();
+      //initDatabase().initializeDB();
       //var ticket = const Ticket(id: 1, startTime: '10:00', endTime: '10:30', startStation: 'Friedberg Bahnhof', endStation: 'Gießen Bahnhof');
-      var ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
-      var ticket = await ticketFuture;
-      var locationPointFuture = locationHelper.createLocationPoint(123.00,123.00,1200,1.4,ticket.id,'');
-      var locationPoint = await locationPointFuture;
-      print(ticket);
-      print(locationPoint);
+      //var ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
+      //var ticket = await ticketFuture;
+      //var locationPointFuture = locationHelper.createLocationPoint(123.00,123.00,1200,1.4,ticket.id,'');
+      //var locationPoint = await locationPointFuture;
+      //print(ticket);
+      //print(locationPoint);
     }
   }
 
@@ -149,10 +163,17 @@ class _TicketScreenState extends State<TicketScreen> {
     });
   }
 
+  _getTicket() async {
+    ticket = await ticketFuture;
+  }
+
   @override
   void initState() {
     super.initState();
+    ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
+    _getTicket();
     if (mounted) {
+      initDatabase().initializeDB();
       _checkGps();
       _backgroundTracking();
       var csv = CsvReader();
@@ -232,7 +253,8 @@ class GpsTestData extends StatelessWidget {
     required String altitude,
     required String speed,
     required String address,
-  })  : _latitude = latitude,
+  })
+      : _latitude = latitude,
         _longitude = longitude,
         _altitude = altitude,
         _speed = speed,
