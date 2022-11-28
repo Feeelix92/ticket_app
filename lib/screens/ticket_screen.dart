@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
 import 'package:ticket_app/models/csv_reader.dart';
+import '../models/api_request.dart';
 import '../models/locationPoint.dart';
 
 import '../models/ticket.dart';
@@ -22,6 +23,7 @@ class TicketScreen extends StatefulWidget {
 }
 
 class _TicketScreenState extends State<TicketScreen> {
+  late Future<DepartureInfo> futureDepartureInfo;
   // GPS
   bool servicestatus = false;
   bool haspermission = false;
@@ -152,6 +154,7 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   void initState() {
     super.initState();
+    futureDepartureInfo = fetchRMVData();
     if (mounted) {
       _checkGps();
       _backgroundTracking();

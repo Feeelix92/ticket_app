@@ -45,6 +45,7 @@ dependencies:
   flutter_map: ^3.0.0
   latlong2: ^0.8.1
   csv: ^5.0.1
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:
