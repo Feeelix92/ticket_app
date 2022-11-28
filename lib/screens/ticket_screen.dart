@@ -6,6 +6,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
+import 'package:ticket_app/models/csv_reader.dart';
 import 'package:ticket_app/models/initDatabase.dart';
 import '../models/locationPoint.dart';
 
@@ -154,6 +155,8 @@ class _TicketScreenState extends State<TicketScreen> {
     if (mounted) {
       _checkGps();
       _backgroundTracking();
+      var csv = CsvReader();
+      csv.loadAsset();
     }
     //Todo
     // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
