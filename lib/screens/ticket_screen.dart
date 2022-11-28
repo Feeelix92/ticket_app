@@ -154,8 +154,9 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   void initState() {
     super.initState();
-    futureDepartureBoard = fetchDepartureBoard();
-
+    var currentDay = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+    var currentTime = '${DateTime.now().hour+1}:${DateTime.now().minute}';
+    futureDepartureBoard = fetchDepartureBoard('Bad Nauheim Bahnhof', currentDay, currentTime);
     if (mounted) {
       _checkGps();
       _backgroundTracking();

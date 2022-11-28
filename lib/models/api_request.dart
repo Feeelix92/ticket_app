@@ -2,14 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-Future<DepartureBoard> fetchDepartureBoard() async {
+Future<DepartureBoard> fetchDepartureBoard(String startPoint, String date, String time) async {
   // Building the URL
   const String apiURL = 'https://www.rmv.de/hapi/';
   String accessId = dotenv.get('RMVAPIKEY');
   const String requestType = 'departureBoard';
-  const String startPoint = 'Bad Nauheim Bahnhof';
-  const String date = '2022-11-28';
-  const String time = '18:00';
   const String formatKey = 'json';
   // API Response
   final response = await http.get(Uri.parse(
