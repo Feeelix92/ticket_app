@@ -99,10 +99,6 @@ class _TicketScreenState extends State<TicketScreen> {
       var locationPoint = await locationPointFuture;
       print(ticket);
       print(locationPoint);
-      var ticketHelper = TicketDatabaseHelper();
-      var locationHelper = LocationPointDatabaseHelper();
-      ticketHelper.insertTicket(ticket);
-      locationHelper.insertLocation(locationPoint);
     }
   }
 
