@@ -1,9 +1,16 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<DepartureInfo> fetchRMVData() async {
+Future<DepartureInfo> fetchDepartureInfo() async {
+  const String apiURL = 'https://www.rmv.de/hapi/';
+  const String apiKey = '865260df-a981-49c0-9207-d11d847bfc2e';
+  const String requestType = 'departureBoard';
+  const String startPoint = 'Friedberg%20(Hessen)%20Bahnhof';
+  const String date = '2022-11-28';
+  const String time = '12:30';
+  const String formatKey = 'json';
   final response = await http
-      .get(Uri.parse('https://www.rmv.de/hapi/departureBoard?accessId=865260df-a981-49c0-9207-d11d847bfc2e&id=A=1@O=Friedberg%20(Hessen)%20Bahnhof@&date=2022-11-28&time=12:30&format=json'));
+      .get(Uri.parse('$apiURL$requestType?accessId=$apiKey&id=A=1@O=$startPoint@&date=$date&time=$time&format=$formatKey'));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,

@@ -154,7 +154,7 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   void initState() {
     super.initState();
-    futureDepartureInfo = fetchRMVData();
+    futureDepartureInfo = fetchDepartureInfo();
     if (mounted) {
       _checkGps();
       _backgroundTracking();
