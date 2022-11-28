@@ -6,8 +6,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
-import 'package:ticket_app/models/csv_reader.dart';
 import 'package:ticket_app/models/initDatabase.dart';
+import 'package:ticket_app/models/csv_reader.dart';
 import '../models/locationPoint.dart';
 
 import '../models/ticket.dart';
