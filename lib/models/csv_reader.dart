@@ -8,7 +8,7 @@ class CsvReader{
     final csvTable = await rootBundle.loadString("assets/RMV_Haltestellen.csv");
     List<List<dynamic>> rmvData = const CsvToListConverter().convert(csvTable);
     if (kDebugMode) {
-      print(rmvData[2]);
+      // print(rmvData[2]);
     }
   }
 

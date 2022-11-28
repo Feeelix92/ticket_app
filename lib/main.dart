@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:ticket_app/screens/loading_screen.dart';
 import 'package:workmanager/workmanager.dart';
 import 'colors.dart';
 import 'package:material_color_generator/material_color_generator.dart';
-import 'package:sqflite/sqflite.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
@@ -16,7 +16,8 @@ void callbackDispatcher() {
   });
 }
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
   Workmanager().initialize(
       callbackDispatcher, // The top level function, aka callbackDispatcher

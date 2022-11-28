@@ -23,7 +23,7 @@ class TicketScreen extends StatefulWidget {
 }
 
 class _TicketScreenState extends State<TicketScreen> {
-  late Future<DepartureInfo> futureDepartureInfo;
+  late Future<DepartureBoard> futureDepartureBoard;
   // GPS
   bool servicestatus = false;
   bool haspermission = false;
@@ -154,7 +154,8 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   void initState() {
     super.initState();
-    futureDepartureInfo = fetchDepartureInfo();
+    futureDepartureBoard = fetchDepartureBoard();
+
     if (mounted) {
       _checkGps();
       _backgroundTracking();
