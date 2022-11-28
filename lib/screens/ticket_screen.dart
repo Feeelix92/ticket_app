@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/csv_reader.dart';
+import 'package:ticket_app/models/initDatabase.dart';
 import '../models/locationPoint.dart';
 
 import '../models/ticket.dart';
@@ -87,15 +88,17 @@ class _TicketScreenState extends State<TicketScreen> {
       print('trip started');
       print('Stream is paused:');
       print(_positionStream.isPaused);
-      print(_currentPosition);
-      var ticket = const Ticket(id: 1, startTime: '10:00', endTime: '10:30', startStation: 'Friedberg Bahnhof', endStation: 'Gießen Bahnhof');
-      var locationPoint = LocationPoint(id: 1, latitude: 123.00, longitude: 123.00, altitude: 1200, speed: 1.4, ticketid: ticket.id, address: '');
+      //print(_currentPosition);
+      var locationHelper = LocationPointDatabaseHelper();
+      var ticketHelper = TicketDatabaseHelper();
+      initDatabase().initializeDB();
+      //var ticket = const Ticket(id: 1, startTime: '10:00', endTime: '10:30', startStation: 'Friedberg Bahnhof', endStation: 'Gießen Bahnhof');
+      var ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
+      var ticket = await ticketFuture;
+      var locationPointFuture = locationHelper.createLocationPoint(123.00,123.00,1200,1.4,ticket.id,'');
+      var locationPoint = await locationPointFuture;
       print(ticket);
       print(locationPoint);
-      var ticketHelper = TicketDatabaseHelper();
-      var locationHelper = LocationPointDatabaseHelper();
-      ticketHelper.insertTicket(ticket);
-      locationHelper.insertLocation(locationPoint);
     }
   }
 

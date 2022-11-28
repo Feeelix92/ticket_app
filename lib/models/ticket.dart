@@ -1,21 +1,22 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+
 // import 'databaseLocalManager.dart';
 import 'dart:async';
 
 class Ticket {
   final int id;
   final String startTime;
-  final String endTime;
-  final String startStation;
-  final String endStation;
+  String? endTime;
+  String? startStation;
+  String? endStation;
 
-  const Ticket({
+  Ticket({
     required this.id,
     required this.startTime,
-    required this.endTime,
-    required this.startStation,
-    required this.endStation,
+    this.endTime,
+    this.startStation,
+    this.endStation,
   });
 
   Map<String, dynamic> toMap() {
@@ -33,18 +34,23 @@ class Ticket {
     return 'Ticket{id: $id, startTime: $startTime, endTime: $endTime, startStation: $startStation, endStation: $endStation}';
   }
 }
+
 class TicketDatabaseHelper {
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
-      join(path, 'location_database.db'),
-      onCreate: (database, version) async {
-        await database.execute(
-          'CREATE TABLE ticket(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, startTime String, endTime String, startStation String, endStation String)',
-        );
-      },
+      join(path, 'location_database1.db'),
       version: 1,
     );
+  }
+
+  Future<Ticket> createTicket(String time) async {
+    final db = await initializeDB();
+
+    final data = {'startTime': time};
+    final id = await db.insert('ticket', data,
+        conflictAlgorithm: ConflictAlgorithm.replace);
+    return Ticket(id: id, startTime: time);
   }
 
   Future<void> insertTicket(Ticket ticket) async {
