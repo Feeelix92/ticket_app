@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
 import 'package:ticket_app/models/csv_reader.dart';
-import '../models/api_request.dart';
+import '../models/departure_board.dart';
 import '../models/locationPoint.dart';
 
 import '../models/ticket.dart';
@@ -154,9 +154,18 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   void initState() {
     super.initState();
+    // Date and Time
     var currentDay = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
-    var currentTime = '${DateTime.now().hour+1}:${DateTime.now().minute}';
+    var currentTime = '${DateTime.now().hour+1}:${DateTime.now().minute}'.padLeft(5,'0');
     futureDepartureBoard = fetchDepartureBoard('Bad Nauheim Bahnhof', currentDay, currentTime);
+    futureDepartureBoard.then((departureBoard){
+      print(departureBoard.departure![0].stop);
+      print(departureBoard.departure![0].name);
+      print(departureBoard.departure![0].direction);
+      print(departureBoard.departure![0].date);
+      print(departureBoard.departure![0].time);
+      print(departureBoard.departure![0].rtTrack);
+    });
     if (mounted) {
       _checkGps();
       _backgroundTracking();

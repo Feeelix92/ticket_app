@@ -15,14 +15,6 @@ Future<DepartureBoard> fetchDepartureBoard(String startPoint, String date, Strin
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
-    DepartureBoard dpB = DepartureBoard.fromJson(jsonDecode(response.body));
-    List<Departure>? dp = dpB.departure;
-    Departure firstDeparture = dp![1];
-    print(firstDeparture.stop);
-    print(firstDeparture.name);
-    print(firstDeparture.direction);
-    print(firstDeparture.time);
-    print(firstDeparture.rtTrack);
     return DepartureBoard.fromJson(jsonDecode(response.body));
   } else {
     // If the server did not return a 200 OK response,
