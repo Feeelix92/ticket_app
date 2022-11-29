@@ -159,10 +159,9 @@ class _TicketScreenState extends State<TicketScreen> {
     // Fetching NearbyStops for current position
     futureNearbyStops = fetchNearbyStops('50.3316448', '8.7602899');
     futureNearbyStops.then((nearbyStops) {
-      var temp = nearbyStops.stopLocationOrCoordLocation![0].stopLocation;
       print('_________________________');
       print('nearby Stop:');
-      print(temp?.name);
+      print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
     });
 
     // Fetching DepartureBoard for specific station at date and time
