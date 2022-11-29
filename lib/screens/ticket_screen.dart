@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
 import 'package:ticket_app/models/csv_reader.dart';
+import 'package:ticket_app/models/nearby_stops.dart';
 import '../models/departure_board.dart';
 import '../models/locationPoint.dart';
 
@@ -24,6 +25,7 @@ class TicketScreen extends StatefulWidget {
 
 class _TicketScreenState extends State<TicketScreen> {
   late Future<DepartureBoard> futureDepartureBoard;
+  late Future<NearbyStops> futureNearbyStops;
   // GPS
   bool servicestatus = false;
   bool haspermission = false;
@@ -154,11 +156,23 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   void initState() {
     super.initState();
+    // Fetching NearbyStops for current position
+    futureNearbyStops = fetchNearbyStops('50.3316448', '8.7602899');
+    futureNearbyStops.then((nearbyStops) {
+      var temp = nearbyStops.stopLocationOrCoordLocation![0].stopLocation;
+      print('_________________________');
+      print('nearby Stop:');
+      print(temp?.name);
+    });
+
+    // Fetching DepartureBoard for specific station at date and time
     // Date and Time
     var currentDay = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
     var currentTime = '${DateTime.now().hour+1}:${DateTime.now().minute}'.padLeft(5,'0');
-    futureDepartureBoard = fetchDepartureBoard('Bad Nauheim Bahnhof', currentDay, currentTime);
+    futureDepartureBoard = fetchDepartureBoard('Friedberg (Hessen) Bahnhof', currentDay, currentTime);
     futureDepartureBoard.then((departureBoard){
+      print('_________________________');
+      print('next Connection:');
       print(departureBoard.departure![0].stop);
       print(departureBoard.departure![0].name);
       print(departureBoard.departure![0].direction);
