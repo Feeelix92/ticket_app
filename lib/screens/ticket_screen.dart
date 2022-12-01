@@ -158,6 +158,8 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   void initState() {
     super.initState();
+    // API TESTS!
+    // @TODO cleanup
     // Fetching NearbyStops for current position
     futureNearbyStops = fetchNearbyStops('50.3316448', '8.7602899');
     futureNearbyStops.then((nearbyStops) {
@@ -195,6 +197,8 @@ class _TicketScreenState extends State<TicketScreen> {
               }
             ));
     });
+    //End of API Tests
+
     if (mounted) {
       _checkGps();
       _backgroundTracking();
