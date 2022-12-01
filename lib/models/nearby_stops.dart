@@ -19,7 +19,7 @@ Future<NearbyStops> fetchNearbyStops(String fromLat, String fromLong) async {
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
-    throw Exception('Failed to load Departure Data.');
+    throw Exception('Failed to load NearByStops.');
   }
 }
 

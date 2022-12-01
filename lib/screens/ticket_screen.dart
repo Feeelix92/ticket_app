@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
 import 'package:ticket_app/models/csv_reader.dart';
+import 'package:ticket_app/models/journey_detail.dart';
 import 'package:ticket_app/models/nearby_stops.dart';
 import '../models/departure_board.dart';
 import '../models/locationPoint.dart';
@@ -26,6 +27,7 @@ class TicketScreen extends StatefulWidget {
 class _TicketScreenState extends State<TicketScreen> {
   late Future<DepartureBoard> futureDepartureBoard;
   late Future<NearbyStops> futureNearbyStops;
+  late Future<JourneyDetails> futureJourneyDetails;
   // GPS
   bool servicestatus = false;
   bool haspermission = false;
@@ -174,7 +176,7 @@ class _TicketScreenState extends State<TicketScreen> {
     var currentMinute = '${DateTime.now().minute}'.padLeft(2,'0');
     var currentTime = '$currentHour:$currentMinute';
     futureDepartureBoard = fetchDepartureBoard('Friedberg (Hessen) Bahnhof', currentDate, currentTime);
-    futureDepartureBoard.then((departureBoard){
+    futureDepartureBoard.then((departureBoard) async {
       print('_________________________');
       print('next Connection:');
       print(departureBoard.departure![0].stop);
@@ -183,7 +185,15 @@ class _TicketScreenState extends State<TicketScreen> {
       print(departureBoard.departure![0].date);
       print(departureBoard.departure![0].time);
       print(departureBoard.departure![0].rtTrack);
-      // print(departureBoard.departure![0].journeyDetailRef?.ref);
+      print('_________________________');
+      print('Journey Details:');
+      var journeyRef = departureBoard.departure![0].journeyDetailRef?.ref;
+      futureJourneyDetails = fetchJourneyDetails(journeyRef!);
+      futureJourneyDetails.then((value) => value.stops?.stop?.forEach(
+              (element) {
+                print(element.name);
+              }
+            ));
     });
     if (mounted) {
       _checkGps();

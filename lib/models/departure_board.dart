@@ -366,7 +366,7 @@ class Messages {
     if (json['Message'] != null) {
       message = <Message>[];
       json['Message'].forEach((v) {
-        message!.add(new Message.fromJson(v));
+        message!.add(Message.fromJson(v));
       });
     }
   }
