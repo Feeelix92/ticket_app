@@ -166,9 +166,14 @@ class _TicketScreenState extends State<TicketScreen> {
 
     // Fetching DepartureBoard for specific station at date and time
     // Date and Time
-    var currentDay = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
-    var currentTime = '${DateTime.now().hour+1}:${DateTime.now().minute}'.padLeft(5,'0');
-    futureDepartureBoard = fetchDepartureBoard('Friedberg (Hessen) Bahnhof', currentDay, currentTime);
+    var currentYear = '${DateTime.now().year}';
+    var currentMonth = '${DateTime.now().month}'.padLeft(2,'0');
+    var currentDay = '${DateTime.now().day}'.padLeft(2,'0');
+    var currentDate = '$currentYear-$currentMonth-$currentDay';
+    var currentHour = '${DateTime.now().hour+1}'.padLeft(2,'0');
+    var currentMinute = '${DateTime.now().minute}'.padLeft(2,'0');
+    var currentTime = '$currentHour:$currentMinute';
+    futureDepartureBoard = fetchDepartureBoard('Friedberg (Hessen) Bahnhof', currentDate, currentTime);
     futureDepartureBoard.then((departureBoard){
       print('_________________________');
       print('next Connection:');
@@ -178,6 +183,7 @@ class _TicketScreenState extends State<TicketScreen> {
       print(departureBoard.departure![0].date);
       print(departureBoard.departure![0].time);
       print(departureBoard.departure![0].rtTrack);
+      // print(departureBoard.departure![0].journeyDetailRef?.ref);
     });
     if (mounted) {
       _checkGps();
