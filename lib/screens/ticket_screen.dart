@@ -33,11 +33,50 @@ class _TicketScreenState extends State<TicketScreen> {
   var _speed = "";
   var _address = "";
   late Position _currentPosition;
-  LocationSettings locationSettings = const LocationSettings(
-    accuracy: LocationAccuracy.best, //accuracy of the location data
-    distanceFilter: 2, //minimum distance (measured in meters) a
-    //device must move horizontally before an update event is generated;
+  //late LocationSettings locationSettings;
+  LocationSettings locationSettings = AndroidSettings(
+  accuracy: LocationAccuracy.best,
+  distanceFilter: 2,
+  forceLocationManager: true,
+  //(Optional) Set foreground notification config to keep the app alive
+  //when going to the background
+  foregroundNotificationConfig: const ForegroundNotificationConfig(
+  notificationText:
+  "Bitte die App nicht komplett schließen, Fahrt wird aufgenommen",
+  notificationTitle: "Fahrt wird im Background aufgenommen",
+  enableWakeLock: true,
+  )
   );
+  /*if (defaultTargetPlatform == TargetPlatform.android) {
+ locationSettings = AndroidSettings(
+  accuracy: LocationAccuracy.best,
+  distanceFilter: 2,
+  forceLocationManager: true,
+  //(Optional) Set foreground notification config to keep the app alive
+  //when going to the background
+  foregroundNotificationConfig: const ForegroundNotificationConfig(
+  notificationText:
+  "Bitte die App nicht komplett schließen, Fahrt wird aufgenommen",
+  notificationTitle: "Fahrt wird im Background aufgenommen",
+  enableWakeLock: true,
+  )
+  );
+  } else if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS) {
+ locationSettings = AppleSettings(
+  accuracy: LocationAccuracy.high,
+  activityType: ActivityType.fitness,
+  distanceFilter: 100,
+  pauseLocationUpdatesAutomatically: true,
+  // Only set to true if our app will be started up in the background.
+  showBackgroundLocationIndicator: false,
+  );
+  } else {
+ locationSettings = LocationSettings(
+  accuracy: LocationAccuracy.best,
+  distanceFilter: 2,
+  );
+  }
+*/
   late StreamSubscription<Position> _positionStream;
   var ticketHelper = TicketDatabaseHelper();
   late var ticketFuture ;
