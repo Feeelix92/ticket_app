@@ -93,11 +93,10 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   getLocation() async {
     currentPosition =
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print(currentPosition.longitude); //Output: 80.24599079
-    print(currentPosition.latitude); //Output: 29.6593457
-
-    longitude = currentPosition.longitude.toString();
+    print(currentPosition.latitude);
+    print(currentPosition.longitude);
     latitude = currentPosition.latitude.toString();
+    longitude = currentPosition.longitude.toString();
 
     setState(() {
       //refresh UI
@@ -113,9 +112,9 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
     positionStream = Geolocator.getPositionStream(
         locationSettings: locationSettings).listen((Position position) {
-      print(position.latitude); //Output: 29.6593457
-      print(position.longitude); //Output: 80.24599079
-      currentPosition =  position;
+      print(position.latitude);
+      print(position.longitude);
+      // currentPosition = position;
       latitude = position.latitude.toString();
       longitude = position.longitude.toString();
 
@@ -130,9 +129,10 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       List<Placemark> placemarks = await placemarkFromCoordinates(
           currentPosition.latitude, currentPosition.longitude);
       Placemark place = placemarks[0];
+      address = "${place.street}, \n${place.postalCode} ${place.locality} \n ${place
+          .administrativeArea}, ${place.country}";
+      print(address);
       setState(() {
-        address = "${place.street}, \n${place.postalCode} ${place.locality} \n ${place
-            .administrativeArea}, ${place.country}";
       });
     } catch (e) {
       if (kDebugMode) {
