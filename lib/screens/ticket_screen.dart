@@ -43,7 +43,6 @@ class _TicketScreenState extends State<TicketScreen> {
   LocationSettings locationSettings = AndroidSettings(
   accuracy: LocationAccuracy.best,
   distanceFilter: 2,
-  forceLocationManager: true,
   //(Optional) Set foreground notification config to keep the app alive
   //when going to the background
   foregroundNotificationConfig: const ForegroundNotificationConfig(
@@ -89,28 +88,26 @@ class _TicketScreenState extends State<TicketScreen> {
   late Ticket ticket ;
 
   Future<void> _backgroundTracking() async {
-
-
     _positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
-          if (mounted) {
-            setState(() {
-              _currentPosition = position;
-              _getAddressFromLatLng();
-              _latitude = position.latitude.toString();
-              _longitude = position.longitude.toString();
-              _altitude = position.altitude.toString();
-              _speed = position.speed.toString();
-              //Todo
-              _saveLocationPoint(_currentPosition);
-              // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
-              if (kDebugMode) {
-                print('position update:');
-                print(_currentPosition);
-                // print(_address);
-              }
-            });
-          }
-        });
+        if (mounted) {
+          setState(() {
+            _currentPosition = position;
+            _getAddressFromLatLng();
+            _latitude = position.latitude.toString();
+            _longitude = position.longitude.toString();
+            _altitude = position.altitude.toString();
+            _speed = position.speed.toString();
+            //Todo
+            _saveLocationPoint(_currentPosition);
+            // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
+            if (kDebugMode) {
+              print('position update:');
+              print(_currentPosition);
+              // print(_address);
+            }
+          });
+        }
+      });
   }
 
   _getAddressFromLatLng() async {
