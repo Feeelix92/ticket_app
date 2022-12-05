@@ -169,14 +169,17 @@ class _TicketScreenState extends State<TicketScreen> {
     });
 
     // Fetching DepartureBoard for specific station at date and time
-    // Date and Time
+    // Date
     var currentYear = '${DateTime.now().year}';
     var currentMonth = '${DateTime.now().month}'.padLeft(2,'0');
     var currentDay = '${DateTime.now().day}'.padLeft(2,'0');
     var currentDate = '$currentYear-$currentMonth-$currentDay';
+    // Time
     var currentHour = '${DateTime.now().hour+1}'.padLeft(2,'0');
     var currentMinute = '${DateTime.now().minute}'.padLeft(2,'0');
     var currentTime = '$currentHour:$currentMinute';
+
+    // Departureboard
     futureDepartureBoard = fetchDepartureBoard('Friedberg (Hessen) Bahnhof', currentDate, currentTime);
     futureDepartureBoard.then((departureBoard) async {
       print('_________________________');
