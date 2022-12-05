@@ -241,7 +241,8 @@ class _TicketScreenState extends State<TicketScreen> {
                 longitude: _longitude,
                 altitude: _altitude,
                 speed: _speed,
-                address: _address),
+                address: _address
+            ),
           ],
         ),
       ),
