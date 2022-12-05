@@ -1,8 +1,14 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:ticket_app/screens/map_screen.dart';
 import 'package:ticket_app/screens/ticket_history_screen.dart';
 import 'package:ticket_app/screens/ticket_screen.dart';
 import '../colors.dart';
+import '../models/locationPoint.dart';
 
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({Key? key, required this.title})
@@ -14,6 +20,18 @@ class MyNavigationBar extends StatefulWidget {
 }
 
 class _MyNavigationBarState extends State<MyNavigationBar> {
+  bool servicestatus = false;
+  bool haspermission = false;
+  late LocationPermission permission;
+  late List<LocationPoint> _ride;
+  var latitude = "";
+  var longitude = "";
+  var altitude = "";
+  var speed = "";
+  var address = "";
+  late Position currentPosition;
+  late StreamSubscription<Position> positionStream;
+
 
   int _currentIndex = 0;
   final List<Widget> _children = [
@@ -26,6 +44,104 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       _currentIndex = index;
     });
   }
+  @override
+  void initState() {
+    checkGps();
+    getLocation();
+    getLocationFromStream();
+    getAddressFromLatLng();
+    super.initState();
+  }
+
+  checkGps() async {
+    servicestatus = await Geolocator.isLocationServiceEnabled();
+    if (servicestatus) {
+      permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          if (kDebugMode) {
+            print('Location permissions are denied');
+          }
+        } else if (permission == LocationPermission.deniedForever) {
+          if (kDebugMode) {
+            print("'Location permissions are permanently denied");
+          }
+        } else {
+          haspermission = true;
+        }
+      } else {
+        haspermission = true;
+      }
+      if (haspermission) {
+        setState(() {
+          //refresh the UI
+        });
+      }
+    } else {
+      if (kDebugMode) {
+        print("GPS Service is not enabled, turn on GPS location");
+      }
+    }
+
+    setState(() {
+      //refresh the UI
+    });
+  }
+
+  getLocation() async {
+    currentPosition =
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    print(currentPosition.longitude); //Output: 80.24599079
+    print(currentPosition.latitude); //Output: 29.6593457
+
+    longitude = currentPosition.longitude.toString();
+    latitude = currentPosition.latitude.toString();
+
+    setState(() {
+      //refresh UI
+    });
+  }
+
+  getLocationFromStream() async {
+    const LocationSettings locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high, //accuracy of the location data
+      distanceFilter: 100, //minimum distance (measured in meters) a
+      //device must move horizontally before an update event is generated;
+    );
+
+    positionStream = Geolocator.getPositionStream(
+        locationSettings: locationSettings).listen((Position position) {
+      print(position.latitude); //Output: 29.6593457
+      print(position.longitude); //Output: 80.24599079
+      currentPosition =  position;
+      latitude = position.latitude.toString();
+      longitude = position.longitude.toString();
+
+      setState(() {
+        //refresh UI on update
+      });
+    });
+  }
+
+  getAddressFromLatLng() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          currentPosition.latitude, currentPosition.longitude);
+      Placemark place = placemarks[0];
+      setState(() {
+        address = "${place.street}, \n${place.postalCode} ${place.locality} \n ${place
+            .administrativeArea}, ${place.country}";
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

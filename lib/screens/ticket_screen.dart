@@ -29,16 +29,7 @@ class _TicketScreenState extends State<TicketScreen> {
   late Future<NearbyStops> futureNearbyStops;
   late Future<JourneyDetails> futureJourneyDetails;
   // GPS
-  bool servicestatus = false;
-  bool haspermission = false;
-  late LocationPermission permission;
-  late List<LocationPoint> _ride;
-  var _latitude = "";
-  var _longitude = "";
-  var _altitude = "";
-  var _speed = "";
-  var _address = "";
-  late Position _currentPosition;
+
   //late LocationSettings locationSettings;
   LocationSettings locationSettings = AndroidSettings(
   accuracy: LocationAccuracy.best,
@@ -82,50 +73,10 @@ class _TicketScreenState extends State<TicketScreen> {
   );
   }
 */
-  late StreamSubscription<Position> _positionStream;
   var ticketHelper = TicketDatabaseHelper();
   late var ticketFuture ;
   late Ticket ticket ;
 
-  Future<void> _backgroundTracking() async {
-    _positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
-        if (mounted) {
-          setState(() {
-            _currentPosition = position;
-            _getAddressFromLatLng();
-            _latitude = position.latitude.toString();
-            _longitude = position.longitude.toString();
-            _altitude = position.altitude.toString();
-            _speed = position.speed.toString();
-            //Todo
-            _saveLocationPoint(_currentPosition);
-            // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
-            if (kDebugMode) {
-              print('position update:');
-              print(_currentPosition);
-              // print(_address);
-            }
-          });
-        }
-      });
-  }
-
-  _getAddressFromLatLng() async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          _currentPosition.latitude, _currentPosition.longitude);
-      Placemark place = placemarks[0];
-      setState(() {
-        _address =
-        "${place.street}, \n${place.postalCode} ${place.locality} \n ${place
-            .administrativeArea}, ${place.country}";
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
 
   _saveLocationPoint(Position position){
     var id = ticket.id;
@@ -137,73 +88,37 @@ class _TicketScreenState extends State<TicketScreen> {
 }
 
   _startTrip() async {
-    if (_positionStream.isPaused) {
-      _positionStream.resume();
-    }
-    if (kDebugMode) {
-      print('trip started');
-      print('Stream is paused:');
-      print(_positionStream.isPaused);
-      //print(_currentPosition);
-      //var locationHelper = LocationPointDatabaseHelper();
-      //var ticketHelper = TicketDatabaseHelper();
-      //initDatabase().initializeDB();
-      //var ticket = const Ticket(id: 1, startTime: '10:00', endTime: '10:30', startStation: 'Friedberg Bahnhof', endStation: 'Gießen Bahnhof');
-      //var ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
-      //var ticket = await ticketFuture;
-      //var locationPointFuture = locationHelper.createLocationPoint(123.00,123.00,1200,1.4,ticket.id,'');
-      //var locationPoint = await locationPointFuture;
-      //print(ticket);
-      //print(locationPoint);
-    }
+    // if (_positionStream.isPaused) {
+    //   _positionStream.resume();
+    // }
+    // if (kDebugMode) {
+    //   print('trip started');
+    //   print('Stream is paused:');
+    //   print(_positionStream.isPaused);
+    //   //print(_currentPosition);
+    //   //var locationHelper = LocationPointDatabaseHelper();
+    //   //var ticketHelper = TicketDatabaseHelper();
+    //   //initDatabase().initializeDB();
+    //   //var ticket = const Ticket(id: 1, startTime: '10:00', endTime: '10:30', startStation: 'Friedberg Bahnhof', endStation: 'Gießen Bahnhof');
+    //   //var ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
+    //   //var ticket = await ticketFuture;
+    //   //var locationPointFuture = locationHelper.createLocationPoint(123.00,123.00,1200,1.4,ticket.id,'');
+    //   //var locationPoint = await locationPointFuture;
+    //   //print(ticket);
+    //   //print(locationPoint);
+    // }
   }
 
   _stopTrip() async {
-    _positionStream.pause();
-    if (kDebugMode) {
-      print('trip stopped');
-      print('Stream is paused:');
-      print(_positionStream.isPaused);
-      print(_currentPosition);
-    }
+    // _positionStream.pause();
+    // if (kDebugMode) {
+    //   print('trip stopped');
+    //   print('Stream is paused:');
+    //   print(_positionStream.isPaused);
+    //   print(_currentPosition);
+    // }
   }
 
-  _checkGps() async {
-    servicestatus = await Geolocator.isLocationServiceEnabled();
-    if (servicestatus) {
-      permission = await Geolocator.checkPermission();
-
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          if (kDebugMode) {
-            print('Location permissions are denied');
-          }
-        } else if (permission == LocationPermission.deniedForever) {
-          if (kDebugMode) {
-            print("'Location permissions are permanently denied");
-          }
-        } else {
-          haspermission = true;
-        }
-      } else {
-        haspermission = true;
-      }
-      if (haspermission) {
-        setState(() {
-          //refresh the UI
-        });
-      }
-    } else {
-      if (kDebugMode) {
-        print("GPS Service is not enabled, turn on GPS location");
-      }
-    }
-
-    setState(() {
-      //refresh the UI
-    });
-  }
 
   _getTicket() async {
     ticket = await ticketFuture;
@@ -256,8 +171,8 @@ class _TicketScreenState extends State<TicketScreen> {
     //End of API Tests
     if (mounted) {
       initDatabase().initializeDB();
-      _checkGps();
-      _backgroundTracking();
+      // _checkGps();
+      // _backgroundTracking();
       var csv = CsvReader();
       csv.loadAsset();
     }
@@ -274,14 +189,14 @@ class _TicketScreenState extends State<TicketScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            TicketInformation(
-                ticketHolderName: "Max Mustermann",
-                ticketId: "12345",
-                ticketDate: "14.11.2022",
-                ticketTime: "10:00 Uhr",
-                longitude: _longitude,
-                latitude: _latitude,
-                address: _address),
+            // TicketInformation(
+            //     ticketHolderName: "Max Mustermann",
+            //     ticketId: "12345",
+            //     ticketDate: "14.11.2022",
+            //     ticketTime: "10:00 Uhr",
+            //     longitude: _longitude,
+            //     latitude: _latitude,
+            //     address: _address),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -292,13 +207,13 @@ class _TicketScreenState extends State<TicketScreen> {
                 ],
               ),
             ),
-            GpsTestData(
-                latitude: _latitude,
-                longitude: _longitude,
-                altitude: _altitude,
-                speed: _speed,
-                address: _address
-            ),
+            // GpsTestData(
+            //     latitude: _latitude,
+            //     longitude: _longitude,
+            //     altitude: _altitude,
+            //     speed: _speed,
+            //     address: _address
+            // ),
           ],
         ),
       ),
