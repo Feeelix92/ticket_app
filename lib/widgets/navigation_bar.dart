@@ -9,6 +9,7 @@ import 'package:ticket_app/screens/ticket_history_screen.dart';
 import 'package:ticket_app/screens/ticket_screen.dart';
 import '../colors.dart';
 import '../models/locationPoint.dart';
+import '../models/ticket.dart';
 
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({Key? key, required this.title})
@@ -32,7 +33,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   late Position currentPosition;
   late StreamSubscription<Position> positionStream;
 
-
   int _currentIndex = 0;
   final List<Widget> _children = [
     const TicketScreen(),
@@ -51,8 +51,21 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     getLocationFromStream();
     getAddressFromLatLng();
     super.initState();
+    _saveLocations();
   }
 
+  Future<void> _saveLocations() async{
+    var counter = 0;
+    const oneSec = Duration(seconds:10);
+    Timer.periodic(oneSec, (Timer t) => setState(() {
+      counter = counter+1;
+      print(counter);
+      print('$latitude $longitude');
+      print(address);
+      // print(_address);
+    }));
+  }
+  
   checkGps() async {
     servicestatus = await Geolocator.isLocationServiceEnabled();
     if (servicestatus) {
@@ -114,7 +127,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
         locationSettings: locationSettings).listen((Position position) {
       print(position.latitude);
       print(position.longitude);
-      // currentPosition = position;
+      currentPosition = position;
       latitude = position.latitude.toString();
       longitude = position.longitude.toString();
 
