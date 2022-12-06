@@ -24,7 +24,7 @@ Future<void> main() async {
       isInDebugMode:
           true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
       );
-  Workmanager().registerOneOffTask("_TicketScreenState", "_backgroundTracking");
+  Workmanager().registerOneOffTask("_MyNavigationBarState", "_saveLocations");
   runApp(const MyApp());
 }
 
