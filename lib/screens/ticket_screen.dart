@@ -28,39 +28,6 @@ class _TicketScreenState extends State<TicketScreen> {
   late Future<DepartureBoard> futureDepartureBoard;
   late Future<NearbyStops> futureNearbyStops;
   late Future<JourneyDetails> futureJourneyDetails;
-  // GPS
-
-
-  /*if (defaultTargetPlatform == TargetPlatform.android) {
- locationSettings = AndroidSettings(
-  accuracy: LocationAccuracy.best,
-  distanceFilter: 2,
-  forceLocationManager: true,
-  //(Optional) Set foreground notification config to keep the app alive
-  //when going to the background
-  foregroundNotificationConfig: const ForegroundNotificationConfig(
-  notificationText:
-  "Bitte die App nicht komplett schließen, Fahrt wird aufgenommen",
-  notificationTitle: "Fahrt wird im Background aufgenommen",
-  enableWakeLock: true,
-  )
-  );
-  } else if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS) {
- locationSettings = AppleSettings(
-  accuracy: LocationAccuracy.high,
-  activityType: ActivityType.fitness,
-  distanceFilter: 100,
-  pauseLocationUpdatesAutomatically: true,
-  // Only set to true if our app will be started up in the background.
-  showBackgroundLocationIndicator: false,
-  );
-  } else {
- locationSettings = LocationSettings(
-  accuracy: LocationAccuracy.best,
-  distanceFilter: 2,
-  );
-  }
-*/
   var ticketHelper = TicketDatabaseHelper();
   late var ticketFuture ;
   late Ticket ticket ;
@@ -76,6 +43,10 @@ class _TicketScreenState extends State<TicketScreen> {
 }
 
   _startTrip() async {
+    ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
+    _getTicket();
+    _saveLocationPoint;
+
     // if (_positionStream.isPaused) {
     //   _positionStream.resume();
     // }
@@ -115,8 +86,6 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   void initState() {
     super.initState();
-    ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
-    _getTicket();
     // API TESTS!
     // @TODO cleanup
     // Fetching NearbyStops for current position
