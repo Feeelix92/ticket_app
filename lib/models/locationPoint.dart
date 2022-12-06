@@ -148,7 +148,7 @@ class LocationPointDatabaseHelper {
         longitude: maps[i]['longitude'],
         altitude: maps[i]['altitude'],
         speed: maps[i]['speed'],
-        ticketid: maps[i]['ticketid'],
+        ticketid: maps[i]['ticketid'].toInt(),
         address: maps[i]['address'],
       );
     });
