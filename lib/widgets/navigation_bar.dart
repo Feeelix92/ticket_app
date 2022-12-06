@@ -118,10 +118,18 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   }
 
   getLocationFromStream() async {
-    const LocationSettings locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high, //accuracy of the location data
-      distanceFilter: 100, //minimum distance (measured in meters) a
-      //device must move horizontally before an update event is generated;
+    //late LocationSettings locationSettings;
+    LocationSettings locationSettings = AndroidSettings(
+        accuracy: LocationAccuracy.best,
+        distanceFilter: 2,
+        //(Optional) Set foreground notification config to keep the app alive
+        //when going to the background
+        foregroundNotificationConfig: const ForegroundNotificationConfig(
+          notificationText:
+          "Bitte die App nicht komplett schließen, Fahrt wird aufgenommen",
+          notificationTitle: "Fahrt wird im Background aufgenommen",
+          enableWakeLock: true,
+        )
     );
 
     positionStream = Geolocator.getPositionStream(

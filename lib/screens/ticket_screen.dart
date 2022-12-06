@@ -30,19 +30,7 @@ class _TicketScreenState extends State<TicketScreen> {
   late Future<JourneyDetails> futureJourneyDetails;
   // GPS
 
-  //late LocationSettings locationSettings;
-  LocationSettings locationSettings = AndroidSettings(
-  accuracy: LocationAccuracy.best,
-  distanceFilter: 2,
-  //(Optional) Set foreground notification config to keep the app alive
-  //when going to the background
-  foregroundNotificationConfig: const ForegroundNotificationConfig(
-  notificationText:
-  "Bitte die App nicht komplett schließen, Fahrt wird aufgenommen",
-  notificationTitle: "Fahrt wird im Background aufgenommen",
-  enableWakeLock: true,
-  )
-  );
+
   /*if (defaultTargetPlatform == TargetPlatform.android) {
  locationSettings = AndroidSettings(
   accuracy: LocationAccuracy.best,
