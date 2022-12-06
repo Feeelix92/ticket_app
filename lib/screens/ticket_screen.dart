@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
 import 'package:ticket_app/models/csv_reader.dart';
@@ -31,21 +32,40 @@ class _TicketScreenState extends State<TicketScreen> {
   var ticketHelper = TicketDatabaseHelper();
   late var ticketFuture ;
   late Ticket ticket ;
+  var latitude = 0.0;
+  var longitude = 0.0;
+  var altitude = 0.0;
+  var speed = 0.0;
 
 
-  _saveLocationPoint(Position position){
+  _saveLocationPoint() async {
+    loadPreferences();
     var id = ticket.id;
     var locationHelper = LocationPointDatabaseHelper();
     var locationPointFuture = locationHelper.createLocationPoint(
-        position.latitude, position.longitude, position.altitude,
-        position.speed, id, '');
+        latitude, longitude, altitude,
+        speed, id, '');
     print( locationPointFuture);
-}
+
+  }
+
+  loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    latitude = prefs.getDouble('latitude') ?? 0;
+    longitude = prefs.getDouble('longitude') ?? 0;
+    altitude = prefs.getDouble('altitude') ?? 0;
+    speed = prefs.getDouble('speed') ?? 0;
+    print('TEST');
+    print(latitude);
+    print(longitude);
+    print(altitude);
+    print(speed);
+  }
 
   _startTrip() async {
     ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
     _getTicket();
-    _saveLocationPoint;
+    _saveLocationPoint();
 
     // if (_positionStream.isPaused) {
     //   _positionStream.resume();

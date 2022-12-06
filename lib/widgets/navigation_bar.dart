@@ -9,6 +9,7 @@ import 'package:ticket_app/screens/ticket_screen.dart';
 import '../colors.dart';
 import '../models/locationPoint.dart';
 import '../models/ticket.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyNavigationBar extends StatefulWidget {
   const MyNavigationBar({Key? key, required this.title})
@@ -63,8 +64,20 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       // print(address);
       print('Stream paused: ${positionStream.isPaused}');
       // print(_address);
+      saveCurrentPosition(currentPosition);
     }));
+
   }
+
+  saveCurrentPosition(Position currentPosition) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('latitude', currentPosition.latitude);
+    await prefs.setDouble('longitude', currentPosition.longitude);
+    await prefs.setDouble('altitude', currentPosition.altitude);
+    await prefs.setDouble('speed', currentPosition.speed);
+  }
+
+
 
   checkGps() async {
     servicestatus = await Geolocator.isLocationServiceEnabled();
@@ -106,8 +119,8 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   getLocation() async {
     currentPosition =
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print(currentPosition.latitude);
-    print(currentPosition.longitude);
+    // print(currentPosition.latitude);
+    // print(currentPosition.longitude);
     latitude = currentPosition.latitude.toString();
     longitude = currentPosition.longitude.toString();
 
@@ -138,7 +151,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       currentPosition = position;
       latitude = position.latitude.toString();
       longitude = position.longitude.toString();
-
       setState(() {
         //refresh UI on update
       });
