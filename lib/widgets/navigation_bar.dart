@@ -49,7 +49,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     checkGps();
     getLocation();
     getLocationFromStream();
-    getAddressFromLatLng();
     super.initState();
     _saveLocations();
   }
@@ -60,8 +59,9 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     Timer.periodic(oneSec, (Timer t) => setState(() {
       counter = counter+1;
       print(counter);
-      print('$latitude $longitude');
-      print(address);
+      print('${currentPosition.latitude} ${currentPosition.longitude}');
+      // getAddressFromLatLng();
+      // print(address);
       print('Stream paused: ${positionStream.isPaused}');
       // print(_address);
     }));
@@ -134,8 +134,8 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
     positionStream = Geolocator.getPositionStream(
         locationSettings: locationSettings).listen((Position position) {
-      print(position.latitude);
-      print(position.longitude);
+      // print(position.latitude);
+      // print(position.longitude);
       currentPosition = position;
       latitude = position.latitude.toString();
       longitude = position.longitude.toString();
