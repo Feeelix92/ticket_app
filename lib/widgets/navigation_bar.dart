@@ -62,10 +62,11 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       print(counter);
       print('$latitude $longitude');
       print(address);
+      print('Stream paused: ${positionStream.isPaused}');
       // print(_address);
     }));
   }
-  
+
   checkGps() async {
     servicestatus = await Geolocator.isLocationServiceEnabled();
     if (servicestatus) {
