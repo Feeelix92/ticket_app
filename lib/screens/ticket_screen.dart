@@ -65,7 +65,10 @@ class _TicketScreenState extends State<TicketScreen> {
   _startTrip() async {
     ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
     _getTicket();
-    _saveLocationPoint();
+    const oneSec = Duration(seconds:1);
+    Timer.periodic(oneSec, (Timer t) => setState(() {
+      _saveLocationPoint();
+    }));
 
     // if (_positionStream.isPaused) {
     //   _positionStream.resume();
