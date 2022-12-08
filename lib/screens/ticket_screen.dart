@@ -73,10 +73,7 @@ class _TicketScreenState extends State<TicketScreen> {
       _getTicket();
       // Timer to periodic save the LocationPoints
       const oneSec = Duration(seconds:1);
-      // Timer.periodic(oneSec, (Timer t) => setState(() {
-      //   _saveLocationPoint();
-      // }));
-      Timer timer = Timer.periodic(oneSec, (timer) {
+      Timer.periodic(oneSec, (timer) {
         _saveLocationPoint();
         if(!_ticketActive) {
           timer.cancel();
@@ -211,7 +208,7 @@ class _TicketScreenState extends State<TicketScreen> {
           child: ElevatedButton(
             onPressed: _ticketActive ? null : tripFunction,
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(color),
+              backgroundColor: _ticketActive ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
             ),
             child: Text(
               text,
@@ -232,7 +229,7 @@ class _TicketScreenState extends State<TicketScreen> {
           child: ElevatedButton(
             onPressed: _ticketActive ? tripFunction : null,
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(color),
+              backgroundColor: _ticketActive ?  MaterialStateProperty.all<Color>(color) : MaterialStateProperty.all<Color>(accentColor3),
             ),
             child: Text(
               text,
