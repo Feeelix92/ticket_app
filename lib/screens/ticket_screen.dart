@@ -57,16 +57,15 @@ class _TicketScreenState extends State<TicketScreen> {
     _longitude = prefs.getDouble('longitude') ?? 0;
     _altitude = prefs.getDouble('altitude') ?? 0;
     _speed = prefs.getDouble('speed') ?? 0;
-    print('TEST');
-    print(_latitude);
-    print(_longitude);
-    print(_altitude);
-    print(_speed);
+    setState(() {
+      //refresh UI
+    });
   }
 
   _startTrip() async {
     if(!_ticketActive){
       _ticketActive = true;
+      print("TRIP STARTED:");
       var startLocation = _getLocation();
       print(startLocation);
       ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
@@ -85,6 +84,7 @@ class _TicketScreenState extends State<TicketScreen> {
   _stopTrip() async {
     if(_ticketActive){
       _ticketActive = false;
+      print("TRIP STOPED:");
       var endLocation = _getLocation();
       print(endLocation);
     }
