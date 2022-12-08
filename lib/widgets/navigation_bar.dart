@@ -47,7 +47,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   @override
   void initState() {
     checkGps();
-    getLocation();
     getLocationFromStream();
     super.initState();
     _saveLocations();
@@ -60,10 +59,8 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       counter = counter+1;
       print(counter);
       print('${currentPosition.latitude} ${currentPosition.longitude}');
-      // getAddressFromLatLng();
-      // print(address);
       print('Stream paused: ${positionStream.isPaused}');
-      // print(_address);
+      getAddressFromLatLng(currentPosition.latitude, currentPosition.longitude);
       saveCurrentPosition(currentPosition);
     }));
 
@@ -116,19 +113,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     });
   }
 
-  getLocation() async {
-    currentPosition =
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    // print(currentPosition.latitude);
-    // print(currentPosition.longitude);
-    latitude = currentPosition.latitude.toString();
-    longitude = currentPosition.longitude.toString();
-
-    setState(() {
-      //refresh UI
-    });
-  }
-
   getLocationFromStream() async {
     //late LocationSettings locationSettings;
     LocationSettings locationSettings = AndroidSettings(
@@ -146,8 +130,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
     positionStream = Geolocator.getPositionStream(
         locationSettings: locationSettings).listen((Position position) {
-      // print(position.latitude);
-      // print(position.longitude);
       currentPosition = position;
       latitude = position.latitude.toString();
       longitude = position.longitude.toString();
@@ -157,14 +139,13 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
     });
   }
 
-  getAddressFromLatLng() async {
+  getAddressFromLatLng(double latitude, double longitude) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
-          currentPosition.latitude, currentPosition.longitude);
+          latitude, longitude);
       Placemark place = placemarks[0];
       address = "${place.street}, \n${place.postalCode} ${place.locality} \n ${place
           .administrativeArea}, ${place.country}";
-      print(address);
       setState(() {
       });
     } catch (e) {

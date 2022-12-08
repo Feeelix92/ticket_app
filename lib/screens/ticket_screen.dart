@@ -26,85 +26,87 @@ class TicketScreen extends StatefulWidget {
 }
 
 class _TicketScreenState extends State<TicketScreen> {
+  // API Objects
   late Future<DepartureBoard> futureDepartureBoard;
   late Future<NearbyStops> futureNearbyStops;
   late Future<JourneyDetails> futureJourneyDetails;
+  // Ticket
   var ticketHelper = TicketDatabaseHelper();
   late var ticketFuture ;
   late Ticket ticket ;
-  var latitude = 0.0;
-  var longitude = 0.0;
-  var altitude = 0.0;
-  var speed = 0.0;
-
+  bool _ticketActive = false;
+  // GNNS Data
+  var _latitude = 0.0;
+  var _longitude = 0.0;
+  var _altitude = 0.0;
+  var _speed = 0.0;
+  var _address = "";
 
   _saveLocationPoint() async {
     loadPreferences();
     var id = ticket.id;
     var locationHelper = LocationPointDatabaseHelper();
     var locationPointFuture = locationHelper.createLocationPoint(
-        latitude, longitude, altitude,
-        speed, id, '');
-    print( locationPointFuture);
-
+        _latitude, _longitude, _altitude,
+        _speed, id, '');
   }
 
   loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    latitude = prefs.getDouble('latitude') ?? 0;
-    longitude = prefs.getDouble('longitude') ?? 0;
-    altitude = prefs.getDouble('altitude') ?? 0;
-    speed = prefs.getDouble('speed') ?? 0;
+    _latitude = prefs.getDouble('latitude') ?? 0;
+    _longitude = prefs.getDouble('longitude') ?? 0;
+    _altitude = prefs.getDouble('altitude') ?? 0;
+    _speed = prefs.getDouble('speed') ?? 0;
     print('TEST');
-    print(latitude);
-    print(longitude);
-    print(altitude);
-    print(speed);
+    print(_latitude);
+    print(_longitude);
+    print(_altitude);
+    print(_speed);
   }
 
   _startTrip() async {
-    ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
-    _getTicket();
-    const oneSec = Duration(seconds:1);
-    Timer.periodic(oneSec, (Timer t) => setState(() {
-      _saveLocationPoint();
-    }));
-
-    // if (_positionStream.isPaused) {
-    //   _positionStream.resume();
-    // }
-    // if (kDebugMode) {
-    //   print('trip started');
-    //   print('Stream is paused:');
-    //   print(_positionStream.isPaused);
-    //   //print(_currentPosition);
-    //   //var locationHelper = LocationPointDatabaseHelper();
-    //   //var ticketHelper = TicketDatabaseHelper();
-    //   //initDatabase().initializeDB();
-    //   //var ticket = const Ticket(id: 1, startTime: '10:00', endTime: '10:30', startStation: 'Friedberg Bahnhof', endStation: 'Gießen Bahnhof');
-    //   //var ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
-    //   //var ticket = await ticketFuture;
-    //   //var locationPointFuture = locationHelper.createLocationPoint(123.00,123.00,1200,1.4,ticket.id,'');
-    //   //var locationPoint = await locationPointFuture;
-    //   //print(ticket);
-    //   //print(locationPoint);
-    // }
+    if(!_ticketActive){
+      _ticketActive = true;
+      var startLocation = _getLocation();
+      print(startLocation);
+      ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
+      _getTicket();
+      // Timer to periodic save the LocationPoints
+      const oneSec = Duration(seconds:1);
+      // Timer.periodic(oneSec, (Timer t) => setState(() {
+      //   _saveLocationPoint();
+      // }));
+      Timer timer = Timer.periodic(oneSec, (timer) {
+        _saveLocationPoint();
+        if(!_ticketActive) {
+          timer.cancel();
+        }
+      });
+    }
   }
 
   _stopTrip() async {
-    // _positionStream.pause();
-    // if (kDebugMode) {
-    //   print('trip stopped');
-    //   print('Stream is paused:');
-    //   print(_positionStream.isPaused);
-    //   print(_currentPosition);
-    // }
+    if(_ticketActive){
+      _ticketActive = false;
+      var endLocation = _getLocation();
+      print(endLocation);
+    }
   }
 
 
   _getTicket() async {
     ticket = await ticketFuture;
   }
+
+  Future<Position> _getLocation() async {
+    var currentPosition =
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      //refresh UI
+    });
+    return currentPosition;
+  }
+
 
   @override
   void initState() {
@@ -151,8 +153,6 @@ class _TicketScreenState extends State<TicketScreen> {
     //End of API Tests
     if (mounted) {
       initDatabase().initializeDB();
-      // _checkGps();
-      // _backgroundTracking();
       var csv = CsvReader();
       csv.loadAsset();
     }
@@ -169,38 +169,39 @@ class _TicketScreenState extends State<TicketScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // TicketInformation(
-            //     ticketHolderName: "Max Mustermann",
-            //     ticketId: "12345",
-            //     ticketDate: "14.11.2022",
-            //     ticketTime: "10:00 Uhr",
-            //     longitude: _longitude,
-            //     latitude: _latitude,
-            //     address: _address),
+            TicketInformation(
+                ticketHolderName: "Max Mustermann",
+                ticketId: "12345",
+                ticketDate: "14.11.2022",
+                ticketTime: "10:00 Uhr",
+                longitude: _longitude.toString(),
+                latitude: _latitude.toString(),
+                address: _address
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  buildTripButton(_startTrip, 'Fahrt starten', primaryColor),
-                  buildTripButton(_stopTrip, 'Fahrt beenden', secondaryColor),
+                  buildStartTripButton(_startTrip, 'Fahrt starten', primaryColor),
+                  buildEndTripButton(_stopTrip, 'Fahrt beenden', secondaryColor),
                 ],
               ),
             ),
-            // GpsTestData(
-            //     latitude: _latitude,
-            //     longitude: _longitude,
-            //     altitude: _altitude,
-            //     speed: _speed,
-            //     address: _address
-            // ),
+            GpsTestData(
+                latitude: _latitude.toString(),
+                longitude: _longitude.toString(),
+                altitude: _altitude.toString(),
+                speed: _speed.toString(),
+                address: _address
+            ),
           ],
         ),
       ),
     );
   }
 
-  Center buildTripButton(tripFunction, text, color) {
+  Center buildStartTripButton(tripFunction, text, color) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -208,7 +209,7 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: tripFunction,
+            onPressed: _ticketActive ? null : tripFunction,
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(color),
             ),
@@ -221,6 +222,28 @@ class _TicketScreenState extends State<TicketScreen> {
       ),
     );
   }
+  Center buildEndTripButton(tripFunction, text, color) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          width: 200,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: _ticketActive ? tripFunction : null,
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(color),
+            ),
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 20),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
 }
 
 class GpsTestData extends StatelessWidget {
