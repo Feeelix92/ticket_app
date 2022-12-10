@@ -15,17 +15,17 @@ class _MapScreenState extends State<MapScreen> {
   late List futureTicket;
   late List locationPointsList;
   late LatLng centerPoint;
-  List<LatLng>? route;
+  late List<LatLng> route = [];
 
   _getLocations() async {
-    int id = 40;
+    int id = 6;
     futureTicket = await locationHelper.locationsFromTicketid(id.toInt());
     for (var locationPoint in futureTicket) {
       print(locationPoint);
 
       centerPoint = LatLng(locationPoint.latitude, locationPoint.longitude);
-      print(centerPoint);
-      route?.add(LatLng(locationPoint.latitude, locationPoint.longitude));
+      //print(centerPoint);
+      route.add(LatLng(locationPoint.latitude, locationPoint.longitude));
     }
   }
 
@@ -46,7 +46,7 @@ class _MapScreenState extends State<MapScreen> {
             zoom: 12,
             maxZoom: 13,
             keepAlive: true,
-            center: centerPoint
+            center: LatLng(50.333333, 8.75)
         ),
         nonRotatedChildren: [
           AttributionWidget.defaultWidget(
@@ -64,7 +64,7 @@ class _MapScreenState extends State<MapScreen> {
             polylines: [
               Polyline(
                   //points: [LatLng(50.3249, 8.7409), LatLng(50.4978, 8.6629), LatLng(50.5841, 8.6784),],
-                  points: route ?? [],
+                  points: route,
                   color: Colors.blue,
                   strokeWidth: 3.0),
             ],
