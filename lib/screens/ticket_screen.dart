@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
@@ -11,7 +10,6 @@ class TicketScreen extends StatefulWidget {
   final Tracking tracking;
   const TicketScreen({Key? key, required this.tracking})
       : super(key: key);
-
   @override
   State<TicketScreen> createState() => _TicketScreenState();
 }
@@ -19,9 +17,6 @@ class TicketScreen extends StatefulWidget {
 class _TicketScreenState extends State<TicketScreen> {
   @override
   void initState() {
-    super.initState();
-    widget.tracking.saveLocations();
-    widget.tracking.startTracking();
     if (mounted) {
       initDatabase().initializeDB();
       var csv = CsvReader();
@@ -29,6 +24,7 @@ class _TicketScreenState extends State<TicketScreen> {
     }
     //Todo
     // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
+    super.initState();
   }
 
   @override
@@ -80,7 +76,7 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: widget.tracking.ticketActive ? null : tripFunction,
+            onPressed: widget.tracking.ticketActive ?  null : tripFunction,
             style: ButtonStyle(
               backgroundColor: widget.tracking.ticketActive ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
             ),

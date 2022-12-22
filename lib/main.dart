@@ -6,7 +6,6 @@ import 'package:ticket_app/screens/loading_screen.dart';
 import 'package:workmanager/workmanager.dart';
 import 'colors.dart';
 import 'package:material_color_generator/material_color_generator.dart';
-
 import 'models/tracking.dart';
 
 void callbackDispatcher() {

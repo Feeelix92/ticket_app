@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,6 +14,7 @@ class Tracking {
   late Future<DepartureBoard> futureDepartureBoard;
   late Future<NearbyStops> futureNearbyStops;
   late Future<JourneyDetails> futureJourneyDetails;
+
   // GNNS
   bool servicestatus = false;
   bool haspermission = false;
@@ -29,14 +31,8 @@ class Tracking {
   // Ticket
   var ticketHelper = TicketDatabaseHelper();
   late var ticketFuture;
-
   late Ticket ticket;
-
   bool ticketActive = false;
-
-  void startTracking() {
-    print("START");
-  }
 
   void _saveLocationPoint() async {
     var id = ticket.id;
@@ -49,8 +45,6 @@ class Tracking {
     if (!ticketActive) {
       ticketActive = true;
       print("TRIP STARTED:");
-      var startLocation = getLocation();
-      print(startLocation);
       ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
       _getTicket();
       // Timer to periodic save the LocationPoints
@@ -67,9 +61,6 @@ class Tracking {
   void stopTrip() async {
     if (ticketActive) {
       ticketActive = false;
-      print("TRIP STOPED:");
-      var endLocation = getLocation();
-      print(endLocation);
     }
   }
 
@@ -121,7 +112,7 @@ class Tracking {
         //when going to the background
         foregroundNotificationConfig: const ForegroundNotificationConfig(
           notificationText:
-              "Bitte die App nicht komplett schließen, Fahrt wird aufgenommen",
+          "Bitte die App nicht komplett schließen, Fahrt wird aufgenommen",
           notificationTitle: "Fahrt wird im Background aufgenommen",
           enableWakeLock: true,
         ));
@@ -129,21 +120,22 @@ class Tracking {
     positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position position) {
-      currentPosition = position;
-      latitude = position.latitude;
-      longitude = position.longitude;
-      altitude = position.altitude;
-      speed = position.speed;
-    });
+          currentPosition = position;
+          latitude = position.latitude;
+          longitude = position.longitude;
+          altitude = position.altitude;
+          speed = position.speed;
+        });
   }
 
   void getAddressFromLatLng(double latitude, double longitude) async {
     try {
       List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
+      await placemarkFromCoordinates(latitude, longitude);
       Placemark place = placemarks[0];
       address =
-          "${place.street}, \n${place.postalCode} ${place.locality} \n ${place.administrativeArea}, ${place.country}";
+      "${place.street}, \n${place.postalCode} ${place.locality} \n ${place
+          .administrativeArea}, ${place.country}";
     } catch (e) {
       print(e);
     }
@@ -152,7 +144,7 @@ class Tracking {
   Future<void> saveLocations() async {
     var counter = 0;
     const oneSec = Duration(seconds: 2);
-    Timer.periodic(oneSec, (timer){
+    Timer.periodic(oneSec, (timer) {
       counter = counter + 1;
       print(counter);
       print('${currentPosition.latitude} ${currentPosition.longitude}');
@@ -160,6 +152,7 @@ class Tracking {
       getAddressFromLatLng(currentPosition.latitude, currentPosition.longitude);
     });
   }
+}
 
 // API TESTS!
 // @TODO cleanup
@@ -201,4 +194,4 @@ class Tracking {
 //         ));
 // });
 //End of API Tests
-}
+
