@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
 import 'package:ticket_app/models/csv_reader.dart';
@@ -28,11 +27,6 @@ class _TicketScreenState extends State<TicketScreen> {
   late Future<DepartureBoard> futureDepartureBoard;
   late Future<NearbyStops> futureNearbyStops;
   late Future<JourneyDetails> futureJourneyDetails;
-  // Ticket
-  var ticketHelper = TicketDatabaseHelper();
-  late var ticketFuture ;
-  late Ticket ticket ;
-  bool _ticketActive = false;
   // GNNS Data
   var _latitude = 0.0;
   var _longitude = 0.0;
@@ -40,72 +34,15 @@ class _TicketScreenState extends State<TicketScreen> {
   var _speed = 0.0;
   var _address = "";
 
-  _saveLocationPoint() async {
-    loadPreferences();
-    var id = ticket.id;
-    var locationHelper = LocationPointDatabaseHelper();
-    var locationPointFuture = locationHelper.createLocationPoint(
-        _latitude, _longitude, _altitude,
-        _speed, id, '');
-  }
-
-  loadPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    _latitude = prefs.getDouble('latitude') ?? 0;
-    _longitude = prefs.getDouble('longitude') ?? 0;
-    _altitude = prefs.getDouble('altitude') ?? 0;
-    _speed = prefs.getDouble('speed') ?? 0;
-    setState(() {
-      //refresh UI
-    });
-  }
-
-  _startTrip() async {
-    if(!_ticketActive){
-      _ticketActive = true;
-      print("TRIP STARTED:");
-      var startLocation = _getLocation();
-      print(startLocation);
-      ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
-      _getTicket();
-      // Timer to periodic save the LocationPoints
-      const oneSec = Duration(seconds:1);
-      Timer.periodic(oneSec, (timer) {
-        _saveLocationPoint();
-        if(!_ticketActive) {
-          timer.cancel();
-        }
-      });
-    }
-  }
-
-  _stopTrip() async {
-    if(_ticketActive){
-      _ticketActive = false;
-      print("TRIP STOPED:");
-      var endLocation = _getLocation();
-      print(endLocation);
-    }
-  }
-
-
-  _getTicket() async {
-    ticket = await ticketFuture;
-  }
-
-  Future<Position> _getLocation() async {
-    var currentPosition =
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      //refresh UI
-    });
-    return currentPosition;
-  }
 
 
   @override
   void initState() {
     super.initState();
+    widget.tracking.checkGps();
+    widget.tracking.getLocationFromStream();
+    print('TEST ${widget.tracking.latitude}');
+    widget.tracking.startTracking();
     // API TESTS!
     // @TODO cleanup
     // Fetching NearbyStops for current position
@@ -178,8 +115,8 @@ class _TicketScreenState extends State<TicketScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  buildStartTripButton(_startTrip, 'Fahrt starten', primaryColor),
-                  buildEndTripButton(_stopTrip, 'Fahrt beenden', secondaryColor),
+                  buildStartTripButton(widget.tracking.startTrip, 'Fahrt starten', primaryColor),
+                  buildEndTripButton(widget.tracking.stopTrip, 'Fahrt beenden', secondaryColor),
                 ],
               ),
             ),
@@ -204,9 +141,9 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: _ticketActive ? null : tripFunction,
+            onPressed: widget.tracking.ticketActive ? null : tripFunction,
             style: ButtonStyle(
-              backgroundColor: _ticketActive ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
+              backgroundColor: widget.tracking.ticketActive ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
             ),
             child: Text(
               text,
@@ -225,9 +162,9 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: _ticketActive ? tripFunction : null,
+            onPressed: widget.tracking.ticketActive ? tripFunction : null,
             style: ButtonStyle(
-              backgroundColor: _ticketActive ?  MaterialStateProperty.all<Color>(color) : MaterialStateProperty.all<Color>(accentColor3),
+              backgroundColor: widget.tracking.ticketActive ?  MaterialStateProperty.all<Color>(color) : MaterialStateProperty.all<Color>(accentColor3),
             ),
             child: Text(
               text,

@@ -19,8 +19,8 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   int _currentIndex = 0;
   List<Widget> _children() => [
     TicketScreen(tracking: widget.tracking),
-    const MapScreen(),
-    const TicketHistory(),
+    MapScreen(tracking: widget.tracking),
+    TicketHistory(tracking: widget.tracking),
   ];
   void onTappedBar(int index){
     setState(() {

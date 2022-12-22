@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../models/tracking.dart';
+
 class TicketHistory extends StatefulWidget {
-  const TicketHistory({Key? key}) : super(key: key);
+  final Tracking tracking;
+  const TicketHistory({Key? key, required this.tracking})
+      : super(key: key);
 
   @override
   State<TicketHistory> createState() => _TicketHistoryState();

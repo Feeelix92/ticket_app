@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ticket_app/models/ticket.dart';
 import 'locationPoint.dart';
 
 class Tracking {
@@ -10,16 +10,68 @@ class Tracking {
   bool haspermission = false;
   late LocationPermission permission;
   late List<LocationPoint> _ride;
-  var latitude = "";
-  var longitude = "";
-  var altitude = "";
-  var speed = "";
+  var latitude = 0.0;
+  var longitude = 0.0;
+  var altitude = 0.0;
+  var speed = 0.0;
   var address = "";
   late Position currentPosition;
   late StreamSubscription<Position> positionStream;
+  // Ticket
+  var ticketHelper = TicketDatabaseHelper();
+  late var ticketFuture ;
+  late Ticket ticket ;
+  bool ticketActive = false;
 
   void startTracking() {
     print("START");
+  }
+
+  void _saveLocationPoint() async {
+    var id = ticket.id;
+    var locationHelper = LocationPointDatabaseHelper();
+    var locationPointFuture = locationHelper.createLocationPoint(
+        latitude, longitude, altitude,
+        speed, id, '');
+  }
+
+  void startTrip() async {
+    if(!ticketActive){
+      ticketActive = true;
+      print("TRIP STARTED:");
+      var startLocation = _getLocation();
+      print(startLocation);
+      ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
+      _getTicket();
+      // Timer to periodic save the LocationPoints
+      const oneSec = Duration(seconds:1);
+      Timer.periodic(oneSec, (timer) {
+        _saveLocationPoint();
+        if(!ticketActive) {
+          timer.cancel();
+        }
+      });
+    }
+  }
+
+  void stopTrip() async {
+    if(ticketActive){
+      ticketActive = false;
+      print("TRIP STOPED:");
+      var endLocation = _getLocation();
+      print(endLocation);
+    }
+  }
+
+
+  void _getTicket() async {
+    ticket = await ticketFuture;
+  }
+
+  Future<Position> _getLocation() async {
+    var currentPosition =
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return currentPosition;
   }
 
   void checkGps() async {
@@ -79,14 +131,6 @@ class Tracking {
       }
     }
 
-    void saveCurrentPosition(Position currentPosition) async {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setDouble('latitude', currentPosition.latitude);
-      await prefs.setDouble('longitude', currentPosition.longitude);
-      await prefs.setDouble('altitude', currentPosition.altitude);
-      await prefs.setDouble('speed', currentPosition.speed);
-    }
-
     Future<void> saveLocations() async {
       var counter = 0;
       const oneSec = Duration(seconds: 10);
@@ -95,7 +139,6 @@ class Tracking {
       print('${currentPosition.latitude} ${currentPosition.longitude}');
       print('Stream paused: ${positionStream.isPaused}');
       getAddressFromLatLng(currentPosition.latitude, currentPosition.longitude);
-      saveCurrentPosition(currentPosition);
     }
   }
 }

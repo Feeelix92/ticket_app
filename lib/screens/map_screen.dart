@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:ticket_app/models/tracking.dart';
 import '../models/locationPoint.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({Key? key}) : super(key: key);
+  final Tracking tracking;
+  const MapScreen({Key? key, required this.tracking})
+      : super(key: key);
+
 
   @override
   State<MapScreen> createState() => _MapScreenState();
