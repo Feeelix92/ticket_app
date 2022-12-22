@@ -26,14 +26,25 @@ Future<void> main() async {
       isInDebugMode:
           true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
       );
-  Workmanager().registerOneOffTask("_MyNavigationBarState", "_saveLocations");
+  Workmanager().registerOneOffTask("Tracking", "_saveLocations");
   runApp(MyApp(Tracking()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final Tracking tracking;
   const MyApp(this.tracking, {super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    widget.tracking.checkGps();
+    widget.tracking.getLocationFromStream();
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -43,7 +54,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: generateMaterialColor(color: primaryColor),
         fontFamily: "Montserrat",
       ),
-      home: LoadingScreen(tracking),
+      home: LoadingScreen(widget.tracking),
     );
   }
 }

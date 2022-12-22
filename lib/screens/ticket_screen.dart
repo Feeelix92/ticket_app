@@ -1,15 +1,9 @@
-import 'dart:async';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
 import 'package:ticket_app/models/csv_reader.dart';
-import 'package:ticket_app/models/journey_detail.dart';
-import 'package:ticket_app/models/nearby_stops.dart';
 import 'package:ticket_app/models/tracking.dart';
-import '../models/departure_board.dart';
-import '../models/locationPoint.dart';
-import '../models/ticket.dart';
 import '../widgets/bold_styled_text.dart';
 import '../widgets/ticket_information.dart';
 
@@ -23,66 +17,11 @@ class TicketScreen extends StatefulWidget {
 }
 
 class _TicketScreenState extends State<TicketScreen> {
-  // API Objects
-  late Future<DepartureBoard> futureDepartureBoard;
-  late Future<NearbyStops> futureNearbyStops;
-  late Future<JourneyDetails> futureJourneyDetails;
-  // GNNS Data
-  var _latitude = 0.0;
-  var _longitude = 0.0;
-  var _altitude = 0.0;
-  var _speed = 0.0;
-  var _address = "";
-
-
-
   @override
   void initState() {
     super.initState();
-    widget.tracking.checkGps();
-    widget.tracking.getLocationFromStream();
-    print('TEST ${widget.tracking.latitude}');
+    widget.tracking.saveLocations();
     widget.tracking.startTracking();
-    // API TESTS!
-    // @TODO cleanup
-    // Fetching NearbyStops for current position
-    // futureNearbyStops = fetchNearbyStops('50.3316448', '8.7602899');
-    // futureNearbyStops.then((nearbyStops) {
-    //   print('_________________________');
-    //   print('nearby Stop:');
-    //   print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
-    // });
-    // // Date
-    // var currentYear = '${DateTime.now().year}';
-    // var currentMonth = '${DateTime.now().month}'.padLeft(2,'0');
-    // var currentDay = '${DateTime.now().day}'.padLeft(2,'0');
-    // var currentDate = '$currentYear-$currentMonth-$currentDay';
-    // // Time
-    // var currentHour = '${DateTime.now().hour+1}'.padLeft(2,'0');
-    // var currentMinute = '${DateTime.now().minute}'.padLeft(2,'0');
-    // var currentTime = '$currentHour:$currentMinute';
-    // // Fetching DepartureBoard for specific station at date and time
-    // futureDepartureBoard = fetchDepartureBoard('Friedberg (Hessen) Bahnhof', currentDate, currentTime);
-    // futureDepartureBoard.then((departureBoard) async {
-    //   print('_________________________');
-    //   print('next Connection:');
-    //   print(departureBoard.departure![0].stop);
-    //   print(departureBoard.departure![0].name);
-    //   print(departureBoard.departure![0].direction);
-    //   print(departureBoard.departure![0].date);
-    //   print(departureBoard.departure![0].time);
-    //   print(departureBoard.departure![0].rtTrack);
-    //   print('_________________________');
-    //   print('Journey Details:');
-    //   var journeyRef = departureBoard.departure![0].journeyDetailRef?.ref;
-    //   futureJourneyDetails = fetchJourneyDetails(journeyRef!);
-    //   futureJourneyDetails.then((value) => value.stops?.stop?.forEach(
-    //           (element) {
-    //             print(element.name);
-    //           }
-    //         ));
-    // });
-    //End of API Tests
     if (mounted) {
       initDatabase().initializeDB();
       var csv = CsvReader();
@@ -106,9 +45,9 @@ class _TicketScreenState extends State<TicketScreen> {
                 ticketId: "12345",
                 ticketDate: "14.11.2022",
                 ticketTime: "10:00 Uhr",
-                longitude: _longitude.toString(),
-                latitude: _latitude.toString(),
-                address: _address
+                latitude: widget.tracking.latitude.toString(),
+                longitude: widget.tracking.longitude.toString(),
+                address: widget.tracking.address,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -121,11 +60,11 @@ class _TicketScreenState extends State<TicketScreen> {
               ),
             ),
             GpsTestData(
-                latitude: _latitude.toString(),
-                longitude: _longitude.toString(),
-                altitude: _altitude.toString(),
-                speed: _speed.toString(),
-                address: _address
+                latitude: widget.tracking.latitude.toString(),
+                longitude: widget.tracking.longitude.toString(),
+                altitude: widget.tracking.altitude.toString(),
+                speed: widget.tracking.speed.toString(),
+                address: widget.tracking.address
             ),
           ],
         ),
