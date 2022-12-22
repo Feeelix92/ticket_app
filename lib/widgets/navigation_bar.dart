@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:ticket_app/models/tracking.dart';
 import 'package:ticket_app/screens/map_screen.dart';
 import 'package:ticket_app/screens/ticket_history_screen.dart';
 import 'package:ticket_app/screens/ticket_screen.dart';
 import '../colors.dart';
 
 class MyNavigationBar extends StatefulWidget {
-  const MyNavigationBar({Key? key, required this.title})
-      : super(key: key);
   final String title;
+  final Tracking tracking;
+  const MyNavigationBar({Key? key, required this.title, required this.tracking})
+      : super(key: key);
 
   @override
   State<MyNavigationBar> createState() => _MyNavigationBarState();
@@ -15,8 +17,8 @@ class MyNavigationBar extends StatefulWidget {
 
 class _MyNavigationBarState extends State<MyNavigationBar> {
   int _currentIndex = 0;
-  final List<Widget> _children = [
-    const TicketScreen(),
+  List<Widget> _children() => [
+    TicketScreen(tracking: widget.tracking),
     const MapScreen(),
     const TicketHistory(),
   ];
@@ -28,6 +30,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> children = _children();
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -62,7 +65,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
           ],
         ),
       ),
-      body: _children [_currentIndex],
+      body: children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

@@ -1,8 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
-
-import 'package:flutter/foundation.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,15 +7,17 @@ import 'package:ticket_app/models/initDatabase.dart';
 import 'package:ticket_app/models/csv_reader.dart';
 import 'package:ticket_app/models/journey_detail.dart';
 import 'package:ticket_app/models/nearby_stops.dart';
+import 'package:ticket_app/models/tracking.dart';
 import '../models/departure_board.dart';
 import '../models/locationPoint.dart';
-
 import '../models/ticket.dart';
 import '../widgets/bold_styled_text.dart';
 import '../widgets/ticket_information.dart';
 
 class TicketScreen extends StatefulWidget {
-  const TicketScreen({super.key});
+  final Tracking tracking;
+  const TicketScreen({Key? key, required this.tracking})
+      : super(key: key);
 
   @override
   State<TicketScreen> createState() => _TicketScreenState();

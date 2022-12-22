@@ -282,7 +282,7 @@ class Product {
         this.matchId});
 
   Product.fromJson(Map<String, dynamic> json) {
-    icon = json['icon'] != null ? new Icon.fromJson(json['icon']) : null;
+    icon = json['icon'] != null ? Icon.fromJson(json['icon']) : null;
     name = json['name'];
     internalName = json['internalName'];
     displayNumber = json['displayNumber'];
@@ -376,7 +376,7 @@ class Messages {
     if (json['Message'] != null) {
       message = <Message>[];
       json['Message'].forEach((v) {
-        message!.add(new Message.fromJson(v));
+        message!.add(Message.fromJson(v));
       });
     }
   }
@@ -496,7 +496,7 @@ class Channel {
     if (json['url'] != null) {
       url = <Url>[];
       json['url'].forEach((v) {
-        url!.add(new Url.fromJson(v));
+        url!.add(Url.fromJson(v));
       });
     }
     validFromTime = json['validFromTime'];
@@ -568,7 +568,7 @@ class TechnicalMessages {
     if (json['TechnicalMessage'] != null) {
       technicalMessage = <TechnicalMessage>[];
       json['TechnicalMessage'].forEach((v) {
-        technicalMessage!.add(new TechnicalMessage.fromJson(v));
+        technicalMessage!.add(TechnicalMessage.fromJson(v));
       });
     }
   }
