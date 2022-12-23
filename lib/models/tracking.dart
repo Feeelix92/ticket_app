@@ -14,7 +14,7 @@ class Tracking {
   late Future<DepartureBoard> futureDepartureBoard;
   late Future<NearbyStops> futureNearbyStops;
   late Future<JourneyDetails> futureJourneyDetails;
-
+  final timerDuration = const Duration(seconds: 2);
   // GNNS
   bool servicestatus = false;
   bool haspermission = false;
@@ -49,8 +49,7 @@ class Tracking {
     ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
     getTicket();
     var counter = 0;
-    const oneSec = Duration(seconds: 2);
-    Timer.periodic(oneSec, (timer) {
+    Timer.periodic(timerDuration, (timer) {
       counter = counter + 1;
       print(counter);
       print('${currentPosition.latitude} ${currentPosition.longitude}');
