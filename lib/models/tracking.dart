@@ -42,14 +42,14 @@ class Tracking {
     var id = ticket.id;
     var locationHelper = LocationPointDatabaseHelper();
     var locationPointFuture = locationHelper.createLocationPoint(
-        latitude, longitude, altitude, speed, id, '');
+        latitude, longitude, altitude, speed, id, address);
   }
 
   Future<void> saveLocations() async {
     ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
     getTicket();
     var counter = 0;
-    const oneSec = Duration(seconds: 10);
+    const oneSec = Duration(seconds: 2);
     Timer.periodic(oneSec, (timer) {
       counter = counter + 1;
       print(counter);
