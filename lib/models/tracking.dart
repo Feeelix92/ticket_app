@@ -34,6 +34,10 @@ class Tracking {
   late Ticket ticket;
   bool activeTicket = false;
 
+  void getTicket() async {
+    ticket = await ticketFuture;
+  }
+
   void saveLocationPoint() async {
     var id = ticket.id;
     var locationHelper = LocationPointDatabaseHelper();
@@ -41,9 +45,37 @@ class Tracking {
         latitude, longitude, altitude, speed, id, '');
   }
 
+  Future<void> saveLocations() async {
+    ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
+    getTicket();
+    var counter = 0;
+    const oneSec = Duration(seconds: 10);
+    Timer.periodic(oneSec, (timer) {
+      counter = counter + 1;
+      print(counter);
+      print('${currentPosition.latitude} ${currentPosition.longitude}');
+      print('Stream paused: ${positionStream.isPaused}');
+      getAddressFromLatLng(currentPosition.latitude, currentPosition.longitude);
+      print(address);
+      saveLocationPoint();
+      if (!activeTicket) {
+        timer.cancel();
+      }
+    });
+  }
 
-  void getTicket() async {
-    ticket = await ticketFuture;
+  getAddressFromLatLng(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+      await placemarkFromCoordinates(latitude, longitude);
+      Placemark place = placemarks[0];
+      address =
+      "${place.street}, \n${place.postalCode} ${place.locality}\n${place
+          .administrativeArea}, ${place.country}";
+      return address;
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<Position> getLocation() async {
@@ -103,35 +135,8 @@ class Tracking {
           longitude = position.longitude;
           altitude = position.altitude;
           speed = position.speed;
+          address = getAddressFromLatLng(latitude, longitude);
         });
-  }
-
-  void getAddressFromLatLng(double latitude, double longitude) async {
-    try {
-      List<Placemark> placemarks =
-      await placemarkFromCoordinates(latitude, longitude);
-      Placemark place = placemarks[0];
-      address =
-      "${place.street}, \n${place.postalCode} ${place.locality} \n ${place
-          .administrativeArea}, ${place.country}";
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> saveLocations() async {
-    var counter = 0;
-    const oneSec = Duration(seconds: 2);
-    Timer.periodic(oneSec, (timer) {
-      counter = counter + 1;
-      print(counter);
-      print('${currentPosition.latitude} ${currentPosition.longitude}');
-      print('Stream paused: ${positionStream.isPaused}');
-      getAddressFromLatLng(currentPosition.latitude, currentPosition.longitude);
-      if (!activeTicket) {
-        timer.cancel();
-      }
-    });
   }
 }
 

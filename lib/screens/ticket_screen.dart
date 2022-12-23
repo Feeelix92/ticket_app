@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
 import 'package:ticket_app/models/csv_reader.dart';
@@ -18,6 +19,12 @@ class TicketScreen extends StatefulWidget {
 
 class _TicketScreenState extends State<TicketScreen> {
   late bool activeTicket;
+  late Position currentPosition;
+  var latitude = 0.0;
+  var longitude = 0.0;
+  var altitude = 0.0;
+  var speed = 0.0;
+  var address = "";
 
   _getTicketStatus() {
     activeTicket = widget.tracking.activeTicket;
@@ -25,12 +32,26 @@ class _TicketScreenState extends State<TicketScreen> {
     return activeTicket;
   }
 
+  _getCurrentPosition(){
+    currentPosition = widget.tracking.currentPosition;
+    latitude = currentPosition.latitude;
+    longitude = currentPosition.longitude;
+    altitude = currentPosition.altitude;
+    speed = currentPosition.speed;
+    setState(() {});
+    return currentPosition;
+  }
+
+  _getAddress(){
+    address = widget.tracking.address;
+    setState(() {});
+    return address;
+  }
+
     void startTrip() async {
       if (!_getTicketStatus()) {
         widget.tracking.activeTicket = true;
         print("TRIP STARTED:");
-        widget.tracking.ticketFuture = widget.tracking.ticketHelper.createTicket(DateTime.now().toString());
-        widget.tracking.getTicket();
         // Timer to periodic save the LocationPoints
         widget.tracking.saveLocations();
       }
@@ -69,9 +90,9 @@ class _TicketScreenState extends State<TicketScreen> {
                 ticketId: "12345",
                 ticketDate: "14.11.2022",
                 ticketTime: "10:00 Uhr",
-                latitude: widget.tracking.latitude.toString(),
-                longitude: widget.tracking.longitude.toString(),
-                address: widget.tracking.address,
+                latitude: _getCurrentPosition().latitude.toString(),
+                longitude: _getCurrentPosition().longitude.toString(),
+                address: _getAddress(),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -84,11 +105,11 @@ class _TicketScreenState extends State<TicketScreen> {
               ),
             ),
             GpsTestData(
-                latitude: widget.tracking.latitude.toString(),
-                longitude: widget.tracking.longitude.toString(),
-                altitude: widget.tracking.altitude.toString(),
-                speed: widget.tracking.speed.toString(),
-                address: widget.tracking.address
+                latitude: _getCurrentPosition().latitude.toString(),
+                longitude: _getCurrentPosition().longitude.toString(),
+                altitude: _getCurrentPosition().altitude.toString(),
+                speed: _getCurrentPosition().speed.toString(),
+                address: _getAddress(),
             ),
           ],
         ),
