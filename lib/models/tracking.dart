@@ -32,39 +32,17 @@ class Tracking {
   var ticketHelper = TicketDatabaseHelper();
   late var ticketFuture;
   late Ticket ticket;
-  bool ticketActive = false;
+  bool activeTicket = false;
 
-  void _saveLocationPoint() async {
+  void saveLocationPoint() async {
     var id = ticket.id;
     var locationHelper = LocationPointDatabaseHelper();
     var locationPointFuture = locationHelper.createLocationPoint(
         latitude, longitude, altitude, speed, id, '');
   }
 
-  void startTrip() async {
-    if (!ticketActive) {
-      ticketActive = true;
-      print("TRIP STARTED:");
-      ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
-      _getTicket();
-      // Timer to periodic save the LocationPoints
-      const oneSec = Duration(seconds: 1);
-      Timer.periodic(oneSec, (timer) {
-        _saveLocationPoint();
-        if (!ticketActive) {
-          timer.cancel();
-        }
-      });
-    }
-  }
 
-  void stopTrip() async {
-    if (ticketActive) {
-      ticketActive = false;
-    }
-  }
-
-  void _getTicket() async {
+  void getTicket() async {
     ticket = await ticketFuture;
   }
 
@@ -150,6 +128,9 @@ class Tracking {
       print('${currentPosition.latitude} ${currentPosition.longitude}');
       print('Stream paused: ${positionStream.isPaused}');
       getAddressFromLatLng(currentPosition.latitude, currentPosition.longitude);
+      if (!activeTicket) {
+        timer.cancel();
+      }
     });
   }
 }

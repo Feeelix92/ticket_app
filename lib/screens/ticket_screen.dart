@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
@@ -15,6 +17,32 @@ class TicketScreen extends StatefulWidget {
 }
 
 class _TicketScreenState extends State<TicketScreen> {
+  late bool activeTicket;
+
+  _getTicketStatus() {
+    activeTicket = widget.tracking.activeTicket;
+    setState(() {});
+    return activeTicket;
+  }
+
+    void startTrip() async {
+      if (!_getTicketStatus()) {
+        widget.tracking.activeTicket = true;
+        print("TRIP STARTED:");
+        widget.tracking.ticketFuture = widget.tracking.ticketHelper.createTicket(DateTime.now().toString());
+        widget.tracking.getTicket();
+        // Timer to periodic save the LocationPoints
+        widget.tracking.saveLocations();
+      }
+    }
+
+    void stopTrip() async {
+      if (_getTicketStatus()) {
+        widget.tracking.activeTicket = false;
+        print("TRIP STOPED:");
+      }
+    }
+
   @override
   void initState() {
     if (mounted) {
@@ -50,8 +78,8 @@ class _TicketScreenState extends State<TicketScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  buildStartTripButton(widget.tracking.startTrip, 'Fahrt starten', primaryColor),
-                  buildEndTripButton(widget.tracking.stopTrip, 'Fahrt beenden', secondaryColor),
+                  buildStartTripButton(startTrip, 'Fahrt starten', primaryColor),
+                  buildEndTripButton(stopTrip, 'Fahrt beenden', secondaryColor),
                 ],
               ),
             ),
@@ -76,9 +104,9 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: widget.tracking.ticketActive ?  null : tripFunction,
+            onPressed: _getTicketStatus() ?  null : tripFunction,
             style: ButtonStyle(
-              backgroundColor: widget.tracking.ticketActive ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
+              backgroundColor: _getTicketStatus() ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
             ),
             child: Text(
               text,
@@ -97,9 +125,9 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: widget.tracking.ticketActive ? tripFunction : null,
+            onPressed: _getTicketStatus() ? tripFunction : null,
             style: ButtonStyle(
-              backgroundColor: widget.tracking.ticketActive ?  MaterialStateProperty.all<Color>(color) : MaterialStateProperty.all<Color>(accentColor3),
+              backgroundColor: _getTicketStatus() ?  MaterialStateProperty.all<Color>(color) : MaterialStateProperty.all<Color>(accentColor3),
             ),
             child: Text(
               text,
