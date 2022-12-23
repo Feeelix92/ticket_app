@@ -55,7 +55,6 @@ class Tracking {
       print(counter);
       print('${currentPosition.latitude} ${currentPosition.longitude}');
       print('Stream paused: ${positionStream.isPaused}');
-      getAddressFromLatLng(currentPosition.latitude, currentPosition.longitude);
       print(address);
       saveLocationPoint();
       if (!activeTicket) {
@@ -64,7 +63,7 @@ class Tracking {
     });
   }
 
-  getAddressFromLatLng(double latitude, double longitude) async {
+  void getAddressFromLatLng(double latitude, double longitude) async {
     try {
       List<Placemark> placemarks =
       await placemarkFromCoordinates(latitude, longitude);
@@ -72,7 +71,6 @@ class Tracking {
       address =
       "${place.street}, \n${place.postalCode} ${place.locality}\n${place
           .administrativeArea}, ${place.country}";
-      return address;
     } catch (e) {
       print(e);
     }
@@ -135,7 +133,7 @@ class Tracking {
           longitude = position.longitude;
           altitude = position.altitude;
           speed = position.speed;
-          address = getAddressFromLatLng(latitude, longitude);
+          getAddressFromLatLng(latitude, longitude);
         });
   }
 }

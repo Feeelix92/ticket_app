@@ -88,6 +88,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
         selectedItemColor: secondaryColor,
         onTap: onTappedBar,
       ),
+      // Button to refresh TestData
       floatingActionButton: FloatingActionButton(
       onPressed: refreshPage,
       tooltip: 'Increment',
