@@ -6,6 +6,7 @@ import 'package:ticket_app/screens/loading_screen.dart';
 import 'package:workmanager/workmanager.dart';
 import 'colors.dart';
 import 'package:material_color_generator/material_color_generator.dart';
+import 'models/tracking.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
@@ -24,13 +25,25 @@ Future<void> main() async {
       isInDebugMode:
           true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
       );
-  Workmanager().registerOneOffTask("_MyNavigationBarState", "_saveLocations");
-  runApp(const MyApp());
+  Workmanager().registerOneOffTask("Tracking", "_saveLocations");
+  runApp(MyApp(Tracking()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  final Tracking tracking;
+  const MyApp(this.tracking, {super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    widget.tracking.checkGps();
+    widget.tracking.getLocationFromStream();
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -40,7 +53,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: generateMaterialColor(color: primaryColor),
         fontFamily: "Montserrat",
       ),
-      home: const LoadingScreen(),
+      home: LoadingScreen(widget.tracking),
     );
   }
 }
