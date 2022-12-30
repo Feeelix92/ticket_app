@@ -7,6 +7,7 @@ import 'package:workmanager/workmanager.dart';
 import 'colors.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'models/tracking.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
@@ -26,6 +27,8 @@ Future<void> main() async {
           true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
       );
   Workmanager().registerOneOffTask("Tracking", "_saveLocations");
+
+  await Firebase.initializeApp();
   runApp(MyApp(Tracking()));
 }
 
