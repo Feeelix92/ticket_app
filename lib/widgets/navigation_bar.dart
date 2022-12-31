@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ticket_app/models/tracking.dart';
+import 'package:ticket_app/screens/login_screen.dart';
 import 'package:ticket_app/screens/map_screen.dart';
 import 'package:ticket_app/screens/ticket_history_screen.dart';
 import 'package:ticket_app/screens/ticket_screen.dart';
@@ -64,6 +65,17 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
                 // Update the state of the app.
                 // ...
               },
+            ),
+            Expanded(
+              child: Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: MaterialButton(
+                  onPressed: () => {
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const LoginPage()))
+                  },
+                  child: const Text('Login'),
+                ),
+              ),
             ),
           ],
         ),

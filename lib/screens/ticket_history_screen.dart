@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/tracking.dart';
@@ -14,6 +15,19 @@ class TicketHistory extends StatefulWidget {
 class _TicketHistoryState extends State<TicketHistory> {
   @override
   Widget build(BuildContext context) {
-    return const Text('TicketHistory');
+    return Scaffold(
+      body: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot){
+          if(snapshot.hasData){
+            return const Text('TicketHistory');
+          } else {
+            return const Text('nicht eingeloggt');
+          }
+        },
+      ),
+    );
+
+
   }
 }
