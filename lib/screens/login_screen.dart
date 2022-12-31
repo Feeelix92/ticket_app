@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ticket_app/colors.dart';
-import 'package:ticket_app/main.dart';
-import '../colors.dart';
 
 class LoginPage extends StatefulWidget{
   const LoginPage({Key? key}) : super(key:key);
@@ -71,6 +69,7 @@ class _LoginPageState extends State<LoginPage>{
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
+                    obscureText: true,
                     controller: _passwordController,
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
