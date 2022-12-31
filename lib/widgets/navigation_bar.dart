@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_app/models/tracking.dart';
 import 'package:ticket_app/screens/login_screen.dart';
@@ -18,6 +19,8 @@ class MyNavigationBar extends StatefulWidget {
 
 class _MyNavigationBarState extends State<MyNavigationBar> {
   int _currentIndex = 0;
+  final user = FirebaseAuth.instance.currentUser!;
+
   List<Widget> _children() => [
     TicketScreen(tracking: widget.tracking),
     MapScreen(tracking: widget.tracking),
@@ -74,6 +77,18 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
                     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const LoginPage()))
                   },
                   child: const Text('Login'),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: MaterialButton(
+                  onPressed: () => {
+                    FirebaseAuth.instance.signOut()
+                  },
+                  color: primaryColor,
+                  child: const Text('Logout'),
                 ),
               ),
             ),
