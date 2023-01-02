@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,11 +24,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future signUp() async {
     if(passwordConfirmed()){
+      //create User
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+
+      //add Details
+      addUserDetails(
+        _firstNameController.text.trim(),
+        _lastNameController.text.trim(),
+        _emailController.text.trim(),
+        int.parse(_ageController.text.trim()),
+      );
     }
+  }
+
+  Future addUserDetails(String firstName, String lastName, String email, int age) async{
+    await FirebaseFirestore.instance.collection('users').add({
+      'firstName': firstName,
+      'lastName': lastName,
+      'age': age,
+      'email': email,
+    });
   }
 
   bool passwordConfirmed() {
