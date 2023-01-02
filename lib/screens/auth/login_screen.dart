@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ticket_app/colors.dart';
 
+import 'forgotPassword_screen.dart';
+
 class LoginScreen extends StatefulWidget{
   final VoidCallback showRegisterScreen;
   const LoginScreen({Key? key, required this.showRegisterScreen}) : super(key:key);
@@ -94,6 +96,29 @@ class _LoginScreenState extends State<LoginScreen>{
                   ),
                 ),
                 const SizedBox(height: 10),
+
+                Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap:(){
+                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return const ForgotPasswordScreen();
+                          },),);
+                        },
+                        child: Text(
+                          'Passwort vergessen?',
+                          style: TextStyle(
+                              color: accentColor1,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
