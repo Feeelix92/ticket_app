@@ -17,6 +17,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _ageController = TextEditingController();
 
   Future signUp() async {
     if(passwordConfirmed()){
@@ -24,7 +27,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      print(_emailController.text.trim());
     }
   }
 
@@ -40,6 +42,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _ageController.dispose();
     super.dispose();
   }
 
@@ -52,17 +57,82 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.flutter_dash,
-                    size: 120,
-                  ),
-                  const SizedBox(height: 75),
                   const Text(
                     'Registrieren',
                     style: TextStyle(
                       fontSize: 52
                     ),
                   ),
+                  const SizedBox(height: 10),
+
+                  //firstName
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: TextField(
+                      obscureText: true,
+                      controller: _firstNameController,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primaryColor),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: secondaryColor),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        hintText: 'Vorname',
+                        fillColor: accentColor2,
+                        filled: true,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  //lastName
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: TextField(
+                      obscureText: true,
+                      controller: _lastNameController,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primaryColor),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: secondaryColor),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        hintText: 'Nachname',
+                        fillColor: accentColor2,
+                        filled: true,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  //age
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: TextField(
+                      obscureText: true,
+                      controller: _ageController,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primaryColor),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: secondaryColor),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        hintText: 'Geburtsdatum',
+                        fillColor: accentColor2,
+                        filled: true,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
 
                   //eMail
                   Padding(
@@ -132,6 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 10),
 
+                  //Button
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: GestureDetector(
