@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:ticket_app/screens/auth/auth_screen.dart';
 import 'package:ticket_app/screens/loading_screen.dart';
+import 'package:ticket_app/screens/auth/main_screen.dart';
 import 'package:workmanager/workmanager.dart';
 import 'colors.dart';
 import 'package:material_color_generator/material_color_generator.dart';
@@ -56,7 +58,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: generateMaterialColor(color: primaryColor),
         fontFamily: "Montserrat",
       ),
-      home: LoadingScreen(widget.tracking),
+      home: const MainScreen(),
     );
   }
 }

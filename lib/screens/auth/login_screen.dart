@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ticket_app/colors.dart';
 
-class LoginPage extends StatefulWidget{
-  const LoginPage({Key? key}) : super(key:key);
+class LoginScreen extends StatefulWidget{
+  final VoidCallback showRegisterScreen;
+  const LoginScreen({Key? key, required this.showRegisterScreen}) : super(key:key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage>{
+class _LoginScreenState extends State<LoginScreen>{
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -125,6 +126,28 @@ class _LoginPageState extends State<LoginPage>{
                     },
                     child: const Text('zurück'),
                   )
+                ),
+                const SizedBox(height: 25),
+
+                Row(
+                  children: [
+                    const Text(
+                      'Bisher kein Nutzer?',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: widget.showRegisterScreen,
+                      child: Text(
+                        'Registrieren',
+                        style: TextStyle(
+                          color: accentColor1,
+                          fontWeight: FontWeight.bold
+                        ),
+                      )
+                    )
+                  ],
                 )
               ],
             ),
