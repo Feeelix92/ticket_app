@@ -16,13 +16,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   Future signUp() async {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
-    print(_emailController.text.trim());
+    if(passwordConfirmed()){
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      print(_emailController.text.trim());
+    }
+  }
+
+  bool passwordConfirmed() {
+    if(_passwordController.text.trim() == _confirmPasswordController.text.trim()){
+      return true;
+    } else{
+      return false;
+    }
   }
 
   @override
@@ -52,6 +63,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       fontSize: 52
                     ),
                   ),
+
+                  //eMail
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: TextField(
@@ -73,6 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 10),
 
+                  //Password
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: TextField(
@@ -88,6 +102,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         hintText: 'Password',
+                        fillColor: accentColor2,
+                        filled: true,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  //Password Check
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: TextField(
+                      obscureText: true,
+                      controller: _confirmPasswordController,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primaryColor),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: secondaryColor),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        hintText: 'Password Check',
                         fillColor: accentColor2,
                         filled: true,
                       ),
