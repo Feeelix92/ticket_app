@@ -41,8 +41,11 @@ class Tracking {
   void saveLocationPoint() async {
     var id = ticket.id;
     var locationHelper = LocationPointDatabaseHelper();
+    if(longitude.floor() == 0 || longitude.floor() == 0 ){
+      return;
+    }
     var locationPointFuture = locationHelper.createLocationPoint(
-        latitude, longitude, altitude, speed, id, address);
+        latitude, longitude, altitude, speed, id, DateTime.now().toString(), address);
   }
 
   Future<void> saveLocations() async {
