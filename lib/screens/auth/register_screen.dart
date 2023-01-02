@@ -120,22 +120,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 25.0),
 
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (Navigator.canPop(context)){
-                            Navigator.pop(context);
-                          }else{
-                            SystemNavigator.pop();
-                          }
-                        },
-                        child: const Text('zurück'),
-                      )
-                  ),
-                  SizedBox(height: 25),
-
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         'Ich bin Nutzer',

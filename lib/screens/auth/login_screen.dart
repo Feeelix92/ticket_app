@@ -45,7 +45,13 @@ class _LoginScreenState extends State<LoginScreen>{
                   size: 120,
                 ),
                 const SizedBox(height: 75),
-                const Text('Willkommen zurück'),
+                const Text(
+                  'Login',
+                  style: TextStyle(
+                    fontSize: 52,
+
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
@@ -114,22 +120,8 @@ class _LoginScreenState extends State<LoginScreen>{
                 ),
                 const SizedBox(height: 25.0),
 
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (Navigator.canPop(context)){
-                        Navigator.pop(context);
-                      }else{
-                        SystemNavigator.pop();
-                      }
-                    },
-                    child: const Text('zurück'),
-                  )
-                ),
-                const SizedBox(height: 25),
-
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
                       'Bisher kein Nutzer?',
