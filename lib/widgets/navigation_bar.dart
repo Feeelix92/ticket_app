@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_app/models/tracking.dart';
-import 'package:ticket_app/screens/login_screen.dart';
+import 'package:ticket_app/screens/auth/login_screen.dart';
 import 'package:ticket_app/screens/map_screen.dart';
 import 'package:ticket_app/screens/ticket_history_screen.dart';
 import 'package:ticket_app/screens/ticket_screen.dart';
@@ -74,7 +74,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
                 alignment: FractionalOffset.bottomCenter,
                 child: MaterialButton(
                   onPressed: () => {
-                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const LoginPage()))
+                    //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const LoginScreen(showRegisterPage: showRegisterPage)))
                   },
                   child: const Text('Login'),
                 ),
