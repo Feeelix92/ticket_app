@@ -57,6 +57,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  void _showDatePicker(){
+    showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now()
+    );
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -148,6 +157,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: 'Geburtsdatum',
                         fillColor: accentColor2,
                         filled: true,
+                        suffixIcon: IconButton(
+                          onPressed: _showDatePicker,
+                          icon: const Icon(Icons.calendar_month),
+                        )
                       ),
                     ),
                   ),
