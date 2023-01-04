@@ -41,16 +41,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _firstNameController.text.trim(),
         _lastNameController.text.trim(),
         _emailController.text.trim(),
-        int.parse(_dateInput.text),
+        _dateInput.text,
       );
     }
   }
 
-  Future addUserDetails(String firstName, String lastName, String email, int age) async{
+  Future addUserDetails(String firstName, String lastName, String email, String birthdate) async{
     await FirebaseFirestore.instance.collection('users').add({
       'firstName': firstName,
       'lastName': lastName,
-      'age': age,
+      'birthdate': birthdate,
       'email': email,
     });
   }
