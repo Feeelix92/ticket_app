@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ticket_app/colors.dart';
@@ -11,8 +13,9 @@ import '../widgets/ticket_information.dart';
 
 class TicketScreen extends StatefulWidget {
   final Tracking tracking;
-  const TicketScreen({Key? key, required this.tracking})
-      : super(key: key);
+
+  const TicketScreen({Key? key, required this.tracking}) : super(key: key);
+
   @override
   State<TicketScreen> createState() => _TicketScreenState();
 }
@@ -25,6 +28,7 @@ class _TicketScreenState extends State<TicketScreen> {
   var altitude = 0.0;
   var speed = 0.0;
   var address = "";
+  final user = FirebaseAuth.instance.currentUser!;
 
   _getTicketStatus() {
     activeTicket = widget.tracking.activeTicket;
@@ -32,7 +36,7 @@ class _TicketScreenState extends State<TicketScreen> {
     return activeTicket;
   }
 
-  _getCurrentPosition(){
+  _getCurrentPosition() {
     currentPosition = widget.tracking.currentPosition;
     latitude = currentPosition.latitude;
     longitude = currentPosition.longitude;
@@ -42,27 +46,41 @@ class _TicketScreenState extends State<TicketScreen> {
     return currentPosition;
   }
 
-  _getAddress(){
+  _getAddress() {
     address = widget.tracking.address;
     setState(() {});
     return address;
   }
 
-    void startTrip() async {
-      if (!_getTicketStatus()) {
-        widget.tracking.activeTicket = true;
-        print("TRIP STARTED:");
-        // Timer to periodic save the LocationPoints
-        widget.tracking.saveLocations();
-      }
-    }
+  void startTrip() async {
+    if (!_getTicketStatus()) {
+      widget.tracking.activeTicket = true;
+      print("TRIP STARTED:");
+      // Timer to periodic save the LocationPoints
+      widget.tracking.saveLocations();
 
-    void stopTrip() async {
-      if (_getTicketStatus()) {
-        widget.tracking.activeTicket = false;
-        print("TRIP STOPED:");
-      }
+      saveTicket(
+          GeoPoint(latitude, longitude),
+          DateTime.now(),
+          user.uid
+      );
     }
+  }
+
+  Future saveTicket(GeoPoint startPoint, DateTime startTime, String userID) async {
+    await FirebaseFirestore.instance.collection('tickets').add({
+      'startPoint': startPoint,
+      'startTime': startTime,
+      'userID': userID,
+    });
+  }
+
+  void stopTrip() async {
+    if (_getTicketStatus()) {
+      widget.tracking.activeTicket = false;
+      print("TRIP STOPED:");
+    }
+  }
 
   @override
   void initState() {
@@ -86,30 +104,31 @@ class _TicketScreenState extends State<TicketScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TicketInformation(
-                ticketHolderName: "Max Mustermann",
-                ticketId: "12345",
-                ticketDate: "14.11.2022",
-                ticketTime: "10:00 Uhr",
-                latitude: _getCurrentPosition().latitude.toString(),
-                longitude: _getCurrentPosition().longitude.toString(),
-                address: _getAddress(),
+              ticketHolderName: "Max Mustermann",
+              ticketId: "12345",
+              ticketDate: "14.11.2022",
+              ticketTime: "10:00 Uhr",
+              latitude: _getCurrentPosition().latitude.toString(),
+              longitude: _getCurrentPosition().longitude.toString(),
+              address: _getAddress(),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  buildStartTripButton(startTrip, 'Fahrt starten', primaryColor),
+                  buildStartTripButton(
+                      startTrip, 'Fahrt starten', primaryColor),
                   buildEndTripButton(stopTrip, 'Fahrt beenden', secondaryColor),
                 ],
               ),
             ),
             GpsTestData(
-                latitude: _getCurrentPosition().latitude.toString(),
-                longitude: _getCurrentPosition().longitude.toString(),
-                altitude: _getCurrentPosition().altitude.toString(),
-                speed: _getCurrentPosition().speed.toString(),
-                address: _getAddress(),
+              latitude: _getCurrentPosition().latitude.toString(),
+              longitude: _getCurrentPosition().longitude.toString(),
+              altitude: _getCurrentPosition().altitude.toString(),
+              speed: _getCurrentPosition().speed.toString(),
+              address: _getAddress(),
             ),
           ],
         ),
@@ -125,9 +144,11 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: _getTicketStatus() ?  null : tripFunction,
+            onPressed: _getTicketStatus() ? null : tripFunction,
             style: ButtonStyle(
-              backgroundColor: _getTicketStatus() ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
+              backgroundColor: _getTicketStatus()
+                  ? MaterialStateProperty.all<Color>(accentColor3)
+                  : MaterialStateProperty.all<Color>(color),
             ),
             child: Text(
               text,
@@ -138,6 +159,7 @@ class _TicketScreenState extends State<TicketScreen> {
       ),
     );
   }
+
   Center buildEndTripButton(tripFunction, text, color) {
     return Center(
       child: Padding(
@@ -148,7 +170,9 @@ class _TicketScreenState extends State<TicketScreen> {
           child: ElevatedButton(
             onPressed: _getTicketStatus() ? tripFunction : null,
             style: ButtonStyle(
-              backgroundColor: _getTicketStatus() ?  MaterialStateProperty.all<Color>(color) : MaterialStateProperty.all<Color>(accentColor3),
+              backgroundColor: _getTicketStatus()
+                  ? MaterialStateProperty.all<Color>(color)
+                  : MaterialStateProperty.all<Color>(accentColor3),
             ),
             child: Text(
               text,
@@ -159,7 +183,6 @@ class _TicketScreenState extends State<TicketScreen> {
       ),
     );
   }
-
 }
 
 class GpsTestData extends StatelessWidget {
@@ -170,8 +193,7 @@ class GpsTestData extends StatelessWidget {
     required String altitude,
     required String speed,
     required String address,
-  })
-      : _latitude = latitude,
+  })  : _latitude = latitude,
         _longitude = longitude,
         _altitude = altitude,
         _speed = speed,
