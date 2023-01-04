@@ -29,6 +29,7 @@ class _TicketScreenState extends State<TicketScreen> {
   var speed = 0.0;
   var address = "";
   final user = FirebaseAuth.instance.currentUser!;
+  var ticketID = "";
 
   _getTicketStatus() {
     activeTicket = widget.tracking.activeTicket;
@@ -72,14 +73,27 @@ class _TicketScreenState extends State<TicketScreen> {
       'startPoint': startPoint,
       'startTime': startTime,
       'userID': userID,
-    });
+    }).then((savedTicket) => ticketID = savedTicket.id);
+    print(ticketID);
   }
 
   void stopTrip() async {
     if (_getTicketStatus()) {
       widget.tracking.activeTicket = false;
       print("TRIP STOPED:");
+
+      stopTicket(
+          GeoPoint(latitude, longitude),
+          DateTime.now()
+      );
     }
+  }
+
+  Future stopTicket(GeoPoint endPoint, DateTime endTime) async{
+    await FirebaseFirestore.instance.collection('tickets').doc(ticketID).update({
+      'endPoint': endPoint,
+      'endTime': endTime
+    });
   }
 
   @override
