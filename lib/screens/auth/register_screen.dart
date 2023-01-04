@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
+import 'package:intl/intl.dart';
 
 
 class RegisterScreen extends StatefulWidget {
@@ -19,7 +20,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _confirmPasswordController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
-  final _ageController = TextEditingController();
+  final TextEditingController _dateInput = TextEditingController();
+
+  @override
+  void initState() {
+    _dateInput.text = ""; //set the initial value of text field
+    super.initState();
+  }
 
   Future signUp() async {
     if(passwordConfirmed()){
@@ -34,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _firstNameController.text.trim(),
         _lastNameController.text.trim(),
         _emailController.text.trim(),
-        int.parse(_ageController.text.trim()),
+        int.parse(_dateInput.text),
       );
     }
   }
@@ -56,13 +63,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  void _showDatePicker(){
-    showDatePicker(
+  _selectBirthDate() async {
+    DateTime? pickedDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime(1900),
         lastDate: DateTime.now()
     );
+
+    if(pickedDate != null ){
+      String formattedDate = DateFormat('dd.MM.yyyy').format(pickedDate);
+      setState(() {
+        _dateInput.text = formattedDate;
+      });
+    }else{
+      print("Kein Datum gewählt");
+    }
   }
 
   @override
@@ -71,7 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _passwordController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _ageController.dispose();
+    _dateInput.dispose();
     super.dispose();
   }
 
@@ -135,24 +151,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   //age
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: TextField(
-                      controller: _ageController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primaryColor),
+                      child:TextField(
+                        controller: _dateInput, //editing controller of this TextField
+                        decoration: InputDecoration(
+                          icon: const Icon(Icons.calendar_month), //icon of text field
+                          hintText: "Geburtsdatum",
+                          filled: true,
+                          fillColor: accentColor2,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: primaryColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: secondaryColor),
+                          ),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: secondaryColor),
-                        ),
-                        hintText: 'Geburtsdatum',
-                        fillColor: accentColor2,
-                        filled: true,
-                        suffixIcon: IconButton(
-                          onPressed: _showDatePicker,
-                          icon: const Icon(Icons.calendar_month),
-                        )
-                      ),
-                    ),
+                        readOnly: true,
+                        //set it true, so that user will not able to edit text
+                        onTap: _selectBirthDate
+                      )
                   ),
                   const SizedBox(height: 10),
 
