@@ -100,11 +100,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: secondaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         hintText: 'Vorname',
                         fillColor: accentColor2,
@@ -122,11 +120,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: secondaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         hintText: 'Nachname',
                         fillColor: accentColor2,
@@ -144,11 +140,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: secondaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         hintText: 'Geburtsdatum',
                         fillColor: accentColor2,
@@ -170,11 +164,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: secondaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         hintText: 'Email',
                         fillColor: accentColor2,
@@ -193,11 +185,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: secondaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         hintText: 'Password',
                         fillColor: accentColor2,
@@ -216,11 +206,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: primaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: secondaryColor),
-                          borderRadius: BorderRadius.circular(12),
                         ),
                         hintText: 'Password Check',
                         fillColor: accentColor2,
@@ -232,28 +220,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   //Button
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: GestureDetector(
-                      onTap: signUp,
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: primaryColor,
-                          borderRadius: BorderRadius.circular(12),
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: ElevatedButton(
+                        onPressed: signUp,
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
                         ),
-                        child: Center(
-                          child: Text(
-                            'Registrieren',
-                            style: TextStyle(
-                              color: accentColor2,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
+                        child: Text(
+                          'Registrieren',
+                          style: TextStyle(
+                            color: accentColor2,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
                           ),
                         ),
-                      ),
-                    ),
+                      )
                   ),
+
                   const SizedBox(height: 25.0),
 
                   Row(
