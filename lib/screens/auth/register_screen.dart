@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:ticket_app/colors.dart';
 
 
@@ -97,7 +96,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: TextField(
-                      obscureText: true,
                       controller: _firstNameController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -120,7 +118,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: TextField(
-                      obscureText: true,
                       controller: _lastNameController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
@@ -143,7 +140,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: TextField(
-                      obscureText: true,
                       controller: _ageController,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
