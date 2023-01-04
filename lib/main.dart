@@ -58,7 +58,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: generateMaterialColor(color: primaryColor),
         fontFamily: "Montserrat",
       ),
-      home: const MainScreen(),
+      home: MainScreen(widget.tracking),
     );
   }
 }
