@@ -73,8 +73,11 @@ class _TicketScreenState extends State<TicketScreen> {
       'startPoint': startPoint,
       'startTime': startTime,
       'userID': userID,
-    }).then((savedTicket) => ticketID = savedTicket.id);
-    print(ticketID);
+    }).then((savedTicket) {
+      setState(() {
+        ticketID = savedTicket.id;
+      });
+    });
   }
 
   void stopTrip() async {
@@ -119,7 +122,7 @@ class _TicketScreenState extends State<TicketScreen> {
           children: [
             TicketInformation(
               ticketHolderName: "Max Mustermann",
-              ticketId: "12345",
+              ticketId: ticketID,
               ticketDate: "14.11.2022",
               ticketTime: "10:00 Uhr",
               latitude: _getCurrentPosition().latitude.toString(),
