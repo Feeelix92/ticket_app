@@ -69,11 +69,11 @@ class _TicketScreenState extends State<TicketScreen> {
     }
   }
 
-  Future saveTicket(GeoPoint startPoint, DateTime startTime, String userID) async {
+  Future saveTicket(GeoPoint startPoint, DateTime startTime, String authId) async {
     await FirebaseFirestore.instance.collection('tickets').add({
       'startPoint': startPoint,
       'startTime': startTime,
-      'userID': userID,
+      'authId': authId,
     }).then((savedTicket) {
       setState(() {
         ticketID = savedTicket.id;
