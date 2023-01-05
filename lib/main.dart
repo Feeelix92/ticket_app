@@ -2,8 +2,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:ticket_app/screens/auth/auth_screen.dart';
-import 'package:ticket_app/screens/loading_screen.dart';
 import 'package:ticket_app/screens/auth/main_screen.dart';
 import 'package:workmanager/workmanager.dart';
 import 'colors.dart';
