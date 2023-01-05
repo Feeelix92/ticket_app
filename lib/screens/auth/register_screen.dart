@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:intl/intl.dart';
 
@@ -46,6 +47,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
         user.uid
       );
     }
+
+    _storeUserDetails(
+        _firstNameController.text.trim(),
+        _lastNameController.text.trim(),
+        _emailController.text.trim(),
+        _dateInput.text,
+        user.uid
+    );
+  }
+
+  _storeUserDetails(String firstName, String lastName, String email, String birthdate, String authId) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('firstName', firstName);
+    await prefs.setString('lastName', lastName);
+    await prefs.setString('email', email);
+    await prefs.setString('birthdate', birthdate);
+    await prefs.setString('authId', authId);
   }
 
   Future addUserDetails(String firstName, String lastName, String email, String birthdate, String authId) async{

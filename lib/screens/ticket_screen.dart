@@ -11,6 +11,7 @@ import 'package:ticket_app/models/csv_reader.dart';
 import 'package:ticket_app/models/tracking.dart';
 import '../widgets/bold_styled_text.dart';
 import '../widgets/ticket_information.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TicketScreen extends StatefulWidget {
   final Tracking tracking;
@@ -31,6 +32,8 @@ class _TicketScreenState extends State<TicketScreen> {
   var address = "";
   final user = FirebaseAuth.instance.currentUser!;
   var ticketID = "";
+  var firstName = "";
+  var lastName = "";
 
   _getTicketStatus() {
     activeTicket = widget.tracking.activeTicket;
@@ -100,8 +103,19 @@ class _TicketScreenState extends State<TicketScreen> {
     });
   }
 
+  getUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? localFirstName = prefs.getString('firstName');
+    final String? localLastName = prefs.getString('lastName');
+    setState(() {
+      firstName = localFirstName!;
+      lastName = localLastName!;
+    });
+  }
+
   @override
   void initState() {
+    getUserName();
     if (mounted) {
       initDatabase().initializeDB();
       var csv = CsvReader();
@@ -122,7 +136,7 @@ class _TicketScreenState extends State<TicketScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TicketInformation(
-              ticketHolderName: "Max Mustermann",
+              ticketHolderName: "$firstName $lastName",
               ticketId: ticketID,
               ticketDate: DateFormat('dd.MM.yyyy').format(DateTime.now()),
               ticketTime: '${DateFormat('kk:mm').format(DateTime.now())} Uhr',
