@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_app/models/tracking.dart';
 import 'package:ticket_app/screens/map_screen.dart';
+import 'package:ticket_app/screens/profile_screen.dart';
 import 'package:ticket_app/screens/ticket_history_screen.dart';
 import 'package:ticket_app/screens/ticket_screen.dart';
 import '../colors.dart';
@@ -72,12 +73,11 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
               child: Text('$firstName $lastName', style: TextStyle(color: accentColor2)),
             ),
             ListTile(
-              title: const Text('Item 1'),
+              title: const Text('Profil'),
               onTap: () {
-                // Update the state of the app.
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return const ProfileScreen();
+                },),);
               },
             ),
             ListTile(
