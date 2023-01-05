@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_app/models/tracking.dart';
-import 'package:ticket_app/screens/auth/login_screen.dart';
 import 'package:ticket_app/screens/map_screen.dart';
 import 'package:ticket_app/screens/ticket_history_screen.dart';
 import 'package:ticket_app/screens/ticket_screen.dart';
@@ -70,7 +69,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
               decoration: BoxDecoration(
                 color: primaryColor,
               ),
-              child: Text('$firstName $lastName'),
+              child: Text('$firstName $lastName', style: TextStyle(color: accentColor2)),
             ),
             ListTile(
               title: const Text('Item 1'),
@@ -93,21 +92,10 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
                 alignment: FractionalOffset.bottomCenter,
                 child: MaterialButton(
                   onPressed: () => {
-                    //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const LoginScreen(showRegisterPage: showRegisterPage)))
-                  },
-                  child: const Text('Login'),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Align(
-                alignment: FractionalOffset.bottomCenter,
-                child: MaterialButton(
-                  onPressed: () => {
                     FirebaseAuth.instance.signOut()
                   },
                   color: primaryColor,
-                  child: const Text('Logout'),
+                  child: Text('Logout', style: TextStyle(color: accentColor2)),
                 ),
               ),
             ),
