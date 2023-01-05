@@ -21,6 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final TextEditingController _dateInput = TextEditingController();
+  late User user = FirebaseAuth.instance.currentUser!;
 
   @override
   void initState() {
@@ -42,16 +43,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _lastNameController.text.trim(),
         _emailController.text.trim(),
         _dateInput.text,
+        user.uid
       );
     }
   }
 
-  Future addUserDetails(String firstName, String lastName, String email, String birthdate) async{
+  Future addUserDetails(String firstName, String lastName, String email, String birthdate, String authId) async{
     await FirebaseFirestore.instance.collection('users').add({
       'firstName': firstName,
       'lastName': lastName,
       'birthdate': birthdate,
       'email': email,
+      'authId': authId,
     });
   }
 
