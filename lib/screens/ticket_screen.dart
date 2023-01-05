@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
 import 'package:ticket_app/models/csv_reader.dart';
@@ -123,8 +124,8 @@ class _TicketScreenState extends State<TicketScreen> {
             TicketInformation(
               ticketHolderName: "Max Mustermann",
               ticketId: ticketID,
-              ticketDate: "14.11.2022",
-              ticketTime: "10:00 Uhr",
+              ticketDate: DateFormat('dd.MM.yyyy').format(DateTime.now()),
+              ticketTime: '${DateFormat('kk:mm').format(DateTime.now())} Uhr',
               latitude: _getCurrentPosition().latitude.toString(),
               longitude: _getCurrentPosition().longitude.toString(),
               address: _getAddress(),
