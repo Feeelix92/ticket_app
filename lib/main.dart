@@ -10,6 +10,7 @@ import 'colors.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'models/tracking.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
@@ -54,6 +55,12 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Easy-Ticket',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate
+      ],
+      supportedLocales: const [
+        Locale('de')
+      ],
       theme: ThemeData(
         primarySwatch: generateMaterialColor(color: primaryColor),
         fontFamily: "Montserrat",

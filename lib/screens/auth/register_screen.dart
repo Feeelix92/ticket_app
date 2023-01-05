@@ -88,6 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   _selectBirthDate() async {
     DateTime? pickedDate = await showDatePicker(
         context: context,
+        locale: const Locale('de'),
         initialDate: DateTime.now(),
         firstDate: DateTime(1900),
         lastDate: DateTime.now()
