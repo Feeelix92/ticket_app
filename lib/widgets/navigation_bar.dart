@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_app/models/tracking.dart';
 import 'package:ticket_app/screens/auth/login_screen.dart';
 import 'package:ticket_app/screens/map_screen.dart';
@@ -20,6 +21,18 @@ class MyNavigationBar extends StatefulWidget {
 class _MyNavigationBarState extends State<MyNavigationBar> {
   int _currentIndex = 0;
   final user = FirebaseAuth.instance.currentUser!;
+  var firstName = "";
+  var lastName = "";
+
+  getUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? localFirstName = prefs.getString('firstName');
+    final String? localLastName = prefs.getString('lastName');
+    setState(() {
+      firstName = localFirstName!;
+      lastName = localLastName!;
+    });
+  }
 
   List<Widget> _children() => [
     TicketScreen(tracking: widget.tracking),
@@ -33,6 +46,12 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   }
   void refreshPage(){
     setState(() {});
+  }
+
+  @override
+  void initState() {
+    getUserName();
+    super.initState();
   }
 
   @override
@@ -51,7 +70,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
               decoration: BoxDecoration(
                 color: primaryColor,
               ),
-              child: const Text('Profil'),
+              child: Text('$firstName $lastName'),
             ),
             ListTile(
               title: const Text('Item 1'),
