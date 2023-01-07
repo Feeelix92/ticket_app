@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../colors.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -43,11 +45,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 TextField(
                   controller: _firstNameController,
-                  decoration: const InputDecoration(labelText: 'Vorname'),
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                    labelText: 'Vorname',
+                    fillColor: accentColor2,
+                    filled: true,
+                  ),
                 ),
+                const SizedBox(height: 10),
                 TextField(
                   controller: _lastNameController,
-                  decoration: const InputDecoration(labelText: 'Nachname'),
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                    labelText: 'Nachname',
+                    fillColor: accentColor2,
+                    filled: true,
+                  ),
                 ),
                 const SizedBox(
                   height: 20,

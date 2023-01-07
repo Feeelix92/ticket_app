@@ -143,7 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: secondaryColor),
                         ),
-                        hintText: 'Vorname',
+                        labelText: 'Vorname',
                         fillColor: accentColor2,
                         filled: true,
                       ),
@@ -163,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: secondaryColor),
                         ),
-                        hintText: 'Nachname',
+                        labelText: 'Nachname',
                         fillColor: accentColor2,
                         filled: true,
                       ),
@@ -178,7 +178,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: _dateInput, //editing controller of this TextField
                         decoration: InputDecoration(
                           icon: const Icon(Icons.calendar_month), //icon of text field
-                          hintText: "Geburtsdatum",
+                          labelText: "Geburtsdatum",
                           filled: true,
                           fillColor: accentColor2,
                           enabledBorder: OutlineInputBorder(
@@ -207,7 +207,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: secondaryColor),
                         ),
-                        hintText: 'Email',
+                        labelText: 'Email',
                         fillColor: accentColor2,
                         filled: true,
                       ),
@@ -228,7 +228,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: secondaryColor),
                         ),
-                        hintText: 'Password',
+                        labelText: 'Password',
                         fillColor: accentColor2,
                         filled: true,
                       ),
@@ -249,7 +249,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: secondaryColor),
                         ),
-                        hintText: 'Password Check',
+                        labelText: 'Password Check',
                         fillColor: accentColor2,
                         filled: true,
                       ),

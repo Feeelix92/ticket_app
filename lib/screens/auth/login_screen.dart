@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen>{
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: secondaryColor),
                       ),
-                      hintText: 'Email',
+                      labelText: 'Email',
                       fillColor: accentColor2,
                       filled: true,
                     ),
@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen>{
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: secondaryColor),
                       ),
-                      hintText: 'Password',
+                      labelText: 'Password',
                       fillColor: accentColor2,
                       filled: true,
                     ),
