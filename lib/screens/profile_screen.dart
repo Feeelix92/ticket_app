@@ -76,7 +76,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 20,
                 ),
                 ElevatedButton(
-                  child: const Text('Update'),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(40),
+                  ),
                   onPressed: () async {
                     final String firstName = _firstNameController.text.trim();
                     final String lastName = _lastNameController.text.trim();
@@ -93,6 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     _storeLocal(firstName, lastName);
                   },
+                  child: const Text('Update'),
                 )
               ],
             ),
