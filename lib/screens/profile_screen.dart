@@ -4,8 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../colors.dart';
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -15,8 +13,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final user = FirebaseAuth.instance.currentUser!;
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
 
@@ -29,7 +25,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       _firstNameController.text = documentSnapshot['firstName'];
       _lastNameController.text = documentSnapshot['lastName'];
-      //_passwordController.text = documentSnapshot['password'];
     }
 
     await showModalBottomSheet(
