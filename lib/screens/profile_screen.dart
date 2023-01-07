@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../colors.dart';
 
@@ -71,12 +72,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _lastNameController.text = '';
                       Navigator.of(context).pop();
                     }
+
+                    _storeLocal(firstName, lastName);
                   },
                 )
               ],
             ),
           );
         });
+  }
+
+  _storeLocal(String firstName, String lastName) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('firstName', firstName);
+    await prefs.setString('lastName', lastName);
   }
 
   @override
@@ -104,10 +114,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children:[
                     Text(documentSnapshot['firstName']),
                     Text(documentSnapshot['lastName']),
-                    IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () =>
-                            _update(documentSnapshot)
+                    Text(documentSnapshot['email']),
+                    Text(documentSnapshot['birthdate']),
+                    ElevatedButton(
+                      onPressed: () => _update(documentSnapshot),
+                      child: const Icon(Icons.edit),
                     ),
                   ],
                 );
