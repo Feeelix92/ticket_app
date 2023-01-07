@@ -100,23 +100,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               itemBuilder: (context, index) {
                 final DocumentSnapshot documentSnapshot =
                 streamSnapshot.data!.docs[index];
-                return Card(
-                  margin: const EdgeInsets.all(10),
-                  child: ListTile(
-                    title: Text(documentSnapshot['firstName']),
-                    subtitle: Text(documentSnapshot['lastName']),
-                    trailing: SizedBox(
-                      width: 100,
-                      child: Row(
-                        children: [
-                          IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () =>
-                                  _update(documentSnapshot)),
-                        ],
-                      ),
+                return Column(
+                  children:[
+                    Text(documentSnapshot['firstName']),
+                    Text(documentSnapshot['lastName']),
+                    IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () =>
+                            _update(documentSnapshot)
                     ),
-                  ),
+                  ],
                 );
               },
             );
