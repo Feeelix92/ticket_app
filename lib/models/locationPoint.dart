@@ -11,6 +11,7 @@ class LocationPoint {
   final double altitude;
   final double speed;
   final int ticketid;
+  final String time;
   final String address;
 
   const LocationPoint({
@@ -20,6 +21,7 @@ class LocationPoint {
     required this.altitude,
     required this.speed,
     required this.ticketid,
+    required this.time,
     required this.address,
   });
 
@@ -31,13 +33,14 @@ class LocationPoint {
       'altitude': altitude,
       'speed': speed,
       'ticketid': ticketid,
+      'time': time,
       'address': address,
     };
   }
 
   @override
   String toString() {
-    return 'LocationPoint{id: $id, latitude: $latitude, longitude: $longitude, altitude: $altitude, speed: $speed, ticketid: $ticketid, address: $address,}';
+    return 'LocationPoint{id: $id, latitude: $latitude, longitude: $longitude, altitude: $altitude, speed: $speed, ticketid: $ticketid, time: $time, address: $address,}';
   }
 }
 
@@ -45,13 +48,13 @@ class LocationPointDatabaseHelper {
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
-      join(path, 'location_database1.db'),
+      join(path, 'location_database2.db'),
       version: 1,
     );
   }
 
   Future<LocationPoint> createLocationPoint(double latitude, double longitude,
-      double altitude, double speed, int ticketid, String address) async {
+      double altitude, double speed, int ticketid, String time, String address) async {
     final db = await initializeDB();
 
     final data = {
@@ -60,6 +63,7 @@ class LocationPointDatabaseHelper {
       'altitude': altitude,
       'speed': speed,
       'ticketid': ticketid,
+      'time': time,
       'address': address
     };
     final id = await db.insert('location', data,
@@ -71,6 +75,7 @@ class LocationPointDatabaseHelper {
         altitude: altitude,
         speed: speed,
         ticketid: ticketid,
+        time: time,
         address: address);
   }
 
@@ -122,6 +127,7 @@ class LocationPointDatabaseHelper {
         altitude: maps[i]['altitude'],
         speed: maps[i]['speed'],
         ticketid: maps[i]['ticketid'],
+        time: maps[i]['time'],
         address: maps[i]['address'],
       );
     });
@@ -149,6 +155,7 @@ class LocationPointDatabaseHelper {
         altitude: maps[i]['altitude'],
         speed: maps[i]['speed'],
         ticketid: maps[i]['ticketid'].toInt(),
+        time: maps[i]['time'],
         address: maps[i]['address'],
       );
     });

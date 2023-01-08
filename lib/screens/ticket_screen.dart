@@ -25,6 +25,7 @@ class _TicketScreenState extends State<TicketScreen> {
   var altitude = 0.0;
   var speed = 0.0;
   var address = "";
+  bool finish = false;
 
   _getTicketStatus() {
     activeTicket = widget.tracking.activeTicket;
@@ -38,7 +39,9 @@ class _TicketScreenState extends State<TicketScreen> {
     longitude = currentPosition.longitude;
     altitude = currentPosition.altitude;
     speed = currentPosition.speed;
-    setState(() {});
+    setState(() {
+      finish = true;
+    });
     return currentPosition;
   }
 
@@ -74,18 +77,20 @@ class _TicketScreenState extends State<TicketScreen> {
     //Todo
     // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
     super.initState();
+    _getCurrentPosition();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            TicketInformation(
+    if (finish){
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TicketInformation(
                 ticketHolderName: "Max Mustermann",
                 ticketId: "12345",
                 ticketDate: "14.11.2022",
@@ -93,28 +98,30 @@ class _TicketScreenState extends State<TicketScreen> {
                 latitude: _getCurrentPosition().latitude.toString(),
                 longitude: _getCurrentPosition().longitude.toString(),
                 address: _getAddress(),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  buildStartTripButton(startTrip, 'Fahrt starten', primaryColor),
-                  buildEndTripButton(stopTrip, 'Fahrt beenden', secondaryColor),
-                ],
               ),
-            ),
-            GpsTestData(
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    buildStartTripButton(startTrip, 'Fahrt starten', primaryColor),
+                    buildEndTripButton(stopTrip, 'Fahrt beenden', secondaryColor),
+                  ],
+                ),
+              ),
+              GpsTestData(
                 latitude: _getCurrentPosition().latitude.toString(),
                 longitude: _getCurrentPosition().longitude.toString(),
                 altitude: _getCurrentPosition().altitude.toString(),
                 speed: _getCurrentPosition().speed.toString(),
                 address: _getAddress(),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
+    return const Text('Loading');
   }
 
   Center buildStartTripButton(tripFunction, text, color) {
