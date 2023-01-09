@@ -18,6 +18,7 @@ class initDatabase {
   static const tableTicket = """
   CREATE TABLE ticket(
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  firebaseId String,
   startTime String,
   endTime String,
   startStation String,
@@ -27,7 +28,7 @@ class initDatabase {
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
-      join(path, 'location_database2.db'),
+      join(path, 'location_database3.db'),
       onCreate: (database, version) async {
         await database.execute(tableLocation);
         await database.execute(tableTicket);

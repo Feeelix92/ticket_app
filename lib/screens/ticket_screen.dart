@@ -1,18 +1,23 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
 import 'package:ticket_app/models/csv_reader.dart';
 import 'package:ticket_app/models/tracking.dart';
 import '../widgets/bold_styled_text.dart';
 import '../widgets/ticket_information.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TicketScreen extends StatefulWidget {
   final Tracking tracking;
-  const TicketScreen({Key? key, required this.tracking})
-      : super(key: key);
+
+  const TicketScreen({Key? key, required this.tracking}) : super(key: key);
+
   @override
   State<TicketScreen> createState() => _TicketScreenState();
 }
@@ -26,11 +31,22 @@ class _TicketScreenState extends State<TicketScreen> {
   var speed = 0.0;
   var address = "";
   bool finish = false;
+  final user = FirebaseAuth.instance.currentUser!;
+  var ticketID = "";
+  var firstName = "";
+  var lastName = "";
 
   _getTicketStatus() {
     activeTicket = widget.tracking.activeTicket;
     setState(() {});
     return activeTicket;
+  }
+
+  _getTicketId(){
+    setState(() {
+      ticketID = widget.tracking.ticket.firebaseId!;
+    });
+    return ticketID;
   }
 
   _getCurrentPosition(){
@@ -57,6 +73,9 @@ class _TicketScreenState extends State<TicketScreen> {
         print("TRIP STARTED:");
         // Timer to periodic save the LocationPoints
         widget.tracking.saveLocations();
+        setState(() {
+          ticketID = widget.tracking.ticket.firebaseId!;
+        });
       }
     }
 
@@ -67,8 +86,19 @@ class _TicketScreenState extends State<TicketScreen> {
       }
     }
 
+  getUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? localFirstName = prefs.getString('firstName');
+    final String? localLastName = prefs.getString('lastName');
+    setState(() {
+      firstName = localFirstName!;
+      lastName = localLastName!;
+    });
+  }
+
   @override
   void initState() {
+    getUserName();
     if (mounted) {
       initDatabase().initializeDB();
       var csv = CsvReader();
@@ -90,15 +120,17 @@ class _TicketScreenState extends State<TicketScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              TicketInformation(
-                ticketHolderName: "Max Mustermann",
-                ticketId: "12345",
-                ticketDate: "14.11.2022",
-                ticketTime: "10:00 Uhr",
-                latitude: _getCurrentPosition().latitude.toString(),
-                longitude: _getCurrentPosition().longitude.toString(),
-                address: _getAddress(),
-              ),
+              if (_getTicketStatus() && ticketID.isNotEmpty) ...[
+                TicketInformation(
+                  ticketHolderName: "$firstName $lastName",
+                  ticketId: _getTicketId() ?? "...",
+                  ticketDate: DateFormat('dd.MM.yyyy').format(DateTime.now()),
+                  ticketTime: '${DateFormat('kk:mm').format(DateTime.now())} Uhr',
+                  latitude: _getCurrentPosition().latitude.toString(),
+                  longitude: _getCurrentPosition().longitude.toString(),
+                  address: _getAddress(),
+                ),
+              ],
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -109,13 +141,15 @@ class _TicketScreenState extends State<TicketScreen> {
                   ],
                 ),
               ),
-              GpsTestData(
-                latitude: _getCurrentPosition().latitude.toString(),
-                longitude: _getCurrentPosition().longitude.toString(),
-                altitude: _getCurrentPosition().altitude.toString(),
-                speed: _getCurrentPosition().speed.toString(),
-                address: _getAddress(),
-              ),
+              if (widget.tracking.devModeEnabled) ...[
+                GpsTestData(
+                  latitude: _getCurrentPosition().latitude.toString(),
+                  longitude: _getCurrentPosition().longitude.toString(),
+                  altitude: _getCurrentPosition().altitude.toString(),
+                  speed: _getCurrentPosition().speed.toString(),
+                  address: _getAddress(),
+                )
+              ]
             ],
           ),
         ),

@@ -7,6 +7,7 @@ import 'dart:async';
 class Ticket {
   final int id;
   final String startTime;
+  String? firebaseId;
   String? endTime;
   String? startStation;
   String? endStation;
@@ -14,6 +15,7 @@ class Ticket {
   Ticket({
     required this.id,
     required this.startTime,
+    this.firebaseId,
     this.endTime,
     this.startStation,
     this.endStation,
@@ -22,6 +24,7 @@ class Ticket {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'firebaseId': firebaseId,
       'startTime': startTime,
       'endTime': endTime,
       'startStation': startStation,
@@ -31,7 +34,7 @@ class Ticket {
 
   @override
   String toString() {
-    return 'Ticket{id: $id, startTime: $startTime, endTime: $endTime, startStation: $startStation, endStation: $endStation}';
+    return 'Ticket{id: $id, firebaseId: $firebaseId, startTime: $startTime, endTime: $endTime, startStation: $startStation, endStation: $endStation}';
   }
 }
 
@@ -39,7 +42,7 @@ class TicketDatabaseHelper {
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
-      join(path, 'location_database2.db'),
+      join(path, 'location_database3.db'),
       version: 1,
     );
   }
@@ -79,6 +82,7 @@ class TicketDatabaseHelper {
     return List.generate(maps.length, (i) {
       return Ticket(
         id: maps[i]['id'],
+        firebaseId: maps[i]['firebaseId'],
         startTime: maps[i]['startTime'],
         endTime: maps[i]['endTime'],
         startStation: maps[i]['startStation'],
