@@ -52,6 +52,14 @@ class Tracking {
     ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
     getTicket();
     var counter = 0;
+    futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(), currentPosition.longitude.toString());
+    futureNearbyStops.then((nearbyStops) {
+      print('_________________________');
+      print('nearby Stop:');
+      print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
+      ticket.startStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
+      ticketHelper.updateticket(ticket);
+    });
     Timer.periodic(timerDuration, (timer) {
       counter = counter + 1;
       print(counter);
@@ -61,6 +69,15 @@ class Tracking {
       saveLocationPoint();
       if (!activeTicket) {
         timer.cancel();
+        futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(), currentPosition.longitude.toString());
+        futureNearbyStops.then((nearbyStops) {
+          print('_________________________');
+          print('nearby Stop:');
+          print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
+          ticket.endStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
+          ticket.endTime = DateTime.now().toString();
+          ticketHelper.updateticket(ticket);
+        });
       }
     });
   }

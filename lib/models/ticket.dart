@@ -100,4 +100,17 @@ class TicketDatabaseHelper {
       whereArgs: [id],
     );
   }
+  Future<void> updateticket(Ticket ticket) async {
+    // Get a reference to the database.
+    final db = await initializeDB();
+
+    // Remove the Dog from the database.
+    await db.update(
+      'ticket',
+      ticket.toMap(),
+      where: 'id = ?',
+      // Pass the Dog's id as a whereArg to prevent SQL injection.
+      whereArgs: [ticket.id],
+    );
+  }
 }
