@@ -66,45 +66,19 @@ class _TicketScreenState extends State<TicketScreen> {
       print("TRIP STARTED:");
       // Timer to periodic save the LocationPoints
       widget.tracking.saveLocations();
-
-      saveTicket(
-          GeoPoint(latitude, longitude),
-          DateTime.now(),
-          user.uid
-      );
     }
   }
 
-  Future saveTicket(GeoPoint startPoint, DateTime startTime, String authId) async {
-    await FirebaseFirestore.instance.collection('tickets').add({
-      'startPoint': startPoint,
-      'startTime': startTime,
-      'authId': authId,
-    }).then((savedTicket) {
-      setState(() {
-        ticketID = savedTicket.id;
-      });
-    });
-  }
+
 
   void stopTrip() async {
     if (_getTicketStatus()) {
       widget.tracking.activeTicket = false;
       print("TRIP STOPED:");
-
-      stopTicket(
-          GeoPoint(latitude, longitude),
-          DateTime.now()
-      );
     }
   }
 
-  Future stopTicket(GeoPoint endPoint, DateTime endTime) async{
-    await FirebaseFirestore.instance.collection('tickets').doc(ticketID).update({
-      'endPoint': endPoint,
-      'endTime': endTime
-    });
-  }
+
 
   getUserName() async {
     final prefs = await SharedPreferences.getInstance();
@@ -142,7 +116,7 @@ class _TicketScreenState extends State<TicketScreen> {
             children: [
               TicketInformation(
                 ticketHolderName: "$firstName $lastName",
-                ticketId: ticketID,
+                ticketId: widget.tracking.ticket.firebaseId!,
                 ticketDate: DateFormat('dd.MM.yyyy').format(DateTime.now()),
                 ticketTime: '${DateFormat('kk:mm').format(DateTime.now())} Uhr',
                 latitude: _getCurrentPosition().latitude.toString(),

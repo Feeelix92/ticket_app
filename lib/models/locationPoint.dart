@@ -48,7 +48,7 @@ class LocationPointDatabaseHelper {
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
-      join(path, 'location_database2.db'),
+      join(path, 'location_database3.db'),
       version: 1,
     );
   }
