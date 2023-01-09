@@ -90,20 +90,17 @@ class _TicketScreenState extends State<TicketScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              _getTicketStatus() ?
-              TicketInformation(
-                ticketHolderName: "Max Mustermann",
-                ticketId: "12345",
-                ticketDate: "14.11.2022",
-                ticketTime: "10:00 Uhr",
-                latitude: _getCurrentPosition().latitude.toString(),
-                longitude: _getCurrentPosition().longitude.toString(),
-                address: _getAddress(),
-              )
-              : const Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Text('Betätigen Sie den "Fahrt starten" Button um eine neue Fahrt zu beginnen!'),
+              if (_getTicketStatus()) ...[
+                TicketInformation(
+                  ticketHolderName: "Max Mustermann",
+                  ticketId: "12345",
+                  ticketDate: "14.11.2022",
+                  ticketTime: "10:00 Uhr",
+                  latitude: _getCurrentPosition().latitude.toString(),
+                  longitude: _getCurrentPosition().longitude.toString(),
+                  address: _getAddress(),
                 ),
+              ],
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -114,13 +111,15 @@ class _TicketScreenState extends State<TicketScreen> {
                   ],
                 ),
               ),
-              GpsTestData(
-                latitude: _getCurrentPosition().latitude.toString(),
-                longitude: _getCurrentPosition().longitude.toString(),
-                altitude: _getCurrentPosition().altitude.toString(),
-                speed: _getCurrentPosition().speed.toString(),
-                address: _getAddress(),
-              ),
+              if (widget.tracking.devModeEnabled) ...[
+                GpsTestData(
+                  latitude: _getCurrentPosition().latitude.toString(),
+                  longitude: _getCurrentPosition().longitude.toString(),
+                  altitude: _getCurrentPosition().altitude.toString(),
+                  speed: _getCurrentPosition().speed.toString(),
+                  address: _getAddress(),
+                )
+              ]
             ],
           ),
         ),
