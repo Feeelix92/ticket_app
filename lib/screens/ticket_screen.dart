@@ -90,6 +90,7 @@ class _TicketScreenState extends State<TicketScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              _getTicketStatus() ?
               TicketInformation(
                 ticketHolderName: "Max Mustermann",
                 ticketId: "12345",
@@ -98,7 +99,11 @@ class _TicketScreenState extends State<TicketScreen> {
                 latitude: _getCurrentPosition().latitude.toString(),
                 longitude: _getCurrentPosition().longitude.toString(),
                 address: _getAddress(),
-              ),
+              )
+              : const Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text('Betätigen Sie den "Fahrt starten" Button um eine neue Fahrt zu beginnen!'),
+                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
