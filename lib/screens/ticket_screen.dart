@@ -42,6 +42,13 @@ class _TicketScreenState extends State<TicketScreen> {
     return activeTicket;
   }
 
+  _getTicketId(){
+    setState(() {
+      ticketID = widget.tracking.ticket.firebaseId!;
+    });
+    return ticketID;
+  }
+
   _getCurrentPosition(){
     currentPosition = widget.tracking.currentPosition;
     latitude = currentPosition.latitude;
@@ -66,6 +73,9 @@ class _TicketScreenState extends State<TicketScreen> {
         print("TRIP STARTED:");
         // Timer to periodic save the LocationPoints
         widget.tracking.saveLocations();
+        setState(() {
+          widget.tracking.ticket.firebaseId;
+        });
       }
     }
 
@@ -75,8 +85,6 @@ class _TicketScreenState extends State<TicketScreen> {
         print("TRIP STOPED:");
       }
     }
-
-
 
   getUserName() async {
     final prefs = await SharedPreferences.getInstance();
@@ -112,10 +120,10 @@ class _TicketScreenState extends State<TicketScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (_getTicketStatus()) ...[
+              if (_getTicketStatus() && ticketID.isNotEmpty) ...[
                 TicketInformation(
                   ticketHolderName: "$firstName $lastName",
-                  ticketId: widget.tracking.ticket.firebaseId!,
+                  ticketId: _getTicketId() ?? "...",
                   ticketDate: DateFormat('dd.MM.yyyy').format(DateTime.now()),
                   ticketTime: '${DateFormat('kk:mm').format(DateTime.now())} Uhr',
                   latitude: _getCurrentPosition().latitude.toString(),
