@@ -60,23 +60,21 @@ class _TicketScreenState extends State<TicketScreen> {
     return address;
   }
 
-  void startTrip() async {
-    if (!_getTicketStatus()) {
-      widget.tracking.activeTicket = true;
-      print("TRIP STARTED:");
-      // Timer to periodic save the LocationPoints
-      widget.tracking.saveLocations();
+    void startTrip() async {
+      if (!_getTicketStatus()) {
+        widget.tracking.activeTicket = true;
+        print("TRIP STARTED:");
+        // Timer to periodic save the LocationPoints
+        widget.tracking.saveLocations();
+      }
     }
-  }
 
-
-
-  void stopTrip() async {
-    if (_getTicketStatus()) {
-      widget.tracking.activeTicket = false;
-      print("TRIP STOPED:");
+    void stopTrip() async {
+      if (_getTicketStatus()) {
+        widget.tracking.activeTicket = false;
+        print("TRIP STOPED:");
+      }
     }
-  }
 
 
 
@@ -114,15 +112,17 @@ class _TicketScreenState extends State<TicketScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              TicketInformation(
-                ticketHolderName: "$firstName $lastName",
-                ticketId: widget.tracking.ticket.firebaseId!,
-                ticketDate: DateFormat('dd.MM.yyyy').format(DateTime.now()),
-                ticketTime: '${DateFormat('kk:mm').format(DateTime.now())} Uhr',
-                latitude: _getCurrentPosition().latitude.toString(),
-                longitude: _getCurrentPosition().longitude.toString(),
-                address: _getAddress(),
-              ),
+              if (_getTicketStatus()) ...[
+                TicketInformation(
+                  ticketHolderName: "$firstName $lastName",
+                  ticketId: widget.tracking.ticket.firebaseId!,
+                  ticketDate: DateFormat('dd.MM.yyyy').format(DateTime.now()),
+                  ticketTime: '${DateFormat('kk:mm').format(DateTime.now())} Uhr',
+                  latitude: _getCurrentPosition().latitude.toString(),
+                  longitude: _getCurrentPosition().longitude.toString(),
+                  address: _getAddress(),
+                ),
+              ],
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -133,13 +133,15 @@ class _TicketScreenState extends State<TicketScreen> {
                   ],
                 ),
               ),
-              GpsTestData(
-                latitude: _getCurrentPosition().latitude.toString(),
-                longitude: _getCurrentPosition().longitude.toString(),
-                altitude: _getCurrentPosition().altitude.toString(),
-                speed: _getCurrentPosition().speed.toString(),
-                address: _getAddress(),
-              ),
+              if (widget.tracking.devModeEnabled) ...[
+                GpsTestData(
+                  latitude: _getCurrentPosition().latitude.toString(),
+                  longitude: _getCurrentPosition().longitude.toString(),
+                  altitude: _getCurrentPosition().altitude.toString(),
+                  speed: _getCurrentPosition().speed.toString(),
+                  address: _getAddress(),
+                )
+              ]
             ],
           ),
         ),
@@ -156,11 +158,9 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: _getTicketStatus() ? null : tripFunction,
+            onPressed: _getTicketStatus() ?  null : tripFunction,
             style: ButtonStyle(
-              backgroundColor: _getTicketStatus()
-                  ? MaterialStateProperty.all<Color>(accentColor3)
-                  : MaterialStateProperty.all<Color>(color),
+              backgroundColor: _getTicketStatus() ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
             ),
             child: Text(
               text,
@@ -181,9 +181,7 @@ class _TicketScreenState extends State<TicketScreen> {
           child: ElevatedButton(
             onPressed: _getTicketStatus() ? tripFunction : null,
             style: ButtonStyle(
-              backgroundColor: _getTicketStatus()
-                  ? MaterialStateProperty.all<Color>(color)
-                  : MaterialStateProperty.all<Color>(accentColor3),
+              backgroundColor: _getTicketStatus() ?  MaterialStateProperty.all<Color>(color) : MaterialStateProperty.all<Color>(accentColor3),
             ),
             child: Text(
               text,

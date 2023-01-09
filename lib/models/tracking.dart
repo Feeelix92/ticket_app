@@ -12,11 +12,15 @@ import 'locationPoint.dart';
 import 'nearby_stops.dart';
 
 class Tracking {
+  //Dev Mode
+  bool devModeEnabled = true;
+
   // API Objects
   late Future<DepartureBoard> futureDepartureBoard;
   late Future<NearbyStops> futureNearbyStops;
   late Future<JourneyDetails> futureJourneyDetails;
   final timerDuration = const Duration(seconds: 2);
+
   // GNNS
   bool servicestatus = false;
   bool haspermission = false;
@@ -29,7 +33,6 @@ class Tracking {
   var address = "";
   late Position currentPosition;
   late StreamSubscription<Position> positionStream;
-
   // Ticket
   var ticketHelper = TicketDatabaseHelper();
   late var ticketFuture;
