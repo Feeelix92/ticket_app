@@ -30,6 +30,7 @@ class _TicketScreenState extends State<TicketScreen> {
   var altitude = 0.0;
   var speed = 0.0;
   var address = "";
+  bool finish = false;
   final user = FirebaseAuth.instance.currentUser!;
   var ticketID = "";
   var firstName = "";
@@ -41,17 +42,19 @@ class _TicketScreenState extends State<TicketScreen> {
     return activeTicket;
   }
 
-  _getCurrentPosition() {
+  _getCurrentPosition(){
     currentPosition = widget.tracking.currentPosition;
     latitude = currentPosition.latitude;
     longitude = currentPosition.longitude;
     altitude = currentPosition.altitude;
     speed = currentPosition.speed;
-    setState(() {});
+    setState(() {
+      finish = true;
+    });
     return currentPosition;
   }
 
-  _getAddress() {
+  _getAddress(){
     address = widget.tracking.address;
     setState(() {});
     return address;
@@ -124,48 +127,51 @@ class _TicketScreenState extends State<TicketScreen> {
     //Todo
     // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
     super.initState();
+    _getCurrentPosition();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            TicketInformation(
-              ticketHolderName: "$firstName $lastName",
-              ticketId: ticketID,
-              ticketDate: DateFormat('dd.MM.yyyy').format(DateTime.now()),
-              ticketTime: '${DateFormat('kk:mm').format(DateTime.now())} Uhr',
-              latitude: _getCurrentPosition().latitude.toString(),
-              longitude: _getCurrentPosition().longitude.toString(),
-              address: _getAddress(),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  buildStartTripButton(
-                      startTrip, 'Fahrt starten', primaryColor),
-                  buildEndTripButton(stopTrip, 'Fahrt beenden', secondaryColor),
-                ],
+    if (finish){
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TicketInformation(
+                ticketHolderName: "$firstName $lastName",
+                ticketId: ticketID,
+                ticketDate: DateFormat('dd.MM.yyyy').format(DateTime.now()),
+                ticketTime: '${DateFormat('kk:mm').format(DateTime.now())} Uhr',
+                latitude: _getCurrentPosition().latitude.toString(),
+                longitude: _getCurrentPosition().longitude.toString(),
+                address: _getAddress(),
               ),
-            ),
-            GpsTestData(
-              latitude: _getCurrentPosition().latitude.toString(),
-              longitude: _getCurrentPosition().longitude.toString(),
-              altitude: _getCurrentPosition().altitude.toString(),
-              speed: _getCurrentPosition().speed.toString(),
-              address: _getAddress(),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    buildStartTripButton(startTrip, 'Fahrt starten', primaryColor),
+                    buildEndTripButton(stopTrip, 'Fahrt beenden', secondaryColor),
+                  ],
+                ),
+              ),
+              GpsTestData(
+                latitude: _getCurrentPosition().latitude.toString(),
+                longitude: _getCurrentPosition().longitude.toString(),
+                altitude: _getCurrentPosition().altitude.toString(),
+                speed: _getCurrentPosition().speed.toString(),
+                address: _getAddress(),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
+    return const Text('Loading');
   }
 
   Center buildStartTripButton(tripFunction, text, color) {
@@ -191,7 +197,6 @@ class _TicketScreenState extends State<TicketScreen> {
       ),
     );
   }
-
   Center buildEndTripButton(tripFunction, text, color) {
     return Center(
       child: Padding(
@@ -215,6 +220,7 @@ class _TicketScreenState extends State<TicketScreen> {
       ),
     );
   }
+
 }
 
 class GpsTestData extends StatelessWidget {
@@ -225,7 +231,8 @@ class GpsTestData extends StatelessWidget {
     required String altitude,
     required String speed,
     required String address,
-  })  : _latitude = latitude,
+  })
+      : _latitude = latitude,
         _longitude = longitude,
         _altitude = altitude,
         _speed = speed,

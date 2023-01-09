@@ -39,7 +39,7 @@ class TicketDatabaseHelper {
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
-      join(path, 'location_database1.db'),
+      join(path, 'location_database2.db'),
       version: 1,
     );
   }
@@ -98,6 +98,19 @@ class TicketDatabaseHelper {
       where: 'id = ?',
       // Pass the Dog's id as a whereArg to prevent SQL injection.
       whereArgs: [id],
+    );
+  }
+  Future<void> updateticket(Ticket ticket) async {
+    // Get a reference to the database.
+    final db = await initializeDB();
+
+    // Remove the Dog from the database.
+    await db.update(
+      'ticket',
+      ticket.toMap(),
+      where: 'id = ?',
+      // Pass the Dog's id as a whereArg to prevent SQL injection.
+      whereArgs: [ticket.id],
     );
   }
 }

@@ -12,6 +12,7 @@ class initDatabase {
   altitude DOUBLE,
   speed DOUBLE,
   ticketid DOUBLE,
+  time String,
   address STRING
   );""";
   static const tableTicket = """
@@ -26,7 +27,7 @@ class initDatabase {
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
-      join(path, 'location_database1.db'),
+      join(path, 'location_database2.db'),
       onCreate: (database, version) async {
         await database.execute(tableLocation);
         await database.execute(tableTicket);
