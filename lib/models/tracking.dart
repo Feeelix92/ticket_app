@@ -38,7 +38,7 @@ class Tracking {
   late var ticketFuture;
   late Ticket ticket;
   bool activeTicket = false;
-  final user = FirebaseAuth.instance.currentUser!;
+  late User user = FirebaseAuth.instance.currentUser!;
 
   void getTicket() async {
     ticket = await ticketFuture;

@@ -74,7 +74,7 @@ class _TicketScreenState extends State<TicketScreen> {
         // Timer to periodic save the LocationPoints
         widget.tracking.saveLocations();
         setState(() {
-          widget.tracking.ticket.firebaseId;
+          ticketID = widget.tracking.ticket.firebaseId!;
         });
       }
     }
