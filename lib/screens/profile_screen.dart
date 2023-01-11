@@ -158,6 +158,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 streamSnapshot.data!.docs[index];
                 return Column(
                   children:[
+                    SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: const Icon(Icons.person),
+                      ),
+                    ),
                     Text(documentSnapshot['firstName']),
                     Text(documentSnapshot['lastName']),
                     Text(documentSnapshot['email']),
