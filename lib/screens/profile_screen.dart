@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ticket_app/widgets/bold_styled_text.dart';
 
 import '../colors.dart';
 
@@ -156,34 +157,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
               itemBuilder: (context, index) {
                 final DocumentSnapshot documentSnapshot =
                 streamSnapshot.data!.docs[index];
-                return Column(
-                  children:[
-                    SizedBox(
-                      width: 120,
-                      height: 120,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: const Icon(Icons.person),
+                return SingleChildScrollView(
+                  child: Column(
+                    children:[
+                      SizedBox(
+                        width: 120,
+                        height: 120,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: const Icon(
+                              Icons.person,
+                              size: 80.0,
+                          ),
+                        ),
                       ),
-                    ),
-                    Text(documentSnapshot['firstName']),
-                    Text(documentSnapshot['lastName']),
-                    Text(documentSnapshot['email']),
-                    Text(documentSnapshot['birthdate']),
-                    Text(documentSnapshot['authId']),
-                    ElevatedButton(
-                        onPressed: () => getFBTickets(documentSnapshot),
-                        child: const Text('Deine Statistiken')
-                    ),
-                    Visibility(
-                      visible: showStats,
+                      BoldStyledText(text: '${documentSnapshot["firstName"]} ${documentSnapshot['lastName']}'),
+                      const SizedBox(height: 20),
+                      Text(documentSnapshot['email']),
+                      const SizedBox(height: 10),
+                      Text(documentSnapshot['birthdate']),
+                      ElevatedButton(
+                          onPressed: () => getFBTickets(documentSnapshot),
+                          child: const Text('Deine Statistiken')
+                      ),
+                      Visibility(
+                        visible: showStats,
                         child: Text('gefahrene Strecken: $arrayCounter'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => _update(documentSnapshot),
-                      child: const Icon(Icons.edit),
-                    ),
-                  ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () => _update(documentSnapshot),
+                        child: const Text('Profil bearbeiten'),
+                      ),
+                    ],
+                  ),
                 );
               },
             );
