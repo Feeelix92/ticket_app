@@ -37,8 +37,9 @@ class _TicketScreenState extends State<TicketScreen> {
   var lastName = "";
 
   _getTicketStatus() {
-    activeTicket = widget.tracking.activeTicket;
-    setState(() {});
+    setState(() {
+      activeTicket = widget.tracking.activeTicket;
+    });
     return activeTicket;
   }
 
@@ -50,20 +51,21 @@ class _TicketScreenState extends State<TicketScreen> {
   }
 
   _getCurrentPosition(){
-    currentPosition = widget.tracking.currentPosition;
-    latitude = currentPosition.latitude;
-    longitude = currentPosition.longitude;
-    altitude = currentPosition.altitude;
-    speed = currentPosition.speed;
     setState(() {
+      currentPosition = widget.tracking.currentPosition;
+      latitude = currentPosition.latitude;
+      longitude = currentPosition.longitude;
+      altitude = currentPosition.altitude;
+      speed = currentPosition.speed;
       finish = true;
     });
     return currentPosition;
   }
 
   _getAddress(){
-    address = widget.tracking.address;
-    setState(() {});
+    setState(() {
+      address = widget.tracking.address;
+    });
     return address;
   }
 
@@ -120,7 +122,7 @@ class _TicketScreenState extends State<TicketScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (_getTicketStatus() && ticketID.isNotEmpty) ...[
+              if (_getTicketStatus() && _getTicketId().isNotEmpty) ...[
                 TicketInformation(
                   ticketHolderName: "$firstName $lastName",
                   ticketId: _getTicketId() ?? "...",
