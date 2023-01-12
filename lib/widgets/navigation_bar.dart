@@ -123,11 +123,11 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
         onTap: onTappedBar,
       ),
       // Button to refresh TestData
-      floatingActionButton: FloatingActionButton(
-      onPressed: refreshPage,
-      tooltip: 'Increment',
-      child: const Icon(Icons.change_circle_outlined),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      // onPressed: refreshPage,
+      // tooltip: 'Increment',
+      // child: const Icon(Icons.change_circle_outlined),
+      // ),
     );
   }
 }

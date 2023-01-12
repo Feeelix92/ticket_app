@@ -19,6 +19,7 @@ class Tracking {
   late Future<DepartureBoard> futureDepartureBoard;
   late Future<NearbyStops> futureNearbyStops;
   late Future<JourneyDetails> futureJourneyDetails;
+  // Timer Duration
   final timerDuration = const Duration(seconds: 2);
 
   // GNNS
@@ -52,6 +53,23 @@ class Tracking {
     }
     var locationPointFuture = locationHelper.createLocationPoint(
         latitude, longitude, altitude, speed, id, DateTime.now().toString(), address);
+  }
+
+
+  void startTrip() async {
+    if (!activeTicket) {
+      activeTicket = true;
+      print("TRIP STARTED:");
+      // Timer to periodic save the LocationPoints
+      saveLocations();
+    }
+  }
+
+  void stopTrip() async {
+    if (activeTicket) {
+      activeTicket = false;
+      print("TRIP STOPED:");
+    }
   }
 
   Future<void> saveLocations() async {
