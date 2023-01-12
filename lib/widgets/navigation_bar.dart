@@ -44,9 +44,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       _currentIndex = index;
     });
   }
-  void refreshPage(){
-    setState(() {});
-  }
 
   @override
   void initState() {
@@ -121,12 +118,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
         currentIndex: _currentIndex,
         selectedItemColor: secondaryColor,
         onTap: onTappedBar,
-      ),
-      // Button to refresh TestData
-      floatingActionButton: FloatingActionButton(
-      onPressed: refreshPage,
-      tooltip: 'Increment',
-      child: const Icon(Icons.change_circle_outlined),
       ),
     );
   }

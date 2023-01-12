@@ -23,70 +23,11 @@ class TicketScreen extends StatefulWidget {
 }
 
 class _TicketScreenState extends State<TicketScreen> {
-  late bool activeTicket;
-  late Position currentPosition;
-  var latitude = 0.0;
-  var longitude = 0.0;
-  var altitude = 0.0;
-  var speed = 0.0;
-  var address = "";
   bool finish = false;
   final user = FirebaseAuth.instance.currentUser!;
-  var ticketID = "";
   var firstName = "";
   var lastName = "";
-
-  _getTicketStatus() {
-    setState(() {
-      activeTicket = widget.tracking.activeTicket;
-    });
-    return activeTicket;
-  }
-
-  _getTicketId(){
-    setState(() {
-      ticketID = widget.tracking.ticket.firebaseId!;
-    });
-    return ticketID;
-  }
-
-  _getCurrentPosition(){
-    setState(() {
-      currentPosition = widget.tracking.currentPosition;
-      latitude = currentPosition.latitude;
-      longitude = currentPosition.longitude;
-      altitude = currentPosition.altitude;
-      speed = currentPosition.speed;
-      finish = true;
-    });
-    return currentPosition;
-  }
-
-  _getAddress(){
-    setState(() {
-      address = widget.tracking.address;
-    });
-    return address;
-  }
-
-    void startTrip() async {
-      if (!_getTicketStatus()) {
-        widget.tracking.activeTicket = true;
-        print("TRIP STARTED:");
-        // Timer to periodic save the LocationPoints
-        widget.tracking.saveLocations();
-        setState(() {
-          ticketID = widget.tracking.ticket.firebaseId!;
-        });
-      }
-    }
-
-    void stopTrip() async {
-      if (_getTicketStatus()) {
-        widget.tracking.activeTicket = false;
-        print("TRIP STOPED:");
-      }
-    }
+  late Timer _timer;
 
   getUserName() async {
     final prefs = await SharedPreferences.getInstance();
@@ -109,7 +50,20 @@ class _TicketScreenState extends State<TicketScreen> {
     //Todo
     // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
     super.initState();
-    _getCurrentPosition();
+    // Timer Duration
+    const timerDuration = Duration(milliseconds: 1);
+    _timer = Timer.periodic(timerDuration, (timer) {
+      setState(() {});
+    });
+    if(mounted) {
+      finish = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -122,15 +76,15 @@ class _TicketScreenState extends State<TicketScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (_getTicketStatus() && _getTicketId().isNotEmpty) ...[
+              if (widget.tracking.activeTicket)...[
                 TicketInformation(
                   ticketHolderName: "$firstName $lastName",
-                  ticketId: _getTicketId() ?? "...",
+                  ticketId: widget.tracking.ticket.firebaseId??"Loading...",
                   ticketDate: DateFormat('dd.MM.yyyy').format(DateTime.now()),
                   ticketTime: '${DateFormat('kk:mm').format(DateTime.now())} Uhr',
-                  latitude: _getCurrentPosition().latitude.toString(),
-                  longitude: _getCurrentPosition().longitude.toString(),
-                  address: _getAddress(),
+                  latitude: widget.tracking.latitude.toString(),
+                  longitude: widget.tracking.longitude.toString(),
+                  address: widget.tracking.address,
                 ),
               ],
               Padding(
@@ -138,18 +92,18 @@ class _TicketScreenState extends State<TicketScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    buildStartTripButton(startTrip, 'Fahrt starten', primaryColor),
-                    buildEndTripButton(stopTrip, 'Fahrt beenden', secondaryColor),
+                    buildStartTripButton(widget.tracking.startTrip, 'Fahrt starten', primaryColor),
+                    buildEndTripButton(widget.tracking.stopTrip, 'Fahrt beenden', secondaryColor),
                   ],
                 ),
               ),
               if (widget.tracking.devModeEnabled) ...[
                 GpsTestData(
-                  latitude: _getCurrentPosition().latitude.toString(),
-                  longitude: _getCurrentPosition().longitude.toString(),
-                  altitude: _getCurrentPosition().altitude.toString(),
-                  speed: _getCurrentPosition().speed.toString(),
-                  address: _getAddress(),
+                  latitude: widget.tracking.latitude.toString(),
+                  longitude: widget.tracking.longitude.toString(),
+                  altitude: widget.tracking.altitude.toString(),
+                  speed: widget.tracking.speed.toString(),
+                  address: widget.tracking.address,
                 )
               ]
             ],
@@ -168,9 +122,9 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: _getTicketStatus() ?  null : tripFunction,
+            onPressed: widget.tracking.activeTicket ?  null : tripFunction,
             style: ButtonStyle(
-              backgroundColor: _getTicketStatus() ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
+              backgroundColor: widget.tracking.activeTicket ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
             ),
             child: Text(
               text,
@@ -189,9 +143,9 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: _getTicketStatus() ? tripFunction : null,
+            onPressed: widget.tracking.activeTicket ? tripFunction : null,
             style: ButtonStyle(
-              backgroundColor: _getTicketStatus() ?  MaterialStateProperty.all<Color>(color) : MaterialStateProperty.all<Color>(accentColor3),
+              backgroundColor: widget.tracking.activeTicket ?  MaterialStateProperty.all<Color>(color) : MaterialStateProperty.all<Color>(accentColor3),
             ),
             child: Text(
               text,
