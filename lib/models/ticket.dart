@@ -17,6 +17,7 @@ class Ticket {
   double? endLatitude;
   double? endLongitude;
   double? distanceBetween;
+  double? ticketPrice;
 
   Ticket({
     required this.id,
@@ -30,6 +31,7 @@ class Ticket {
     this.endLatitude,
     this.endLongitude,
     this.distanceBetween,
+    this.ticketPrice,
   });
 
   Map<String, dynamic> toMap() {
@@ -45,6 +47,7 @@ class Ticket {
       'endLatitude': endLatitude,
       'endLongitude': endLongitude,
       'distanceBetween': distanceBetween,
+      'ticketPrice': ticketPrice,
     };
   }
 
@@ -52,7 +55,8 @@ class Ticket {
   String toString() {
     return 'Ticket{id: $id, firebaseId: $firebaseId, startTime: $startTime, endTime: $endTime, '
         'startStation: $startStation, startLatitude: $startLatitude, startLongitude: $startLongitude, '
-        'endStation: $endStation, endLatitude: $endLatitude, endLongitude: $endLongitude, distanceBetween: $distanceBetween}';
+        'endStation: $endStation, endLatitude: $endLatitude, endLongitude: $endLongitude, '
+        'distanceBetween: $distanceBetween, ticketPrice: $ticketPrice}';
   }
 }
 
@@ -110,6 +114,7 @@ class TicketDatabaseHelper {
         endLatitude: maps[i]['endLatitude'],
         endLongitude: maps[i]['endLongitude'],
         distanceBetween: maps[i]['distanceBetween'],
+        ticketPrice: maps[i]['ticketPrice'],
       );
     });
   }

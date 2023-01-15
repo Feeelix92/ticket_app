@@ -113,9 +113,9 @@ class Tracking {
           ticket.endStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
           ticket.endLatitude = currentPosition.latitude;
           ticket.endLongitude = currentPosition.longitude;
-          double distanceInMeters = Geolocator.distanceBetween(startPosition.latitude, startPosition.longitude, endPosition.latitude, endPosition.longitude);
-          double distanceInKilometers = distanceInMeters/1000;
-          ticket.distanceBetween = distanceInKilometers;
+          double distanceBetween = _getDistanceBetween(startPosition.latitude, startPosition.longitude, endPosition.latitude, endPosition.longitude);
+          ticket.distanceBetween = distanceBetween;
+          print(_calculateTicketPrice(distanceBetween));
           ticketHelper.updateticket(ticket);
 
           stopFirebaseTicket(
@@ -126,6 +126,19 @@ class Tracking {
         });
       }
     });
+  }
+
+  _getDistanceBetween(double startLatitude, double startLongitude, double endLatitude, double endLongitude){
+    double distanceInMeters = Geolocator.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude);
+    double distanceInKilometers = distanceInMeters/1000;
+    return distanceInKilometers;
+  }
+  _calculateTicketPrice(double distance){
+    // Preisschlüssel
+    double serviceCharge = 1.50;
+    double kilometerPrice = 0.30;
+    double ticketPrice = serviceCharge + double.parse((kilometerPrice*distance).toStringAsFixed(2));
+    return ticketPrice;
   }
 
   Future saveFirebaseTicket(GeoPoint startPoint, String startStation, DateTime startTime, String authId) async {
