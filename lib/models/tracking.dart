@@ -33,6 +33,8 @@ class Tracking {
   var speed = 0.0;
   var address = "";
   late Position currentPosition;
+  late Position startPosition;
+  late Position endPosition;
   late StreamSubscription<Position> positionStream;
   // Ticket
   var ticketHelper = TicketDatabaseHelper();
@@ -77,18 +79,18 @@ class Tracking {
     getTicket();
     var counter = 0;
     futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(), currentPosition.longitude.toString());
-    Position startPosition = currentPosition;
+    startPosition = currentPosition;
     futureNearbyStops.then((nearbyStops) {
       print('_________________________');
       print('nearby Stop:');
       print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
       ticket.startStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
-      ticket.startLatitude = currentPosition.latitude;
-      ticket.startLongitude = currentPosition.longitude;
+      ticket.startLatitude = startPosition.latitude;
+      ticket.startLongitude = startPosition.longitude;
       ticketHelper.updateticket(ticket);
 
       saveFirebaseTicket(
-          GeoPoint(currentPosition.latitude, currentPosition.longitude),
+          GeoPoint(startPosition.latitude, startPosition.longitude),
           ticket.startStation!,
           DateTime.parse(ticket.startTime),
           user.uid
@@ -105,21 +107,24 @@ class Tracking {
         timer.cancel();
         ticket.endTime = DateTime.now().toString();
         futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(), currentPosition.longitude.toString());
-        Position endPosition = currentPosition;
+        endPosition = currentPosition;
         futureNearbyStops.then((nearbyStops) {
           print('_________________________');
           print('nearby Stop:');
           print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
           ticket.endStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
-          ticket.endLatitude = currentPosition.latitude;
-          ticket.endLongitude = currentPosition.longitude;
+          ticket.endLatitude = endPosition.latitude;
+          ticket.endLongitude = endPosition.longitude;
           double distanceBetween = _getDistanceBetween(startPosition.latitude, startPosition.longitude, endPosition.latitude, endPosition.longitude);
           ticket.distanceBetween = distanceBetween;
-          print(_calculateTicketPrice(distanceBetween));
+          DateTime startTime = DateTime.parse(ticket.startTime);
+          DateTime endTime = DateTime.parse(ticket.endTime!);
+          Duration timeDifference = startTime.difference(endTime);
+            ticket.ticketPrice = _calculateTicketPrice(distanceBetween, timeDifference);
           ticketHelper.updateticket(ticket);
 
           stopFirebaseTicket(
-              GeoPoint(currentPosition.latitude, currentPosition.longitude),
+              GeoPoint(endPosition.latitude, endPosition.longitude),
               ticket.endStation!,
               DateTime.parse(ticket.endTime!)
           );
@@ -133,12 +138,17 @@ class Tracking {
     double distanceInKilometers = distanceInMeters/1000;
     return distanceInKilometers;
   }
-  _calculateTicketPrice(double distance){
+  _calculateTicketPrice(double distance, Duration timeDifference){
     // Preisschlüssel
     double serviceCharge = 1.50;
     double kilometerPrice = 0.30;
-    double ticketPrice = serviceCharge + double.parse((kilometerPrice*distance).toStringAsFixed(2));
-    return ticketPrice;
+    // Ticket kostet erst Geld, wenn mindestens 100 m zurückgelegt wurden und 2 Minuten vergangen sind
+    if(distance >= 0.1 && timeDifference.inSeconds >= 120){
+      double ticketPrice = serviceCharge + double.parse((kilometerPrice*distance).toStringAsFixed(2));
+      return ticketPrice;
+    }else{
+      return 0.0;
+    }
   }
 
   Future saveFirebaseTicket(GeoPoint startPoint, String startStation, DateTime startTime, String authId) async {
