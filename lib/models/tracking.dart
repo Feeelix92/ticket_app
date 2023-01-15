@@ -139,6 +139,8 @@ class Tracking {
     return distanceInKilometers;
   }
   _calculateTicketPrice(double distance, Duration timeDifference){
+    // @TODO Distanz korrigieren und mit tatsächlicher Strecke kombinieren
+    // @TODO Zu Lösen: User fährt von Punkt A nach Punkt B, beendet Fahrt nicht, fährt wieder zu Punkt A, dann distanz Luftlinie = 0;
     // Preisschlüssel
     double serviceCharge = 1.50;
     double kilometerPrice = 0.30;
