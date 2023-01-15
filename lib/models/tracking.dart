@@ -142,10 +142,15 @@ class Tracking {
     // Preisschlüssel
     double serviceCharge = 1.50;
     double kilometerPrice = 0.30;
+    double maxTicketPrice = 17.60;
     // Ticket kostet erst Geld, wenn mindestens 100 m zurückgelegt wurden und 2 Minuten vergangen sind
     if(distance >= 0.1 && timeDifference.inSeconds >= 120){
       double ticketPrice = serviceCharge + double.parse((kilometerPrice*distance).toStringAsFixed(2));
-      return ticketPrice;
+      if(ticketPrice <= maxTicketPrice){
+        return ticketPrice;
+      }else{
+        return maxTicketPrice;
+      }
     }else{
       return 0.0;
     }
