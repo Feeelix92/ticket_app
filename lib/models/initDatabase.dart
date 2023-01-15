@@ -27,7 +27,7 @@ class initDatabase {
   startLongitude DOUBLE,
   endStation String,
   endLatitude DOUBLE,
-  endLongitude DOUBLE
+  endLongitude DOUBLE,
   distanceBetween DOUBLE
   );""";
 
