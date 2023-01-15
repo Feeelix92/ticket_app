@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'package:path/path.dart';
@@ -22,13 +23,19 @@ class initDatabase {
   startTime String,
   endTime String,
   startStation String,
-  endStation String
+  startLatitude DOUBLE,
+  startLongitude DOUBLE,
+  endStation String,
+  endLatitude DOUBLE,
+  endLongitude DOUBLE
+  distanceBetween DOUBLE
   );""";
 
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
+    deleteDatabase(path);
     return openDatabase(
-      join(path, 'location_database3.db'),
+      join(path, dotenv.get('DB_PATH')),
       onCreate: (database, version) async {
         await database.execute(tableLocation);
         await database.execute(tableTicket);
@@ -36,5 +43,6 @@ class initDatabase {
       version: 2,
     );
   }
-
+  Future<void> deleteDatabase(String path) =>
+      databaseFactory.deleteDatabase(path);
 }

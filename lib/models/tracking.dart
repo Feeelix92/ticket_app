@@ -77,11 +77,14 @@ class Tracking {
     getTicket();
     var counter = 0;
     futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(), currentPosition.longitude.toString());
+    Position startPosition = currentPosition;
     futureNearbyStops.then((nearbyStops) {
       print('_________________________');
       print('nearby Stop:');
       print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
       ticket.startStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
+      ticket.startLatitude = currentPosition.latitude;
+      ticket.startLongitude = currentPosition.longitude;
       ticketHelper.updateticket(ticket);
 
       saveFirebaseTicket(
@@ -102,11 +105,17 @@ class Tracking {
         timer.cancel();
         ticket.endTime = DateTime.now().toString();
         futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(), currentPosition.longitude.toString());
+        Position endPosition = currentPosition;
         futureNearbyStops.then((nearbyStops) {
           print('_________________________');
           print('nearby Stop:');
           print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
           ticket.endStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
+          ticket.endLatitude = currentPosition.latitude;
+          ticket.endLongitude = currentPosition.longitude;
+          double distanceInMeters = Geolocator.distanceBetween(startPosition.latitude, startPosition.longitude, endPosition.latitude, endPosition.longitude);
+          double distanceInKilometers = distanceInMeters/1000;
+          ticket.distanceBetween = distanceInKilometers;
           ticketHelper.updateticket(ticket);
 
           stopFirebaseTicket(
