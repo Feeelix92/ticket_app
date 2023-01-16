@@ -113,7 +113,7 @@ class TicketBox extends StatelessWidget {
                         ),
                       );
                     }),
-                      TicketText(text: 'Preis: 9,99€')
+                      TicketText(text: 'Preis: ${ticket.ticketPrice}')
                     ]
                 ),
       ]
