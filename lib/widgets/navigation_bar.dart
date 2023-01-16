@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_app/models/tracking.dart';
+import 'package:ticket_app/screens/auth/auth_screen.dart';
 import 'package:ticket_app/screens/map_screen.dart';
 import 'package:ticket_app/screens/profile_screen.dart';
 import 'package:ticket_app/screens/ticket_history_screen.dart';
@@ -89,7 +90,10 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
                 alignment: FractionalOffset.bottomCenter,
                 child: MaterialButton(
                   onPressed: () => {
-                    FirebaseAuth.instance.signOut()
+                    FirebaseAuth.instance.signOut(),
+                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                      return const AuthScreen();
+                    }))
                   },
                   color: primaryColor,
                   child: Text('Logout', style: TextStyle(color: accentColor2)),
