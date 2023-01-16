@@ -21,16 +21,17 @@ class _LoginScreenState extends State<LoginScreen>{
   final _passwordController = TextEditingController();
   late User user = FirebaseAuth.instance.currentUser!;
   late List<User> actualUser = [];
+  bool isLoading = false;
 
   Future signIn() async {
+    setState(() {
+      isLoading = true;
+    });
     await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
-    ).then(
-            (value) => print('Test Test $value'),
     );
     getUserData();
-    print(_emailController.text.trim());
   }
 
   getUserData() async{
@@ -145,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen>{
                         child: Text(
                           'Passwort vergessen?',
                           style: TextStyle(
-                              color: accentColor1,
+                              color: accentColor2,
                               fontWeight: FontWeight.bold
                           ),
                         ),
@@ -161,7 +162,9 @@ class _LoginScreenState extends State<LoginScreen>{
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(50),
                     ),
-                    child: Text(
+                    child: isLoading
+                        ? CircularProgressIndicator(color: accentColor1)
+                        : Text(
                       'Login',
                       style: TextStyle(
                         color: accentColor2,
