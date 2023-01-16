@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ticket_app/colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'forgotPassword_screen.dart';
 
@@ -28,22 +29,39 @@ class _LoginScreenState extends State<LoginScreen>{
     ).then(
             (value) => print('Test Test $value'),
     );
-    saveUserData();
+    getUserData();
     print(_emailController.text.trim());
   }
 
-  saveUserData() async{
+  getUserData() async{
     await FirebaseFirestore.instance
         .collection('users')
         .where("authId", isEqualTo: user.uid)
         .get()
-        .then((user) => user.docs.forEach(
-            (element) {
-              print(element.data());
-              print(element.data());
-              var test = element.data();
-              print(test['firstName']);
+        .then((users) => users.docs.forEach(
+            (user) {
+              print(user.data());
+              var userData = user.data();
+              print(userData['firstName']);
+
+              _storeUserDetails(
+                  userData['firstName'],
+                  userData['lastName'],
+                  userData['email'],
+                  userData['birthdate'],
+                  userData['authId']
+              );
             }));
+  }
+
+  _storeUserDetails(String firstName, String lastName, String email, String birthdate, String authId) async{
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('firstName', firstName);
+    await prefs.setString('lastName', lastName);
+    await prefs.setString('email', email);
+    await prefs.setString('birthdate', birthdate);
+    await prefs.setString('authId', authId);
   }
 
   @override
