@@ -50,7 +50,7 @@ class _MapScreenState extends State<MapScreen> {
             zoom: 12,
             maxZoom: 13,
             keepAlive: true,
-            center: LatLng(50.333333, 8.75)
+            center: LatLng(widget.tracking.currentPosition.latitude, widget.tracking.currentPosition.longitude)
         ),
         nonRotatedChildren: [
           AttributionWidget.defaultWidget(
