@@ -42,7 +42,7 @@ class _TicketInformationState extends State<TicketInformation> {
             Visibility(
               visible: widget._longitude != "",
               child: QRCode(
-                  lat: widget._latitude, long: widget._longitude, address: widget._address),
+                  firebaseId: widget._ticketId,),
             ),
           ],
         ),

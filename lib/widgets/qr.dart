@@ -4,12 +4,10 @@ import '../colors.dart';
 
 class QRCode extends StatefulWidget {
   const QRCode(
-      {Key? key, required this.lat, required this.long, required this.address})
+      {Key? key, required this.firebaseId})
       : super(key: key);
 
-  final String lat;
-  final String long;
-  final String address;
+  final String firebaseId;
 
   @override
   State<QRCode> createState() => _QRCodeState();
@@ -20,7 +18,7 @@ class _QRCodeState extends State<QRCode> {
   Widget build(BuildContext context) {
     return QrImage(
         data:
-            'Eingestiegen in ${widget.lat}, ${widget.long}. Ort: ${widget.address}',
+            'TicketID: ${widget.firebaseId}',
         gapless: true,
         version: QrVersions.auto,
         size: 300,

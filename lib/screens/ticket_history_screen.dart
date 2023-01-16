@@ -96,7 +96,7 @@ class TicketBox extends StatelessWidget {
                     children: [
                 QrImage(
                 data:
-                'Test',
+                '${ticket.firebaseId}',
                     gapless: true,
                     version: QrVersions.auto,
                     size: 70,
