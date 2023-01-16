@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,13 +18,32 @@ class _LoginScreenState extends State<LoginScreen>{
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  late User user = FirebaseAuth.instance.currentUser!;
+  late List<User> actualUser = [];
 
   Future signIn() async {
     await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
+    ).then(
+            (value) => print('Test Test $value'),
     );
+    saveUserData();
     print(_emailController.text.trim());
+  }
+
+  saveUserData() async{
+    await FirebaseFirestore.instance
+        .collection('users')
+        .where("authId", isEqualTo: user.uid)
+        .get()
+        .then((user) => user.docs.forEach(
+            (element) {
+              print(element.data());
+              print(element.data());
+              var test = element.data();
+              print(test['firstName']);
+            }));
   }
 
   @override
