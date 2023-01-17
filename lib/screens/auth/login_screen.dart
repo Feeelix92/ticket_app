@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'forgotPassword_screen.dart';
 
 class LoginScreen extends StatefulWidget{
@@ -41,10 +39,7 @@ class _LoginScreenState extends State<LoginScreen>{
         .get()
         .then((users) => users.docs.forEach(
             (user) {
-              print(user.data());
               var userData = user.data();
-              print(userData['firstName']);
-
               _storeUserDetails(
                   userData['firstName'],
                   userData['lastName'],
