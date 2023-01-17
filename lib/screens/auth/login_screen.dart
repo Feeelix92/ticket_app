@@ -35,16 +35,21 @@ class _LoginScreenState extends State<LoginScreen>{
       showDialog(
           context: context,
           builder: (context){
-            return const AlertDialog(
-              content: Text('Konrolliere deine Eingabe')
+            return AlertDialog(
+              content: const Text('Konrolliere deine Eingaben'),
+              actions: <Widget>[
+                ElevatedButton(
+                    onPressed: () => {
+                      Navigator.of(context).pop()},
+                    child: const Text('Alles klar')
+                )
+              ],
             );
           });
       setState(() {
         isLoading = false;
       });
     }
-
-
   }
 
   getUserData() async{
