@@ -22,14 +22,29 @@ class _LoginScreenState extends State<LoginScreen>{
   bool isLoading = false;
 
   Future signIn() async {
-    setState(() {
-      isLoading = true;
-    });
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
+    try{
+      setState(() {
+        isLoading = true;
+      });
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
-    );
-    getUserData();
+      );
+      getUserData();
+    }on FirebaseAuthException {
+      showDialog(
+          context: context,
+          builder: (context){
+            return const AlertDialog(
+              content: Text('Konrolliere deine Eingabe')
+            );
+          });
+      setState(() {
+        isLoading = false;
+      });
+    }
+
+
   }
 
   getUserData() async{
