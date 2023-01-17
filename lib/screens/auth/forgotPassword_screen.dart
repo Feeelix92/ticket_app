@@ -30,12 +30,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               content: Text('Der Link wurde verschickt. Check deine Mails.'),
             );
           });
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       showDialog(
           context: context,
           builder: (context){
             return AlertDialog(
-              content: Text(e.message.toString()),
+              content: const Text('Konrolliere deine Eingaben'),
+              actions: <Widget>[
+                ElevatedButton(
+                    onPressed: () => {
+                      Navigator.of(context).pop()},
+                    child: const Text('Alles klar')
+                )
+              ],
             );
           });
     }
