@@ -7,6 +7,7 @@ import 'package:ticket_app/screens/profile_screen.dart';
 import 'package:ticket_app/screens/ticket_history_screen.dart';
 import 'package:ticket_app/screens/ticket_screen.dart';
 import '../colors.dart';
+import '../screens/auth/main_screen.dart';
 
 class MyNavigationBar extends StatefulWidget {
   final String title;
@@ -89,7 +90,10 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
                 alignment: FractionalOffset.bottomCenter,
                 child: MaterialButton(
                   onPressed: () => {
-                    FirebaseAuth.instance.signOut()
+                    FirebaseAuth.instance.signOut(),
+                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                      return MainScreen(widget.tracking);
+                    }))
                   },
                   color: primaryColor,
                   child: Text('Logout', style: TextStyle(color: accentColor2)),
