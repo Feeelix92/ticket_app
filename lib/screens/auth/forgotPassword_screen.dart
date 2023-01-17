@@ -73,13 +73,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: primaryColor),
-                  borderRadius: BorderRadius.circular(12),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: secondaryColor),
-                  borderRadius: BorderRadius.circular(12),
                 ),
-                hintText: 'Email',
+                labelText: 'Email',
                 fillColor: accentColor2,
                 filled: true,
               ),
