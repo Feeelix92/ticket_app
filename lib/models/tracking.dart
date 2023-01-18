@@ -58,10 +58,11 @@ class Tracking {
     if(latitude.floor() != 0 || longitude.floor() != 0){
      if(oldLatitude.floor() != 0 || oldLongitude.floor() != 0){
         if(latitude != oldLatitude || longitude != oldLongitude){
-          print('changed position!!!!');
+          print('Position has changed!!!!');
           locationHelper.createLocationPoint(latitude, longitude, altitude, speed, id, DateTime.now().toString(), address);
           double distanceInMeters = Geolocator.distanceBetween(latitude, longitude, oldLatitude, oldLongitude);
-          calculatedDistance += distanceInMeters;
+          double distanceInKilometers = distanceInMeters/1000;
+          calculatedDistance += distanceInKilometers;
         }
         print(calculatedDistance);
      }
