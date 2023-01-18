@@ -27,6 +27,10 @@ class Tracking {
   bool haspermission = false;
   late LocationPermission permission;
   late List<LocationPoint> _ride;
+  var oldLatitude = 0.0;
+  var oldLongitude = 0.0;
+  var calculatedDistance = 0.0;
+
   var latitude = 0.0;
   var longitude = 0.0;
   var altitude = 0.0;
@@ -50,19 +54,30 @@ class Tracking {
   void saveLocationPoint() async {
     var id = ticket.id;
     var locationHelper = LocationPointDatabaseHelper();
-    if(longitude.floor() == 0 || longitude.floor() == 0 ){
+
+    if(latitude.floor() != 0 || longitude.floor() != 0){
+     if(oldLatitude.floor() != 0 || oldLongitude.floor() != 0){
+        if(latitude != oldLatitude || longitude != oldLongitude){
+          print('changed position!!!!');
+          locationHelper.createLocationPoint(latitude, longitude, altitude, speed, id, DateTime.now().toString(), address);
+          double distanceInMeters = Geolocator.distanceBetween(latitude, longitude, oldLatitude, oldLongitude);
+          calculatedDistance += distanceInMeters;
+        }
+        print(calculatedDistance);
+     }
+     oldLatitude = latitude;
+     oldLongitude = longitude;
+    }else{
       return;
     }
-    var locationPointFuture = locationHelper.createLocationPoint(
-        latitude, longitude, altitude, speed, id, DateTime.now().toString(), address);
   }
-
 
   void startTrip() async {
     if (!activeTicket) {
       activeTicket = true;
       print("TRIP STARTED:");
       // Timer to periodic save the LocationPoints
+      calculatedDistance = 0.0;
       saveLocations();
     }
   }
@@ -120,7 +135,7 @@ class Tracking {
           DateTime startTime = DateTime.parse(ticket.startTime);
           DateTime endTime = DateTime.parse(ticket.endTime!);
           Duration timeDifference = startTime.difference(endTime);
-            ticket.ticketPrice = _calculateTicketPrice(distanceBetween, timeDifference);
+          ticket.ticketPrice = _calculateTicketPrice(distanceBetween, timeDifference);
           ticketHelper.updateticket(ticket);
 
           stopFirebaseTicket(
