@@ -62,7 +62,7 @@ class Tracking {
           locationHelper.createLocationPoint(latitude, longitude, altitude, speed, id, DateTime.now().toString(), address);
           calculatedDistance += _getDistanceBetween(latitude, longitude, oldLatitude, oldLongitude);
         }
-        print(calculatedDistance);
+        print(double.parse((calculatedDistance).toStringAsFixed(4)));
      }
      oldLatitude = latitude;
      oldLongitude = longitude;
@@ -141,7 +141,7 @@ class Tracking {
   _calculateTicketPrice(){
     // BeeLine = Luftlinie der Fahrt
     double beeLine = _getDistanceBetween(ticket.startLatitude!, ticket.startLongitude!, ticket.endLatitude!, ticket.endLongitude!);
-    ticket.distanceBetween = beeLine;
+    ticket.distanceBetween = double.parse((beeLine).toStringAsFixed(4));
     // Zeitunterschied
     DateTime startTime = DateTime.parse(ticket.startTime);
     DateTime endTime = DateTime.parse(ticket.endTime!);
@@ -163,7 +163,7 @@ class Tracking {
     }
   }
 
-  // Funktion ermittelt die Luftlinie zwischen Start und Endpunkt in Kilometern
+  // Funktion ermittelt die Luftlinie zwischen zwei Punkten in Kilometern
   _getDistanceBetween(double startLatitude, double startLongitude, double endLatitude, double endLongitude){
     double distanceInMeters = Geolocator.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude);
     double distanceInKilometers = distanceInMeters/1000;
