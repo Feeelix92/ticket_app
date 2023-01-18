@@ -62,7 +62,6 @@ class Tracking {
           calculatedDistance += _getDistanceBetween(latitude, longitude, oldLatitude, oldLongitude);
         }
         ticket.calculatedDistance = double.parse((calculatedDistance).toStringAsFixed(4));
-        print(ticket.calculatedDistance);
      }
      oldLatitude = latitude;
      oldLongitude = longitude;
