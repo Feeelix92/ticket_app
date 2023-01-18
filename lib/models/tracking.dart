@@ -117,7 +117,6 @@ class Tracking {
       print(counter);
       print('${currentPosition.latitude} ${currentPosition.longitude}');
       print('Stream paused: ${positionStream.isPaused}');
-      print(address);
       saveLocationPoint();
       if (!activeTicket) {
         timer.cancel();
@@ -125,18 +124,10 @@ class Tracking {
         futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(), currentPosition.longitude.toString());
         endPosition = currentPosition;
         futureNearbyStops.then((nearbyStops) {
-          print('_________________________');
-          print('nearby Stop:');
-          print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
           ticket.endStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
           ticket.endLatitude = endPosition.latitude;
           ticket.endLongitude = endPosition.longitude;
-          double distanceBetween = _getDistanceBetween(startPosition.latitude, startPosition.longitude, endPosition.latitude, endPosition.longitude);
-          ticket.distanceBetween = distanceBetween;
-          DateTime startTime = DateTime.parse(ticket.startTime);
-          DateTime endTime = DateTime.parse(ticket.endTime!);
-          Duration timeDifference = startTime.difference(endTime);
-          ticket.ticketPrice = _calculateTicketPrice(distanceBetween, timeDifference);
+          ticket.ticketPrice = _calculateTicketPrice();
           ticketHelper.updateticket(ticket);
 
           stopFirebaseTicket(
@@ -149,21 +140,20 @@ class Tracking {
     });
   }
 
-  _getDistanceBetween(double startLatitude, double startLongitude, double endLatitude, double endLongitude){
-    double distanceInMeters = Geolocator.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude);
-    double distanceInKilometers = distanceInMeters/1000;
-    return distanceInKilometers;
-  }
-  _calculateTicketPrice(double distance, Duration timeDifference){
-    // @TODO Distanz korrigieren und mit tatsächlicher Strecke kombinieren
-    // @TODO Zu Lösen: User fährt von Punkt A nach Punkt B, beendet Fahrt nicht, fährt wieder zu Punkt A, dann distanz Luftlinie = 0;
+  _calculateTicketPrice(){
+    double beeLine = _getDistanceBetween();
+    ticket.distanceBetween = beeLine;
+    // Zeitunterschied
+    DateTime startTime = DateTime.parse(ticket.startTime);
+    DateTime endTime = DateTime.parse(ticket.endTime!);
+    Duration timeDifference = endTime.difference(startTime);
     // Preisschlüssel
     double serviceCharge = 1.50;
-    double kilometerPrice = 0.30;
+    double kilometerPrice = 0.15;
     double maxTicketPrice = 17.60;
     // Ticket kostet erst Geld, wenn mindestens 100 m zurückgelegt wurden und 2 Minuten vergangen sind
-    if(distance >= 0.1 && timeDifference.inSeconds >= 120){
-      double ticketPrice = serviceCharge + double.parse((kilometerPrice*distance).toStringAsFixed(2));
+    if(beeLine >= 0.1 && calculatedDistance >= 0.1 && timeDifference.inSeconds >= 120){
+      double ticketPrice = serviceCharge + double.parse((kilometerPrice*beeLine).toStringAsFixed(2)) + double.parse((kilometerPrice*calculatedDistance).toStringAsFixed(2));
       if(ticketPrice <= maxTicketPrice){
         return ticketPrice;
       }else{
@@ -172,6 +162,16 @@ class Tracking {
     }else{
       return 0.0;
     }
+  }
+
+  _getDistanceBetween(){
+    double startLatitude = ticket.startLatitude!;
+    double startLongitude = ticket.startLongitude!;
+    double endLatitude = ticket.endLatitude!;
+    double endLongitude = ticket.endLongitude!;
+    double distanceInMeters = Geolocator.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude);
+    double distanceInKilometers = distanceInMeters/1000;
+    return distanceInKilometers;
   }
 
   Future saveFirebaseTicket(GeoPoint startPoint, String startStation, DateTime startTime, String authId) async {
