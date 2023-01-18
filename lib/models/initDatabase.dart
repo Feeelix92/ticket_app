@@ -29,14 +29,15 @@ class initDatabase {
   endStation String,
   endLatitude DOUBLE,
   endLongitude DOUBLE,
-  distanceBetween DOUBLE,
+  beeLine DOUBLE,
+  calculatedDistance DOUBLE,
   ticketPrice DOUBLE
   );""";
 
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     if(deleteOldDB){
-      deleteDatabase(path);
+      deleteDatabase(dotenv.get('DB_PATH'));
     }
     return openDatabase(
       join(path, dotenv.get('DB_PATH')),

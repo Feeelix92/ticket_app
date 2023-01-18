@@ -1,8 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
-// import 'databaseLocalManager.dart';
 import 'dart:async';
 
 class Ticket {
@@ -16,7 +14,8 @@ class Ticket {
   String? endStation;
   double? endLatitude;
   double? endLongitude;
-  double? distanceBetween;
+  double? beeLine;
+  double? calculatedDistance;
   double? ticketPrice;
 
   Ticket({
@@ -30,7 +29,8 @@ class Ticket {
     this.endStation,
     this.endLatitude,
     this.endLongitude,
-    this.distanceBetween,
+    this.beeLine,
+    this.calculatedDistance,
     this.ticketPrice,
   });
 
@@ -46,7 +46,8 @@ class Ticket {
       'endStation': endStation,
       'endLatitude': endLatitude,
       'endLongitude': endLongitude,
-      'distanceBetween': distanceBetween,
+      'beeLine': beeLine,
+      'calculatedDistance': calculatedDistance,
       'ticketPrice': ticketPrice,
     };
   }
@@ -56,7 +57,7 @@ class Ticket {
     return 'Ticket{id: $id, firebaseId: $firebaseId, startTime: $startTime, endTime: $endTime, '
         'startStation: $startStation, startLatitude: $startLatitude, startLongitude: $startLongitude, '
         'endStation: $endStation, endLatitude: $endLatitude, endLongitude: $endLongitude, '
-        'distanceBetween: $distanceBetween, ticketPrice: $ticketPrice}';
+        'beeLine: $beeLine, calculatedDistance: $calculatedDistance, ticketPrice: $ticketPrice}';
   }
 }
 
@@ -113,7 +114,7 @@ class TicketDatabaseHelper {
         endStation: maps[i]['endStation'],
         endLatitude: maps[i]['endLatitude'],
         endLongitude: maps[i]['endLongitude'],
-        distanceBetween: maps[i]['distanceBetween'],
+        beeLine: maps[i]['beeLine'],
         ticketPrice: maps[i]['ticketPrice'],
       );
     });

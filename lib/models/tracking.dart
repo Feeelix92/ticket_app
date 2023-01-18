@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -141,7 +140,7 @@ class Tracking {
   _calculateTicketPrice(){
     // BeeLine = Luftlinie der Fahrt
     double beeLine = _getDistanceBetween(ticket.startLatitude!, ticket.startLongitude!, ticket.endLatitude!, ticket.endLongitude!);
-    ticket.distanceBetween = double.parse((beeLine).toStringAsFixed(4));
+    ticket.beeLine = double.parse((beeLine).toStringAsFixed(4));
     // Zeitunterschied
     DateTime startTime = DateTime.parse(ticket.startTime);
     DateTime endTime = DateTime.parse(ticket.endTime!);
