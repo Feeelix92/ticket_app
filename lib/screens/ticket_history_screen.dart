@@ -82,7 +82,7 @@ class TicketBox extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TicketText(text: 'Ticket-ID: ${ticket.id}'),
+                TicketText(text: 'Ticket-ID: ${ticket.firebaseId}'),
                 TicketText(text: 'Datum: ${DateTime.parse(ticket.startTime).day}.${DateTime.parse(ticket.startTime).month}.${DateTime.parse(ticket.startTime).year}'),
                 const Spacer(),
                 TicketText(text: 'Uhrzeit: ${DateTime.parse(ticket.startTime).hour}:${DateTime.parse(ticket.startTime).minute > 10 ? DateTime.parse(ticket.startTime).minute :  DateTime.parse(ticket.startTime).minute.toString().padLeft(2, '0') }'),
@@ -113,7 +113,7 @@ class TicketBox extends StatelessWidget {
                         ),
                       );
                     }),
-                      TicketText(text: 'Preis: ${ticket.ticketPrice}')
+                      TicketText(text: 'Preis: ${ticket.ticketPrice} €')
                     ]
                 ),
       ]
