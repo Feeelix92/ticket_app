@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 
 class initDatabase {
+  bool deleteOldDB = false;
 
   static const tableLocation = """
   CREATE TABLE location(
@@ -34,8 +35,9 @@ class initDatabase {
 
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
-    deleteDatabase('location_database.db');
-    deleteDatabase(path);
+    if(deleteOldDB){
+      deleteDatabase(path);
+    }
     return openDatabase(
       join(path, dotenv.get('DB_PATH')),
       onCreate: (database, version) async {
