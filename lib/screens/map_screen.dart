@@ -9,7 +9,6 @@ class MapScreen extends StatefulWidget {
   const MapScreen({Key? key, required this.tracking})
       : super(key: key);
 
-
   @override
   State<MapScreen> createState() => _MapScreenState();
 }
@@ -26,16 +25,8 @@ class _MapScreenState extends State<MapScreen> {
       int id = widget.tracking.ticket.id;
       futureTicket = await locationHelper.locationsFromTicketid(id.toInt());
       for (var locationPoint in futureTicket) {
-        //print(locationPoint);
-
-        //print(futureTicket);
-        print('hallo ${widget.tracking.ticket}');
-        print('testest $id');
-
         centerPoint = LatLng(locationPoint.latitude, locationPoint.longitude);
-        //print(centerPoint);
         route.add(LatLng(locationPoint.latitude, locationPoint.longitude));
-        //print(route.toString());
       }
       setState(() {
         route = route;
@@ -45,12 +36,8 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void initState() {
-
     getLocations();
     super.initState();
-    if (mounted) {
-      print('moin ' );
-    }
   }
 
   @override
