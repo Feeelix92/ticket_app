@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -27,12 +26,18 @@ class Tracking {
   bool haspermission = false;
   late LocationPermission permission;
   late List<LocationPoint> _ride;
+  var oldLatitude = 0.0;
+  var oldLongitude = 0.0;
+  var calculatedDistance = 0.0;
+
   var latitude = 0.0;
   var longitude = 0.0;
   var altitude = 0.0;
   var speed = 0.0;
   var address = "";
   late Position currentPosition;
+  late Position startPosition;
+  late Position endPosition;
   late StreamSubscription<Position> positionStream;
   // Ticket
   var ticketHelper = TicketDatabaseHelper();
@@ -48,19 +53,29 @@ class Tracking {
   void saveLocationPoint() async {
     var id = ticket.id;
     var locationHelper = LocationPointDatabaseHelper();
-    if(longitude.floor() == 0 || longitude.floor() == 0 ){
+
+    if(latitude.floor() != 0 || longitude.floor() != 0){
+     if(oldLatitude.floor() != 0 || oldLongitude.floor() != 0){
+        if(latitude != oldLatitude || longitude != oldLongitude){
+          print('Position has changed!!!!');
+          locationHelper.createLocationPoint(latitude, longitude, altitude, speed, id, DateTime.now().toString(), address);
+          calculatedDistance += _getDistanceBetween(latitude, longitude, oldLatitude, oldLongitude);
+        }
+        ticket.calculatedDistance = double.parse((calculatedDistance).toStringAsFixed(4));
+     }
+     oldLatitude = latitude;
+     oldLongitude = longitude;
+    }else{
       return;
     }
-    var locationPointFuture = locationHelper.createLocationPoint(
-        latitude, longitude, altitude, speed, id, DateTime.now().toString(), address);
   }
-
 
   void startTrip() async {
     if (!activeTicket) {
       activeTicket = true;
       print("TRIP STARTED:");
       // Timer to periodic save the LocationPoints
+      calculatedDistance = 0.0;
       saveLocations();
     }
   }
@@ -77,15 +92,18 @@ class Tracking {
     getTicket();
     var counter = 0;
     futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(), currentPosition.longitude.toString());
+    startPosition = currentPosition;
     futureNearbyStops.then((nearbyStops) {
       print('_________________________');
       print('nearby Stop:');
       print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
       ticket.startStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
+      ticket.startLatitude = startPosition.latitude;
+      ticket.startLongitude = startPosition.longitude;
       ticketHelper.updateticket(ticket);
 
       saveFirebaseTicket(
-          GeoPoint(currentPosition.latitude, currentPosition.longitude),
+          GeoPoint(startPosition.latitude, startPosition.longitude),
           ticket.startStation!,
           DateTime.parse(ticket.startTime),
           user.uid
@@ -96,27 +114,59 @@ class Tracking {
       print(counter);
       print('${currentPosition.latitude} ${currentPosition.longitude}');
       print('Stream paused: ${positionStream.isPaused}');
-      print(address);
       saveLocationPoint();
       if (!activeTicket) {
         timer.cancel();
         ticket.endTime = DateTime.now().toString();
         futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(), currentPosition.longitude.toString());
+        endPosition = currentPosition;
         futureNearbyStops.then((nearbyStops) {
-          print('_________________________');
-          print('nearby Stop:');
-          print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
           ticket.endStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
+          ticket.endLatitude = endPosition.latitude;
+          ticket.endLongitude = endPosition.longitude;
+          ticket.ticketPrice = _calculateTicketPrice();
           ticketHelper.updateticket(ticket);
 
           stopFirebaseTicket(
-              GeoPoint(currentPosition.latitude, currentPosition.longitude),
+              GeoPoint(endPosition.latitude, endPosition.longitude),
               ticket.endStation!,
               DateTime.parse(ticket.endTime!)
           );
         });
       }
     });
+  }
+
+  _calculateTicketPrice(){
+    // BeeLine = Luftlinie der Fahrt
+    double beeLine = _getDistanceBetween(ticket.startLatitude!, ticket.startLongitude!, ticket.endLatitude!, ticket.endLongitude!);
+    ticket.beeLine = double.parse((beeLine).toStringAsFixed(4));
+    // Zeitunterschied
+    DateTime startTime = DateTime.parse(ticket.startTime);
+    DateTime endTime = DateTime.parse(ticket.endTime!);
+    Duration timeDifference = endTime.difference(startTime);
+    // Preisschlüssel
+    double serviceCharge = 1.50;
+    double kilometerPrice = 0.15;
+    double maxTicketPrice = 17.60;
+    // Ticket kostet erst Geld, wenn mindestens 100 m zurückgelegt wurden und 2 Minuten vergangen sind
+    if(beeLine >= 0.1 && calculatedDistance >= 0.1 && timeDifference.inSeconds >= 120){
+      double ticketPrice = serviceCharge + double.parse((kilometerPrice*beeLine).toStringAsFixed(2)) + double.parse((kilometerPrice*calculatedDistance).toStringAsFixed(2));
+      if(ticketPrice <= maxTicketPrice){
+        return ticketPrice;
+      }else{
+        return maxTicketPrice;
+      }
+    }else{
+      return 0.0;
+    }
+  }
+
+  // Funktion ermittelt die Luftlinie zwischen zwei Punkten in Kilometern
+  _getDistanceBetween(double startLatitude, double startLongitude, double endLatitude, double endLongitude){
+    double distanceInMeters = Geolocator.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude);
+    double distanceInKilometers = distanceInMeters/1000;
+    return distanceInKilometers;
   }
 
   Future saveFirebaseTicket(GeoPoint startPoint, String startStation, DateTime startTime, String authId) async {

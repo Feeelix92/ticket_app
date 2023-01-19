@@ -16,6 +16,7 @@ class _TicketTextState extends State<TicketText> {
   @override
   Widget build(BuildContext context) {
     return Text(widget._text,
+        textAlign: TextAlign.left,
         style: TextStyle(
           color: accentColor1,
         ));

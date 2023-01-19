@@ -1,7 +1,6 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
-// import 'databaseLocalManager.dart';
 import 'dart:async';
 
 class Ticket {
@@ -10,7 +9,14 @@ class Ticket {
   String? firebaseId;
   String? endTime;
   String? startStation;
+  double? startLatitude;
+  double? startLongitude;
   String? endStation;
+  double? endLatitude;
+  double? endLongitude;
+  double? beeLine;
+  double? calculatedDistance;
+  double? ticketPrice;
 
   Ticket({
     required this.id,
@@ -18,7 +24,14 @@ class Ticket {
     this.firebaseId,
     this.endTime,
     this.startStation,
+    this.startLatitude,
+    this.startLongitude,
     this.endStation,
+    this.endLatitude,
+    this.endLongitude,
+    this.beeLine,
+    this.calculatedDistance,
+    this.ticketPrice,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,13 +41,23 @@ class Ticket {
       'startTime': startTime,
       'endTime': endTime,
       'startStation': startStation,
+      'startLatitude': startLatitude,
+      'startLongitude': startLongitude,
       'endStation': endStation,
+      'endLatitude': endLatitude,
+      'endLongitude': endLongitude,
+      'beeLine': beeLine,
+      'calculatedDistance': calculatedDistance,
+      'ticketPrice': ticketPrice,
     };
   }
 
   @override
   String toString() {
-    return 'Ticket{id: $id, firebaseId: $firebaseId, startTime: $startTime, endTime: $endTime, startStation: $startStation, endStation: $endStation}';
+    return 'Ticket{id: $id, firebaseId: $firebaseId, startTime: $startTime, endTime: $endTime, '
+        'startStation: $startStation, startLatitude: $startLatitude, startLongitude: $startLongitude, '
+        'endStation: $endStation, endLatitude: $endLatitude, endLongitude: $endLongitude, '
+        'beeLine: $beeLine, calculatedDistance: $calculatedDistance, ticketPrice: $ticketPrice}';
   }
 }
 
@@ -42,7 +65,7 @@ class TicketDatabaseHelper {
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     return openDatabase(
-      join(path, 'location_database3.db'),
+      join(path, dotenv.get('DB_PATH')),
       version: 1,
     );
   }
@@ -86,7 +109,13 @@ class TicketDatabaseHelper {
         startTime: maps[i]['startTime'],
         endTime: maps[i]['endTime'],
         startStation: maps[i]['startStation'],
+        startLatitude: maps[i]['startLatitude'],
+        startLongitude: maps[i]['startLongitude'],
         endStation: maps[i]['endStation'],
+        endLatitude: maps[i]['endLatitude'],
+        endLongitude: maps[i]['endLongitude'],
+        beeLine: maps[i]['beeLine'],
+        ticketPrice: maps[i]['ticketPrice'],
       );
     });
   }
@@ -104,6 +133,7 @@ class TicketDatabaseHelper {
       whereArgs: [id],
     );
   }
+
   Future<void> updateticket(Ticket ticket) async {
     // Get a reference to the database.
     final db = await initializeDB();
