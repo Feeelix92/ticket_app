@@ -23,6 +23,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _lastNameController = TextEditingController();
   final TextEditingController _dateInput = TextEditingController();
   late User user = FirebaseAuth.instance.currentUser!;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -32,6 +33,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future signUp() async {
     if(passwordConfirmed()){
+      setState(() {
+        isLoading = true;
+      });
+
       //create User
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
@@ -265,7 +270,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
                         ),
-                        child: Text(
+                        child: isLoading
+                            ? CircularProgressIndicator(color: accentColor1)
+                            : Text(
                           'Registrieren',
                           style: TextStyle(
                             color: accentColor2,

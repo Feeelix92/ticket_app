@@ -19,17 +19,21 @@ class _TicketMapScreenState extends State<TicketMapScreen> {
   late List locationPointsList;
   late LatLng centerPoint;
   late List<LatLng> route = [];
+  late LatLng centerMap;
 
   _getLocations() async {
     int id = widget.ticket.id;
     futureTicket = await locationHelper.locationsFromTicketid(id.toInt());
     for (var locationPoint in futureTicket) {
-      print(locationPoint);
+      print('test $locationPoint');
 
       centerPoint = LatLng(locationPoint.latitude, locationPoint.longitude);
       //print(centerPoint);
       route.add(LatLng(locationPoint.latitude, locationPoint.longitude));
     }
+    setState(() {
+      centerMap = LatLng(route.last.latitude, route.last.longitude);
+    });
   }
 
   @override
@@ -52,7 +56,7 @@ class _TicketMapScreenState extends State<TicketMapScreen> {
             zoom: 12,
             maxZoom: 13,
             keepAlive: true,
-            center: LatLng(50.333333, 8.75)
+            center: centerMap
         ),
         nonRotatedChildren: [
           AttributionWidget.defaultWidget(
