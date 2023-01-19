@@ -31,6 +31,7 @@ class _TicketHistoryState extends State<TicketHistory> {
     });
   }
 
+  @override
   initState() {
     super.initState();
     _getTickets();
