@@ -45,7 +45,7 @@ class _TicketHistoryState extends State<TicketHistory> {
           itemCount: futureTicket.length,
           itemBuilder: (BuildContext context, int index) {
             return Container(
-              height: 120,
+              height: 140,
               child: Center(child: TicketBox(ticket: futureTicket[index])),
             );
           }
@@ -85,9 +85,11 @@ class TicketBox extends StatelessWidget {
                 TicketText(text: 'Ticket-ID: ${ticket.id}'),
                 TicketText(text: 'Datum: ${DateTime.parse(ticket.startTime).day}.${DateTime.parse(ticket.startTime).month}.${DateTime.parse(ticket.startTime).year}'),
                 const Spacer(),
-                TicketText(text: 'Uhrzeit: ${DateTime.parse(ticket.startTime).hour}:${DateTime.parse(ticket.startTime).minute > 10 ? DateTime.parse(ticket.startTime).minute :  DateTime.parse(ticket.startTime).minute.toString().padLeft(2, '0') }'),
+                TicketText(text: 'Startbahnhof: ${ticket.startStation}'),
+                TicketText(text: 'Startzeit: ${DateTime.parse(ticket.startTime).hour}:${DateTime.parse(ticket.startTime).minute > 10 ? DateTime.parse(ticket.startTime).minute :  DateTime.parse(ticket.startTime).minute.toString().padLeft(2, '0') }'),
                 const Spacer(),
-                TicketText(text: 'Endzeit: ${DateTime.parse(ticket.endTime ?? "2012-02-27 00:00:00").hour}:${DateTime.parse(ticket.endTime ?? "2012-02-27 00:00:00").minute}'),
+                TicketText(text: 'Endbahnhof: ${ticket.endStation}'),
+                TicketText(text: 'Endzeit: ${DateTime.parse(ticket.endTime ?? "2012-02-27 00:00:00").hour}:${DateTime.parse(ticket.endTime ?? "2012-02-27 00:00:00").minute > 10 ? DateTime.parse(ticket.endTime ?? "2012-02-27 00:00:00").minute :  DateTime.parse(ticket.endTime ?? "2012-02-27 00:00:00").minute.toString().padLeft(2, '0') }'),
               ]
               ),
                 Column(
