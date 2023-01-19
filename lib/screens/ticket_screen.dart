@@ -80,8 +80,8 @@ class _TicketScreenState extends State<TicketScreen> {
                 TicketInformation(
                   ticketHolderName: "$firstName $lastName",
                   ticketId: widget.tracking.ticket.firebaseId??"Loading...",
-                  ticketDate: DateFormat('dd.MM.yyyy').format(DateTime.now()),
-                  ticketTime: '${DateFormat('kk:mm').format(DateTime.now())} Uhr',
+                  ticketDate: '${DateTime.parse(widget.tracking.ticket.startTime).day}.${DateTime.parse(widget.tracking.ticket.startTime).month}.${DateTime.parse(widget.tracking.ticket.startTime).year}',
+                  ticketTime: '${DateTime.parse(widget.tracking.ticket.startTime).hour}:${DateTime.parse(widget.tracking.ticket.startTime).minute > 10 ? DateTime.parse(widget.tracking.ticket.startTime).minute :  DateTime.parse(widget.tracking.ticket.startTime).minute.toString().padLeft(2, '0') }',
                   latitude: widget.tracking.latitude.toString(),
                   longitude: widget.tracking.longitude.toString(),
                   address: widget.tracking.address,
