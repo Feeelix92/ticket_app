@@ -21,22 +21,32 @@ class _MapScreenState extends State<MapScreen> {
   late LatLng centerPoint;
   late List<LatLng> route = [];
 
-  _getLocations() async {
-    int id = 6;
-    futureTicket = await locationHelper.locationsFromTicketid(id.toInt());
-    for (var locationPoint in futureTicket) {
-      print(locationPoint);
+  getLocations() async {
+    if(widget.tracking.activeTicket){
+      int id = widget.tracking.ticket.id;
+      futureTicket = await locationHelper.locationsFromTicketid(id.toInt());
+      for (var locationPoint in futureTicket) {
+        //print(locationPoint);
 
-      centerPoint = LatLng(locationPoint.latitude, locationPoint.longitude);
-      //print(centerPoint);
-      route.add(LatLng(locationPoint.latitude, locationPoint.longitude));
+        //print(futureTicket);
+        print('hallo ${widget.tracking.ticket}');
+        print('testest $id');
+
+        centerPoint = LatLng(locationPoint.latitude, locationPoint.longitude);
+        //print(centerPoint);
+        route.add(LatLng(locationPoint.latitude, locationPoint.longitude));
+        //print(route.toString());
+      }
+      setState(() {
+        route = route;
+      });
     }
   }
 
   @override
   void initState() {
 
-    _getLocations();
+    getLocations();
     super.initState();
     if (mounted) {
       print('moin ' );
@@ -47,8 +57,8 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return FlutterMap(
         options: MapOptions(
-            zoom: 12,
-            maxZoom: 13,
+            zoom: 13,
+            maxZoom: 18,
             keepAlive: true,
             center: LatLng(widget.tracking.currentPosition.latitude, widget.tracking.currentPosition.longitude)
         ),
