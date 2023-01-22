@@ -52,6 +52,7 @@ class _TicketHistoryState extends State<TicketHistory> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     TicketText(text: 'Abrechnungzeitraum:'),
+                    // @TODO add dynamic date
                     TicketText(text: 'Januar 2023'),
                   ],
                 ),
@@ -59,6 +60,7 @@ class _TicketHistoryState extends State<TicketHistory> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     TicketText(text: 'Abrechnunngsbetrag:'),
+                    // @TODO add dynamic amount
                     TicketText(text: '0.00 €'),
                   ],
                 ),
