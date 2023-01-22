@@ -45,19 +45,21 @@ class _TicketHistoryState extends State<TicketHistory> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    Text("Abrechnungzeitraum:"),
-                    Text("Januar 2023"),
+                    TicketText(text: 'Abrechnungzeitraum:'),
+                    TicketText(text: 'Januar 2023'),
                   ],
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    Text("Abrechnunngsbetrag:"),
-                    Text("0.0 €"),
+                    TicketText(text: 'Abrechnunngsbetrag:'),
+                    TicketText(text: '0.00 €'),
                   ],
                 ),
               ],
@@ -107,7 +109,7 @@ class _TicketBoxState extends State<TicketBox> {
           side: BorderSide(
             color: secondaryColor,
           ),
-          borderRadius: BorderRadius.circular(30.0), //<-- SEE HERE
+          borderRadius: BorderRadius.circular(20.0), //<-- SEE HERE
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
