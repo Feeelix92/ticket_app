@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/screens/ticket_map_screen.dart';
-import 'package:ticket_app/widgets/qr.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-
 import '../models/ticket.dart';
-import '../widgets/ticket_information.dart';
+import '../widgets/dropdown.dart';
 import '../widgets/ticket_text.dart';
 
 import '../models/tracking.dart';
@@ -20,6 +18,8 @@ class TicketHistory extends StatefulWidget {
 }
 
 class _TicketHistoryState extends State<TicketHistory> {
+  // @TODO make billingList dynamic
+  List<String> billingList = <String>['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
   var ticketHelper = TicketDatabaseHelper();
   late List futureTicket;
   bool finish = false;
@@ -45,21 +45,21 @@ class _TicketHistoryState extends State<TicketHistory> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    TicketText(text: 'Abrechnungzeitraum:'),
+                  children: [
+                    const TicketText(text: 'Abrechnungzeitraum:'),
                     // @TODO add dynamic date
-                    TicketText(text: 'Januar 2023'),
+                    Expanded(child: DynamicDropdownButton(list: billingList)),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    TicketText(text: 'Abrechnunngsbetrag:'),
+                    TicketText(text: 'Abrechnungsbetrag:'),
                     // @TODO add dynamic amount
                     TicketText(text: '0.00 €'),
                   ],
