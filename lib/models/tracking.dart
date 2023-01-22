@@ -146,7 +146,7 @@ class Tracking {
     DateTime endTime = DateTime.parse(ticket.endTime!);
     Duration timeDifference = endTime.difference(startTime);
     // Preisschlüssel
-    double serviceCharge = 1.50;
+    double serviceCharge = 1.60;
     double kilometerPrice = 0.15;
     double maxTicketPrice = 17.60;
     // Ticket kostet erst Geld, wenn mindestens 100 m zurückgelegt wurden und 2 Minuten vergangen sind
