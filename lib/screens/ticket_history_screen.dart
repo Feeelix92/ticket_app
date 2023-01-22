@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/screens/ticket_map_screen.dart';
 import 'package:ticket_app/widgets/qr.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -40,15 +41,41 @@ class _TicketHistoryState extends State<TicketHistory> {
   @override
   Widget build(BuildContext context) {
     if (finish) {
-      return ListView.builder(
-          padding: const EdgeInsets.all(8),
-          itemCount: futureTicket.length,
-          itemBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: 278,
-              child: Center(child: TicketBox(ticket: futureTicket[index])),
-            );
-          });
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+            child: Column(
+              children: [
+                Row(
+                  children: const [
+                    Text("Abrechnungzeitraum:"),
+                    Text("Januar 2023"),
+                  ],
+                ),
+                Row(
+                  children: const [
+                    Text("Abrechnunngsbetrag:"),
+                    Text("0.0 €"),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+              child: ListView.builder(
+                  padding: const EdgeInsets.all(8.0),
+                  itemCount: futureTicket.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      height: 278,
+                      child: Center(child: TicketBox(ticket: futureTicket[index])),
+                    );
+                  })
+          ),
+        ],
+      );
     }
 
     return const Text('TicketHistory');
@@ -76,6 +103,12 @@ class _TicketBoxState extends State<TicketBox> {
             builder: (context) => TicketMapScreen(ticket: widget.ticket)));
       },
       child: Card(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: secondaryColor,
+          ),
+          borderRadius: BorderRadius.circular(30.0), //<-- SEE HERE
+        ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -92,7 +125,13 @@ class _TicketBoxState extends State<TicketBox> {
                           text: 'Ticket-ID: ${widget.ticket.firebaseId}'),
                       TicketText(
                           text:
-                              'Datum: ${DateTime.parse(widget.ticket.startTime).day}.${DateTime.parse(widget.ticket.startTime).month}.${DateTime.parse(widget.ticket.startTime).year}'),
+                          'Datum: ${DateTime
+                              .parse(widget.ticket.startTime)
+                              .day}.${DateTime
+                              .parse(widget.ticket.startTime)
+                              .month}.${DateTime
+                              .parse(widget.ticket.startTime)
+                              .year}'),
                     ],
                   ),
                 ]),
@@ -107,7 +146,17 @@ class _TicketBoxState extends State<TicketBox> {
                           text: 'Startbahnhof: ${widget.ticket.startStation}'),
                       TicketText(
                           text:
-                              'Startzeit: ${DateTime.parse(widget.ticket.startTime).hour}:${DateTime.parse(widget.ticket.startTime).minute > 10 ? DateTime.parse(widget.ticket.startTime).minute : DateTime.parse(widget.ticket.startTime).minute.toString().padLeft(2, '0')}'),
+                          'Startzeit: ${DateTime
+                              .parse(widget.ticket.startTime)
+                              .hour}:${DateTime
+                              .parse(widget.ticket.startTime)
+                              .minute > 10 ? DateTime
+                              .parse(widget.ticket.startTime)
+                              .minute : DateTime
+                              .parse(widget.ticket.startTime)
+                              .minute
+                              .toString()
+                              .padLeft(2, '0')}'),
                     ],
                   ),
                 ]),
@@ -122,7 +171,21 @@ class _TicketBoxState extends State<TicketBox> {
                           text: 'Endbahnhof: ${widget.ticket.endStation}'),
                       TicketText(
                           text:
-                              'Endzeit: ${DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").hour}:${DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").minute > 10 ? DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").minute : DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").minute.toString().padLeft(2, '0')}'),
+                          'Endzeit: ${DateTime
+                              .parse(
+                              widget.ticket.endTime ?? "2012-02-27 00:00:00")
+                              .hour}:${DateTime
+                              .parse(
+                              widget.ticket.endTime ?? "2012-02-27 00:00:00")
+                              .minute > 10 ? DateTime
+                              .parse(
+                              widget.ticket.endTime ?? "2012-02-27 00:00:00")
+                              .minute : DateTime
+                              .parse(
+                              widget.ticket.endTime ?? "2012-02-27 00:00:00")
+                              .minute
+                              .toString()
+                              .padLeft(2, '0')}'),
                     ],
                   ),
                 ]),
