@@ -14,10 +14,19 @@ class DynamicDropdownButton extends StatefulWidget {
 }
 
 class _DynamicDropdownButtonState extends State<DynamicDropdownButton> {
+  String dropdownValue = "...";
+
+  @override
+  initState() {
+    super.initState();
+    dropdownValue = widget._list.first;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DropdownButton<String>(
-      value: widget._list.first,
+      isExpanded: true,
+      value: dropdownValue,
       icon: Icon(Icons.arrow_downward, color: accentColor1),
       elevation: 16,
       style: TextStyle(color: accentColor1),
@@ -28,7 +37,7 @@ class _DynamicDropdownButtonState extends State<DynamicDropdownButton> {
       onChanged: (String? value) {
         // This is called when the user selects an item.
         setState(() {
-          widget._list.first = value!;
+          dropdownValue = value!;
         });
       },
       items: widget._list.map<DropdownMenuItem<String>>((String value) {

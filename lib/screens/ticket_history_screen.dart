@@ -53,13 +53,13 @@ class _TicketHistoryState extends State<TicketHistory> {
                   children: [
                     const TicketText(text: 'Abrechnungzeitraum:'),
                     // @TODO add dynamic date
-                    DynamicDropdownButton(list: billingList),
+                    Expanded(child: DynamicDropdownButton(list: billingList)),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    TicketText(text: 'Abrechnunngsbetrag:'),
+                    TicketText(text: 'Abrechnungsbetrag:'),
                     // @TODO add dynamic amount
                     TicketText(text: '0.00 €'),
                   ],
