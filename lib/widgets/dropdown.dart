@@ -31,7 +31,7 @@ class _DynamicDropdownButtonState extends State<DynamicDropdownButton> {
       elevation: 16,
       style: TextStyle(color: accentColor1),
       underline: Container(
-        height: 2,
+        height: 1,
         color: secondaryColor,
       ),
       onChanged: (String? value) {
