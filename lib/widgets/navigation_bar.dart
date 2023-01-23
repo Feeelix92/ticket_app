@@ -12,7 +12,8 @@ import '../screens/auth/main_screen.dart';
 class MyNavigationBar extends StatefulWidget {
   final String title;
   final Tracking tracking;
-  const MyNavigationBar({Key? key, required this.title, required this.tracking})
+  final int index;
+  const MyNavigationBar({Key? key, required this.title, required this.tracking, required this.index})
       : super(key: key);
 
   @override
@@ -49,6 +50,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   @override
   void initState() {
     getUserName();
+    _currentIndex = widget.index;
     super.initState();
   }
 

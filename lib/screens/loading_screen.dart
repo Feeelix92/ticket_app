@@ -22,6 +22,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         builder: (context) => MyNavigationBar(
           tracking: widget.tracking,
           title: 'Easy-Ticket',
+          index: 0,
         ),
       ));
     });
