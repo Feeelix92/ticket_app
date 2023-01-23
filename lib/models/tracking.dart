@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ticket_app/models/ticket.dart';
+import 'billing.dart';
 import 'departure_board.dart';
 import 'journey_detail.dart';
 import 'locationPoint.dart';
@@ -39,12 +40,16 @@ class Tracking {
   late Position startPosition;
   late Position endPosition;
   late StreamSubscription<Position> positionStream;
+
   // Ticket
   var ticketHelper = TicketDatabaseHelper();
   late var ticketFuture;
   late Ticket ticket;
   bool activeTicket = false;
   late User user = FirebaseAuth.instance.currentUser!;
+
+  // Billing
+  var billingtHelper = BillingDatabaseHelper();
 
   void getTicket() async {
     ticket = await ticketFuture;
