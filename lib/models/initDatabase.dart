@@ -34,6 +34,16 @@ class initDatabase {
   ticketPrice DOUBLE
   );""";
 
+  static const tableBillingAmount = """
+  CREATE TABLE billing(
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  month String,
+  year String,
+  monthlyAmount DOUBLE,
+  traveledDistance DOUBLE,
+  paid Boolean
+  );""";
+
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
     if(deleteOldDB){
@@ -44,6 +54,7 @@ class initDatabase {
       onCreate: (database, version) async {
         await database.execute(tableLocation);
         await database.execute(tableTicket);
+        await database.execute(tableBillingAmount);
       },
       version: 2,
     );
