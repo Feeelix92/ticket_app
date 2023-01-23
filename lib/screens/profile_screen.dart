@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_app/widgets/bold_styled_text.dart';
-
 import '../colors.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -21,10 +20,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final CollectionReference _users =
   FirebaseFirestore.instance.collection('users');
-
-  List<String> ticketIDs = [];
-  int? arrayCounter;
-  bool showStats = false;
 
   Future<void> _update([DocumentSnapshot? documentSnapshot]) async {
     if (documentSnapshot != null) {
@@ -114,28 +109,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await prefs.setString('lastName', lastName);
   }
 
-  Future getFBTickets([DocumentSnapshot? documentSnapshot]) async{
-    FirebaseFirestore.instance.collection('tickets')
-        .where('authId', isEqualTo: documentSnapshot!['authId'])
-        .get()
-        .then(
-            (snapshot) => snapshot.docs.forEach(
-                    (ticket) {
-                      if(!ticketIDs.contains(ticket.reference.id)){
-                        ticketIDs.add(ticket.reference.id);
-                        arrayCounter = ticketIDs.length;
-                      }
-                    }
-            )
-    );
-
-    setState(() {
-      showStats = !showStats;
-      print(showStats);
-    });
-  }
-
-
   @override
   void initState() {
     // TODO: implement initState
@@ -177,14 +150,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Text(documentSnapshot['email']),
                       const SizedBox(height: 10),
                       Text(documentSnapshot['birthdate']),
-                      ElevatedButton(
-                          onPressed: () => getFBTickets(documentSnapshot),
-                          child: const Text('Deine Statistiken')
-                      ),
-                      Visibility(
-                        visible: showStats,
-                        child: Text('gefahrene Strecken: $arrayCounter'),
-                      ),
                       ElevatedButton(
                         onPressed: () => _update(documentSnapshot),
                         child: const Text('Profil bearbeiten'),
