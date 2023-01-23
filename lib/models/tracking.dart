@@ -147,7 +147,7 @@ class Tracking {
     Duration timeDifference = endTime.difference(startTime);
     // Preisschlüssel
     double serviceCharge = 1.60;
-    double kilometerPrice = 0.15;
+    double kilometerPrice = 0.05;
     double maxTicketPrice = 17.60;
     // Ticket kostet erst Geld, wenn mindestens 100 m zurückgelegt wurden und 2 Minuten vergangen sind
     if(beeLine >= 0.1 && calculatedDistance >= 0.1 && timeDifference.inSeconds >= 120){
