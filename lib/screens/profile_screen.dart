@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:ticket_app/widgets/bold_styled_text.dart';
 import '../colors.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -20,7 +20,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final CollectionReference _users =
   FirebaseFirestore.instance.collection('users');
-
 
   Future<void> _update([DocumentSnapshot? documentSnapshot]) async {
     if (documentSnapshot != null) {
@@ -131,17 +130,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
               itemBuilder: (context, index) {
                 final DocumentSnapshot documentSnapshot =
                 streamSnapshot.data!.docs[index];
-                return Column(
-                  children:[
-                    Text(documentSnapshot['firstName']),
-                    Text(documentSnapshot['lastName']),
-                    Text(documentSnapshot['email']),
-                    Text(documentSnapshot['birthdate']),
-                    ElevatedButton(
-                      onPressed: () => _update(documentSnapshot),
-                      child: const Icon(Icons.edit),
-                    ),
-                  ],
+                return SingleChildScrollView(
+                  child: Column(
+                    children:[
+                      SizedBox(
+                        width: 120,
+                        height: 120,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: const Icon(
+                              Icons.person,
+                              size: 80.0,
+                            color: Color(0xff1b998b),
+                          ),
+                        ),
+                      ),
+                      BoldStyledText(text: '${documentSnapshot["firstName"]} ${documentSnapshot['lastName']}'),
+                      const SizedBox(height: 20),
+                      Text(documentSnapshot['email']),
+                      const SizedBox(height: 10),
+                      Text(documentSnapshot['birthdate']),
+                      ElevatedButton(
+                        onPressed: () => _update(documentSnapshot),
+                        child: const Text('Profil bearbeiten'),
+                      ),
+                    ],
+                  ),
                 );
               },
             );
