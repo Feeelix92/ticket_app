@@ -147,7 +147,6 @@ class _LoginScreenState extends State<LoginScreen>{
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
 
                 Padding(
                   padding: const EdgeInsets.all(25.0),
@@ -163,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen>{
                         child: Text(
                           'Passwort vergessen?',
                           style: TextStyle(
-                              color: accentColor2,
+                              color: accentColor1,
                               fontWeight: FontWeight.bold
                           ),
                         ),
@@ -203,6 +202,7 @@ class _LoginScreenState extends State<LoginScreen>{
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    const SizedBox(width: 5),
                     GestureDetector(
                       onTap: widget.showRegisterScreen,
                       child: Text(
