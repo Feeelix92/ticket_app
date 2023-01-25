@@ -131,7 +131,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const Text(
                     'Registrieren',
                     style: TextStyle(
-                      fontSize: 52
+                      fontSize: 52,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -272,10 +273,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         child: isLoading
                             ? CircularProgressIndicator(color: accentColor1)
-                            : Text(
+                            : const Text(
                           'Registrieren',
                           style: TextStyle(
-                            color: accentColor2,
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                           ),
@@ -294,6 +294,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      const SizedBox(width: 5),
                       GestureDetector(
                           onTap: widget.showLoginScreen,
                           child: Text(
