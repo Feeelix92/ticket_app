@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen>{
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(
-                  Icons.flutter_dash,
+                  Icons.train,
                   size: 120,
                 ),
                 const SizedBox(height: 75),
