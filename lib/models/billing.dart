@@ -35,7 +35,7 @@ class Billing {
 
   @override
   String toString() {
-    return 'Ticket{id: $id, firebaseId: $firebaseId, month: $month, monthlyAmount: $monthlyAmount, traveledDistance: $traveledDistance, paid: $paid}';
+    return 'Billing{id: $id, firebaseId: $firebaseId, month: $month, monthlyAmount: $monthlyAmount, traveledDistance: $traveledDistance, paid: $paid}';
   }
 }
 
@@ -56,7 +56,7 @@ class BillingDatabaseHelper {
     return Billing(id: id, month: month, monthlyAmount: monthlyAmount, traveledDistance: traveledDistance, paid: paid, );
   }
 
-  Future<void> insertBilling(Billing ticket) async {
+  Future<void> insertBilling(Billing billing) async {
     // Get a reference to the database.
     final db = await initializeDB();
 
@@ -65,8 +65,8 @@ class BillingDatabaseHelper {
     //
     // In this case, replace any previous data.
     await db.insert(
-      'ticket',
-      ticket.toMap(),
+      'billing',
+      billing.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -76,7 +76,7 @@ class BillingDatabaseHelper {
     final db = await initializeDB();
 
     // Query the table for all The Billings.
-    final List<Map<String, dynamic>> maps = await db.query('ticket');
+    final List<Map<String, dynamic>> maps = await db.query('billing');
 
     // Convert the List<Map<String, dynamic> into a List<Billing>.
     return List.generate(maps.length, (i) {
@@ -139,7 +139,7 @@ class BillingDatabaseHelper {
         month: maps[i]['month'],
         monthlyAmount: maps[i]['monthlyAmount'],
         traveledDistance: maps[i]['traveledDistance'],
-        paid: maps[i]['paid'],
+        paid: maps[i]['paid'] == 0 ? false : true,
       );
     });
   }

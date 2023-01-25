@@ -99,6 +99,7 @@ class Tracking {
     if (activeTicket) {
       activeTicket = false;
       print("TRIP STOPED:");
+      _createBilling();
     }
   }
 
@@ -147,20 +148,23 @@ class Tracking {
               GeoPoint(endPosition.latitude, endPosition.longitude),
               ticket.endStation!,
               DateTime.parse(ticket.endTime!));
-          _createBilling();
         });
       }
     });
   }
 
-  _createBilling(){
+  _createBilling() async {
     var today = DateTime.now();
     var month = DateTime(today.year, today.month);
     var nextMonth = DateTime(month.year, month.month + 1);
-    billingFuture = billingHelper.createBilling(month.toString(), 0.0, 0.0, false);
+    var list = await billingHelper.getBillingsPerMonth(month.toString());
+
+    for (var index in list){
+      if(index.month != month.toString()){
+        billingFuture = billingHelper.createBilling(month.toString(), 0.0, 0.0, false);
+      }
+    }
   }
-
-
 
   _calculateTicketPrice() {
     // BeeLine = Luftlinie der Fahrt
