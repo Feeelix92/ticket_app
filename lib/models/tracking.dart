@@ -158,8 +158,9 @@ class Tracking {
     var month = DateTime(today.year, today.month);
     var nextMonth = DateTime(month.year, month.month + 1);
     billingFuture = billingHelper.createBilling(month.toString(), 0.0, 0.0, false);
-    // getBilling();
   }
+
+
 
   _calculateTicketPrice() {
     // BeeLine = Luftlinie der Fahrt

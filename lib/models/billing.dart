@@ -60,8 +60,8 @@ class BillingDatabaseHelper {
     // Get a reference to the database.
     final db = await initializeDB();
 
-    // Insert the Dog into the correct table. You might also specify the
-    // `conflictAlgorithm` to use in case the same dog is inserted twice.
+    // Insert the Billing into the correct table. You might also specify the
+    // `conflictAlgorithm` to use in case the same Billing is inserted twice.
     //
     // In this case, replace any previous data.
     await db.insert(
@@ -75,10 +75,10 @@ class BillingDatabaseHelper {
     // Get a reference to the database.
     final db = await initializeDB();
 
-    // Query the table for all The Dogs.
+    // Query the table for all The Billings.
     final List<Map<String, dynamic>> maps = await db.query('ticket');
 
-    // Convert the List<Map<String, dynamic> into a List<Dog>.
+    // Convert the List<Map<String, dynamic> into a List<Billing>.
     return List.generate(maps.length, (i) {
       return Billing(
         id: maps[i]['id'],
@@ -95,12 +95,12 @@ class BillingDatabaseHelper {
     // Get a reference to the database.
     final db = await initializeDB();
 
-    // Remove the Dog from the database.
+    // Remove the Billing from the database.
     await db.delete(
       'billing',
-      // Use a `where` clause to delete a specific dog.
+      // Use a `where` clause to delete a specific Billing.
       where: 'id = ?',
-      // Pass the Dog's id as a whereArg to prevent SQL injection.
+      // Pass the Billing's id as a whereArg to prevent SQL injection.
       whereArgs: [id],
     );
   }
@@ -109,13 +109,38 @@ class BillingDatabaseHelper {
     // Get a reference to the database.
     final db = await initializeDB();
 
-    // Remove the Dog from the database.
+    // Remove the Billing from the database.
     await db.update(
       'billing',
       billing.toMap(),
       where: 'id = ?',
-      // Pass the Dog's id as a whereArg to prevent SQL injection.
+      // Pass the Billing's id as a whereArg to prevent SQL injection.
       whereArgs: [billing.id],
     );
+  }
+
+  Future<List<Billing>> getBillingsPerMonth(String month) async{
+    // Get a reference to the database.
+    final db = await initializeDB();
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      'billing',
+      // Use a `where` clause to delete a specific Billing.
+      where: 'month = ?',
+      // Pass the Billing's id as a whereArg to prevent SQL injection.
+      whereArgs: [month],
+    );
+
+    // Convert the List<Map<String, dynamic> into a List<Billing>.
+    return List.generate(maps.length, (i) {
+      return Billing(
+        id: maps[i]['id'],
+        firebaseId: maps[i]['firebaseId'],
+        month: maps[i]['month'],
+        monthlyAmount: maps[i]['monthlyAmount'],
+        traveledDistance: maps[i]['traveledDistance'],
+        paid: maps[i]['paid'],
+      );
+    });
   }
 }
