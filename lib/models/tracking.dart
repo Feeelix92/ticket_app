@@ -165,7 +165,6 @@ class Tracking {
     for (var index in tickets){
       var ticketTime = DateTime.parse(index.startTime);
       var ticketMonth = DateTime(ticketTime.year, ticketTime.month);
-      print(ticketMonth);
       if(ticketMonth == month){
         monthlyAmount += index.ticketPrice??0.0;
         monthlyDistance += index.calculatedDistance??0.0;
