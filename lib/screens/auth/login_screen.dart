@@ -5,16 +5,17 @@ import 'package:ticket_app/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'forgotPassword_screen.dart';
 
-class LoginScreen extends StatefulWidget{
+class LoginScreen extends StatefulWidget {
   final VoidCallback showRegisterScreen;
-  const LoginScreen({Key? key, required this.showRegisterScreen}) : super(key:key);
+
+  const LoginScreen({Key? key, required this.showRegisterScreen})
+      : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>{
-
+class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   late User user = FirebaseAuth.instance.currentUser!;
@@ -22,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen>{
   bool isLoading = false;
 
   Future signIn() async {
-    try{
+    try {
       setState(() {
         isLoading = true;
       });
@@ -31,18 +32,16 @@ class _LoginScreenState extends State<LoginScreen>{
         password: _passwordController.text.trim(),
       );
       getUserData();
-    }on FirebaseAuthException {
+    } on FirebaseAuthException {
       showDialog(
           context: context,
-          builder: (context){
+          builder: (context) {
             return AlertDialog(
               content: const Text('Konrolliere deine Eingaben'),
               actions: <Widget>[
                 ElevatedButton(
-                    onPressed: () => {
-                      Navigator.of(context).pop()},
-                    child: const Text('Alles klar')
-                )
+                    onPressed: () => {Navigator.of(context).pop()},
+                    child: const Text('Alles klar'))
               ],
             );
           });
@@ -52,25 +51,20 @@ class _LoginScreenState extends State<LoginScreen>{
     }
   }
 
-  getUserData() async{
+  getUserData() async {
     await FirebaseFirestore.instance
         .collection('users')
         .where("authId", isEqualTo: user.uid)
         .get()
-        .then((users) => users.docs.forEach(
-            (user) {
+        .then((users) => users.docs.forEach((user) {
               var userData = user.data();
-              _storeUserDetails(
-                  userData['firstName'],
-                  userData['lastName'],
-                  userData['email'],
-                  userData['birthdate'],
-                  userData['authId']
-              );
+              _storeUserDetails(userData['firstName'], userData['lastName'],
+                  userData['email'], userData['birthdate'], userData['authId']);
             }));
   }
 
-  _storeUserDetails(String firstName, String lastName, String email, String birthdate, String authId) async{
+  _storeUserDetails(String firstName, String lastName, String email,
+      String birthdate, String authId) async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setString('firstName', firstName);
@@ -92,86 +86,86 @@ class _LoginScreenState extends State<LoginScreen>{
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                 Icon(
-                  Icons.train,
-                  color: primaryColor,
-                  size: 120,
+            child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.train,
+                color: primaryColor,
+                size: 120,
+              ),
+              const SizedBox(height: 75),
+              const Text(
+                'Login',
+                style: TextStyle(
+                  fontSize: 52,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 75),
-                const Text(
-                  'Login',
-                  style: TextStyle(
-                    fontSize: 52,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primaryColor),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: secondaryColor),
-                      ),
-                      labelText: 'Email',
-                      fillColor: accentColor2,
-                      filled: true,
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: TextField(
-                    obscureText: true,
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primaryColor),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: secondaryColor),
-                      ),
-                      labelText: 'Password',
-                      fillColor: accentColor2,
-                      filled: true,
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
                     ),
+                    labelText: 'Email',
+                    fillColor: accentColor2,
+                    filled: true,
                   ),
                 ),
-
-                Padding(
-                  padding: const EdgeInsets.all(25.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap:(){
-                          Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return const ForgotPasswordScreen();
-                          },),);
-                        },
-                        child: Text(
-                          'Passwort vergessen?',
-                          style: TextStyle(
-                              color: accentColor1,
-                              fontWeight: FontWeight.bold
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: TextField(
+                  obscureText: true,
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                    labelText: 'Password',
+                    fillColor: accentColor2,
+                    filled: true,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const ForgotPasswordScreen();
+                            },
                           ),
-                        ),
+                        );
+                      },
+                      child: Text(
+                        'Passwort vergessen?',
+                        style: TextStyle(
+                            color: accentColor1, fontWeight: FontWeight.bold),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-
-                Padding(
+              ),
+              Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: ElevatedButton(
                     onPressed: signIn,
@@ -181,44 +175,37 @@ class _LoginScreenState extends State<LoginScreen>{
                     child: isLoading
                         ? CircularProgressIndicator(color: accentColor1)
                         : Text(
-                      'Login',
-                      style: TextStyle(
-                        color: accentColor2,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+                            'Login',
+                            style: TextStyle(
+                              color: accentColor2,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                  )),
+              const SizedBox(height: 25.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Bisher kein Nutzer?',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
                     ),
-                  )
-                ),
-                const SizedBox(height: 25.0),
-
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Bisher kein Nutzer?',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    GestureDetector(
+                  ),
+                  const SizedBox(width: 5),
+                  GestureDetector(
                       onTap: widget.showRegisterScreen,
                       child: Text(
                         'Registrieren',
                         style: TextStyle(
-                          color: accentColor1,
-                          fontWeight: FontWeight.bold
-                        ),
-                      )
-                    )
-                  ],
-                )
-              ],
-            ),
-          )
-        ),
+                            color: accentColor1, fontWeight: FontWeight.bold),
+                      ))
+                ],
+              )
+            ],
+          ),
+        )),
       ),
     );
   }
