@@ -37,11 +37,11 @@ class initDatabase {
   static const tableBillingAmount = """
   CREATE TABLE billing(
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  firebaseId String,
   month String,
-  year String,
   monthlyAmount DOUBLE,
   traveledDistance DOUBLE,
-  paid Boolean
+  paid INTEGER
   );""";
 
   Future<Database> initializeDB() async {

@@ -7,16 +7,14 @@ class Billing {
   final int id;
   String? firebaseId;
   final String month;
-  final String year;
-  final double monthlyAmount;
-  final double traveledDistance;
-  final bool paid;
+  double monthlyAmount;
+  double traveledDistance;
+  int paid;
 
   Billing({
     required this.id,
     this.firebaseId,
     required this.month,
-    required this.year,
     required this.monthlyAmount,
     required this.traveledDistance,
     required this.paid,
@@ -28,7 +26,6 @@ class Billing {
       'id': id,
       'firebaseId': firebaseId,
       'month': month,
-      'year': year,
       'monthlyAmount': monthlyAmount,
       'traveledDistance': traveledDistance,
       'paid': paid,
@@ -38,7 +35,7 @@ class Billing {
 
   @override
   String toString() {
-    return 'Ticket{id: $id, firebaseId: $firebaseId, month: $month, year: $year, monthlyAmount: $monthlyAmount, traveledDistance: $traveledDistance, paid: $paid}';
+    return 'Billing{id: $id, firebaseId: $firebaseId, month: $month, monthlyAmount: $monthlyAmount, traveledDistance: $traveledDistance, paid: $paid}';
   }
 }
 
@@ -51,25 +48,25 @@ class BillingDatabaseHelper {
     );
   }
 
-  Future<Billing> createBilling(String month, String year, double monthlyAmount, double traveledDistance, bool paid) async {
+  Future<Billing> createBilling(String month, double monthlyAmount, double traveledDistance, int paid) async {
     final db = await initializeDB();
-    final data = {'month': month, 'year': year, 'monthlyAmount': monthlyAmount, 'traveledDistance': traveledDistance, 'paid': paid};
+    final data = {'month': month, 'monthlyAmount': monthlyAmount, 'traveledDistance': traveledDistance, 'paid': paid};
     final id = await db.insert('billing', data,
         conflictAlgorithm: ConflictAlgorithm.replace);
-    return Billing(id: id, month: month, year: year, monthlyAmount: monthlyAmount, traveledDistance: traveledDistance, paid: paid, );
+    return Billing(id: id, month: month, monthlyAmount: monthlyAmount, traveledDistance: traveledDistance, paid: paid);
   }
 
-  Future<void> insertBilling(Billing ticket) async {
+  Future<void> insertBilling(Billing billing) async {
     // Get a reference to the database.
     final db = await initializeDB();
 
-    // Insert the Dog into the correct table. You might also specify the
-    // `conflictAlgorithm` to use in case the same dog is inserted twice.
+    // Insert the Billing into the correct table. You might also specify the
+    // `conflictAlgorithm` to use in case the same Billing is inserted twice.
     //
     // In this case, replace any previous data.
     await db.insert(
-      'ticket',
-      ticket.toMap(),
+      'billing',
+      billing.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -78,16 +75,15 @@ class BillingDatabaseHelper {
     // Get a reference to the database.
     final db = await initializeDB();
 
-    // Query the table for all The Dogs.
-    final List<Map<String, dynamic>> maps = await db.query('ticket');
+    // Query the table for all The Billings.
+    final List<Map<String, dynamic>> maps = await db.query('billing');
 
-    // Convert the List<Map<String, dynamic> into a List<Dog>.
+    // Convert the List<Map<String, dynamic> into a List<Billing>.
     return List.generate(maps.length, (i) {
       return Billing(
         id: maps[i]['id'],
         firebaseId: maps[i]['firebaseId'],
         month: maps[i]['month'],
-        year: maps[i]['year'],
         monthlyAmount: maps[i]['monthlyAmount'],
         traveledDistance: maps[i]['traveledDistance'],
         paid: maps[i]['paid'],
@@ -99,12 +95,12 @@ class BillingDatabaseHelper {
     // Get a reference to the database.
     final db = await initializeDB();
 
-    // Remove the Dog from the database.
+    // Remove the Billing from the database.
     await db.delete(
       'billing',
-      // Use a `where` clause to delete a specific dog.
+      // Use a `where` clause to delete a specific Billing.
       where: 'id = ?',
-      // Pass the Dog's id as a whereArg to prevent SQL injection.
+      // Pass the Billing's id as a whereArg to prevent SQL injection.
       whereArgs: [id],
     );
   }
@@ -113,13 +109,38 @@ class BillingDatabaseHelper {
     // Get a reference to the database.
     final db = await initializeDB();
 
-    // Remove the Dog from the database.
+    // Remove the Billing from the database.
     await db.update(
       'billing',
       billing.toMap(),
       where: 'id = ?',
-      // Pass the Dog's id as a whereArg to prevent SQL injection.
+      // Pass the Billing's id as a whereArg to prevent SQL injection.
       whereArgs: [billing.id],
     );
+  }
+
+  Future<List<Billing>> getBillingsPerMonth(String month) async{
+    // Get a reference to the database.
+    final db = await initializeDB();
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      'billing',
+      // Use a `where` clause to delete a specific Billing.
+      where: 'month = ?',
+      // Pass the Billing's id as a whereArg to prevent SQL injection.
+      whereArgs: [month],
+    );
+
+    // Convert the List<Map<String, dynamic> into a List<Billing>.
+    return List.generate(maps.length, (i) {
+      return Billing(
+        id: maps[i]['id'],
+        firebaseId: maps[i]['firebaseId'],
+        month: maps[i]['month'],
+        monthlyAmount: maps[i]['monthlyAmount'],
+        traveledDistance: maps[i]['traveledDistance'],
+        paid: maps[i]['paid'],
+      );
+    });
   }
 }

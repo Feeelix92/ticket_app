@@ -19,6 +19,7 @@ class Tracking {
   late Future<DepartureBoard> futureDepartureBoard;
   late Future<NearbyStops> futureNearbyStops;
   late Future<JourneyDetails> futureJourneyDetails;
+
   // Timer Duration
   final timerDuration = const Duration(seconds: 2);
 
@@ -49,28 +50,37 @@ class Tracking {
   late User user = FirebaseAuth.instance.currentUser!;
 
   // Billing
-  var billingtHelper = BillingDatabaseHelper();
+  var billingHelper = BillingDatabaseHelper();
+  late var billingFuture;
+  late Billing billing;
 
   void getTicket() async {
     ticket = await ticketFuture;
+  }
+
+  void getBilling() async {
+    billing = await billingFuture;
   }
 
   void saveLocationPoint() async {
     var id = ticket.id;
     var locationHelper = LocationPointDatabaseHelper();
 
-    if(latitude.floor() != 0 || longitude.floor() != 0){
-     if(oldLatitude.floor() != 0 || oldLongitude.floor() != 0){
-        if(latitude != oldLatitude || longitude != oldLongitude){
+    if (latitude.floor() != 0 || longitude.floor() != 0) {
+      if (oldLatitude.floor() != 0 || oldLongitude.floor() != 0) {
+        if (latitude != oldLatitude || longitude != oldLongitude) {
           print('Position has changed!!!!');
-          locationHelper.createLocationPoint(latitude, longitude, altitude, speed, id, DateTime.now().toString(), address);
-          calculatedDistance += _getDistanceBetween(latitude, longitude, oldLatitude, oldLongitude);
+          locationHelper.createLocationPoint(latitude, longitude, altitude,
+              speed, id, DateTime.now().toString(), address);
+          calculatedDistance += _getDistanceBetween(
+              latitude, longitude, oldLatitude, oldLongitude);
         }
-        ticket.calculatedDistance = double.parse((calculatedDistance).toStringAsFixed(4));
-     }
-     oldLatitude = latitude;
-     oldLongitude = longitude;
-    }else{
+        ticket.calculatedDistance =
+            double.parse((calculatedDistance).toStringAsFixed(4));
+      }
+      oldLatitude = latitude;
+      oldLongitude = longitude;
+    } else {
       return;
     }
   }
@@ -96,13 +106,15 @@ class Tracking {
     ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
     getTicket();
     var counter = 0;
-    futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(), currentPosition.longitude.toString());
+    futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(),
+        currentPosition.longitude.toString());
     startPosition = currentPosition;
     futureNearbyStops.then((nearbyStops) {
       print('_________________________');
       print('nearby Stop:');
       print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
-      ticket.startStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
+      ticket.startStation =
+          nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
       ticket.startLatitude = startPosition.latitude;
       ticket.startLongitude = startPosition.longitude;
       ticketHelper.updateticket(ticket);
@@ -111,8 +123,7 @@ class Tracking {
           GeoPoint(startPosition.latitude, startPosition.longitude),
           ticket.startStation!,
           DateTime.parse(ticket.startTime),
-          user.uid
-      );
+          user.uid);
     });
     Timer.periodic(timerDuration, (timer) {
       counter = counter + 1;
@@ -135,14 +146,56 @@ class Tracking {
           stopFirebaseTicket(
               GeoPoint(endPosition.latitude, endPosition.longitude),
               ticket.endStation!,
-              DateTime.parse(ticket.endTime!)
-          );
+              DateTime.parse(ticket.endTime!));
+          _createBilling();
         });
       }
     });
   }
 
-  _calculateTicketPrice(){
+  _createBilling() async {
+    var today = DateTime.now();
+    var month = DateTime(today.year, today.month);
+    var nextMonth = DateTime(month.year, month.month + 1);
+    var list = await billingHelper.getBillingsPerMonth(month.toString());
+    var tickets = await ticketHelper.tickets();
+    var monthlyAmount = 0.0;
+    var monthlyDistance = 0.0;
+
+    for (var index in tickets){
+      var ticketTime = DateTime.parse(index.startTime);
+      var ticketMonth = DateTime(ticketTime.year, ticketTime.month);
+      if(ticketMonth == month){
+        monthlyAmount += index.ticketPrice??0.0;
+        monthlyDistance += index.calculatedDistance??0.0;
+      }
+    }
+    monthlyAmount = double.parse((monthlyAmount).toStringAsFixed(2));
+    monthlyDistance = double.parse((monthlyDistance).toStringAsFixed(3));
+
+    // 49 Euro-Ticket
+    if(monthlyAmount >= 49){
+     monthlyAmount = 49;
+    }
+
+    if(list.isEmpty){
+      billingFuture = billingHelper.createBilling(month.toString(), monthlyAmount, monthlyDistance, 0);
+    }else{
+      for (var index in list){
+        if(index.month != month.toString()){
+          billingFuture = billingHelper.createBilling(month.toString(), monthlyAmount, monthlyDistance, 0);
+          getBilling();
+        }else{
+          billing = index;
+          billing.monthlyAmount = monthlyAmount;
+          billing.traveledDistance = monthlyDistance;
+          billingHelper.updatebilling(billing);
+        }
+      }
+    }
+  }
+
+  _calculateTicketPrice() {
     // BeeLine = Luftlinie der Fahrt
     double beeLine = _getDistanceBetween(ticket.startLatitude!, ticket.startLongitude!, ticket.endLatitude!, ticket.endLongitude!);
     ticket.beeLine = double.parse((beeLine).toStringAsFixed(4));
@@ -151,30 +204,48 @@ class Tracking {
     DateTime endTime = DateTime.parse(ticket.endTime!);
     Duration timeDifference = endTime.difference(startTime);
     // Preisschlüssel
+    double ticketPrice = 0.0;
     double serviceCharge = 1.60;
-    double kilometerPrice = 0.05;
-    double maxTicketPrice = 17.60;
+    double kilometerPrice = 0.10;
+    double maxTicketPrice = 13.00;
+
     // Ticket kostet erst Geld, wenn mindestens 100 m zurückgelegt wurden und 2 Minuten vergangen sind
-    if(beeLine >= 0.1 && calculatedDistance >= 0.1 && timeDifference.inSeconds >= 120){
-      double ticketPrice = serviceCharge + double.parse((kilometerPrice*beeLine).toStringAsFixed(2)) + double.parse((kilometerPrice*calculatedDistance).toStringAsFixed(2));
-      if(ticketPrice <= maxTicketPrice){
-        return ticketPrice;
-      }else{
-        return maxTicketPrice;
+    if (beeLine >= 0.1 &&
+        calculatedDistance >= 0.1 &&
+        timeDifference.inSeconds >= 10) {
+      var distanceForPricing =
+          double.parse(((beeLine + calculatedDistance) / 2).toStringAsFixed(2));
+      // Tarifierung
+      if (distanceForPricing <= 5.0) {
+        ticketPrice = serviceCharge + (5.0 * kilometerPrice);
+      } else if (distanceForPricing > 5.0 && distanceForPricing <= 10.0) {
+        ticketPrice = serviceCharge + (10.0 * kilometerPrice);
+      } else if (distanceForPricing > 10.0 && distanceForPricing <= 30.0) {
+        ticketPrice = serviceCharge + (30.0 * kilometerPrice);
+      } else if (distanceForPricing > 30.0 && distanceForPricing <= 50.0) {
+        ticketPrice = serviceCharge + (50.0 * kilometerPrice);
+      } else if (distanceForPricing > 50.0 && distanceForPricing <= 100.0) {
+        ticketPrice = serviceCharge + (100.0 * kilometerPrice);
+      } else if (distanceForPricing > 100.0) {
+        ticketPrice = maxTicketPrice;
       }
-    }else{
-      return 0.0;
+      return ticketPrice;
+    } else {
+      return ticketPrice;
     }
   }
 
   // Funktion ermittelt die Luftlinie zwischen zwei Punkten in Kilometern
-  _getDistanceBetween(double startLatitude, double startLongitude, double endLatitude, double endLongitude){
-    double distanceInMeters = Geolocator.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude);
-    double distanceInKilometers = distanceInMeters/1000;
+  _getDistanceBetween(double startLatitude, double startLongitude,
+      double endLatitude, double endLongitude) {
+    double distanceInMeters = Geolocator.distanceBetween(
+        startLatitude, startLongitude, endLatitude, endLongitude);
+    double distanceInKilometers = distanceInMeters / 1000;
     return distanceInKilometers;
   }
 
-  Future saveFirebaseTicket(GeoPoint startPoint, String startStation, DateTime startTime, String authId) async {
+  Future saveFirebaseTicket(GeoPoint startPoint, String startStation,
+      DateTime startTime, String authId) async {
     await FirebaseFirestore.instance.collection('tickets').add({
       'startPoint': startPoint,
       'startStation': startStation,
@@ -186,8 +257,12 @@ class Tracking {
     });
   }
 
-  Future stopFirebaseTicket(GeoPoint endPoint, String endStation, DateTime endTime) async{
-    await FirebaseFirestore.instance.collection('tickets').doc(ticket.firebaseId).update({
+  Future stopFirebaseTicket(
+      GeoPoint endPoint, String endStation, DateTime endTime) async {
+    await FirebaseFirestore.instance
+        .collection('tickets')
+        .doc(ticket.firebaseId)
+        .update({
       'endPoint': endPoint,
       'endStation': endStation,
       'endTime': endTime
@@ -197,11 +272,10 @@ class Tracking {
   void getAddressFromLatLng(double latitude, double longitude) async {
     try {
       List<Placemark> placemarks =
-      await placemarkFromCoordinates(latitude, longitude);
+          await placemarkFromCoordinates(latitude, longitude);
       Placemark place = placemarks[0];
       address =
-      "${place.street}, \n${place.postalCode} ${place.locality}\n${place
-          .administrativeArea}, ${place.country}";
+          "${place.street}, \n${place.postalCode} ${place.locality}\n${place.administrativeArea}, ${place.country}";
     } catch (e) {
       print(e);
     }
@@ -251,7 +325,7 @@ class Tracking {
         //when going to the background
         foregroundNotificationConfig: const ForegroundNotificationConfig(
           notificationText:
-          "Bitte die App nicht komplett schließen, Fahrt wird aufgenommen",
+              "Bitte die App nicht komplett schließen, Fahrt wird aufgenommen",
           notificationTitle: "Fahrt wird im Background aufgenommen",
           enableWakeLock: true,
         ));
@@ -259,13 +333,13 @@ class Tracking {
     positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position position) {
-          currentPosition = position;
-          latitude = position.latitude;
-          longitude = position.longitude;
-          altitude = position.altitude;
-          speed = position.speed;
-          getAddressFromLatLng(latitude, longitude);
-        });
+      currentPosition = position;
+      latitude = position.latitude;
+      longitude = position.longitude;
+      altitude = position.altitude;
+      speed = position.speed;
+      getAddressFromLatLng(latitude, longitude);
+    });
   }
 }
 
@@ -309,4 +383,3 @@ class Tracking {
 //         ));
 // });
 //End of API Tests
-
