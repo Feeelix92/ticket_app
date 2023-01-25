@@ -160,27 +160,36 @@ class Tracking {
     var list = await billingHelper.getBillingsPerMonth(month.toString());
     var tickets = await ticketHelper.tickets();
     var monthlyAmount = 0.0;
-    var distanceAmount = 0.0;
+    var monthlyDistance = 0.0;
 
     for (var index in tickets){
-      var ticketTime = DateTime.parse(index.endTime!);
-      var ticketMonth = DateTime(ticketTime.month);
+      var ticketTime = DateTime.parse(index.startTime);
+      var ticketMonth = DateTime(ticketTime.year, ticketTime.month);
+      print(ticketMonth);
       if(ticketMonth == month){
-        monthlyAmount += index.ticketPrice!;
-        distanceAmount += index.calculatedDistance!;
+        monthlyAmount += index.ticketPrice??0.0;
+        monthlyDistance += index.calculatedDistance??0.0;
       }
     }
+    monthlyAmount = double.parse((monthlyAmount).toStringAsFixed(2));
+    monthlyDistance = double.parse((monthlyDistance).toStringAsFixed(3));
+
+    // 49 Euro-Ticket
+    if(monthlyAmount >= 49){
+     monthlyAmount = 49;
+    }
+
     if(list.isEmpty){
-      billingFuture = billingHelper.createBilling(month.toString(), monthlyAmount, distanceAmount, 0);
+      billingFuture = billingHelper.createBilling(month.toString(), monthlyAmount, monthlyDistance, 0);
     }else{
       for (var index in list){
         if(index.month != month.toString()){
-          billingFuture = billingHelper.createBilling(month.toString(), monthlyAmount, distanceAmount, 0);
+          billingFuture = billingHelper.createBilling(month.toString(), monthlyAmount, monthlyDistance, 0);
           getBilling();
         }else{
           billing = index;
           billing.monthlyAmount = monthlyAmount;
-          billing.traveledDistance = distanceAmount;
+          billing.traveledDistance = monthlyDistance;
           billingHelper.updatebilling(billing);
         }
       }
@@ -198,13 +207,13 @@ class Tracking {
     // Preisschlüssel
     double ticketPrice = 0.0;
     double serviceCharge = 1.60;
-    double kilometerPrice = 0.05;
+    double kilometerPrice = 0.10;
     double maxTicketPrice = 13.00;
 
     // Ticket kostet erst Geld, wenn mindestens 100 m zurückgelegt wurden und 2 Minuten vergangen sind
     if (beeLine >= 0.1 &&
         calculatedDistance >= 0.1 &&
-        timeDifference.inSeconds >= 120) {
+        timeDifference.inSeconds >= 10) {
       var distanceForPricing =
           double.parse(((beeLine + calculatedDistance) / 2).toStringAsFixed(2));
       // Tarifierung

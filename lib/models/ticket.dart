@@ -115,6 +115,7 @@ class TicketDatabaseHelper {
         endLatitude: maps[i]['endLatitude'],
         endLongitude: maps[i]['endLongitude'],
         beeLine: maps[i]['beeLine'],
+        calculatedDistance: maps[i]['calculatedDistance'],
         ticketPrice: maps[i]['ticketPrice'],
       );
     });

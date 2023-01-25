@@ -9,7 +9,7 @@ class Billing {
   final String month;
   double monthlyAmount;
   double traveledDistance;
-  bool paid;
+  int paid;
 
   Billing({
     required this.id,
@@ -53,7 +53,7 @@ class BillingDatabaseHelper {
     final data = {'month': month, 'monthlyAmount': monthlyAmount, 'traveledDistance': traveledDistance, 'paid': paid};
     final id = await db.insert('billing', data,
         conflictAlgorithm: ConflictAlgorithm.replace);
-    return Billing(id: id, month: month, monthlyAmount: monthlyAmount, traveledDistance: traveledDistance, paid: paid == 0 ? false : true);
+    return Billing(id: id, month: month, monthlyAmount: monthlyAmount, traveledDistance: traveledDistance, paid: paid);
   }
 
   Future<void> insertBilling(Billing billing) async {
@@ -139,7 +139,7 @@ class BillingDatabaseHelper {
         month: maps[i]['month'],
         monthlyAmount: maps[i]['monthlyAmount'],
         traveledDistance: maps[i]['traveledDistance'],
-        paid: maps[i]['paid'] == 0 ? false : true,
+        paid: maps[i]['paid'],
       );
     });
   }
