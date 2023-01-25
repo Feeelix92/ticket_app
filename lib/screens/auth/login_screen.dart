@@ -96,8 +96,9 @@ class _LoginScreenState extends State<LoginScreen>{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                 Icon(
                   Icons.train,
+                  color: primaryColor,
                   size: 120,
                 ),
                 const SizedBox(height: 75),
@@ -105,9 +106,10 @@ class _LoginScreenState extends State<LoginScreen>{
                   'Login',
                   style: TextStyle(
                     fontSize: 52,
-
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
