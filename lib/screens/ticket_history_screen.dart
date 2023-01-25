@@ -23,6 +23,7 @@ class _TicketHistoryState extends State<TicketHistory> {
   var ticketHelper = TicketDatabaseHelper();
   late List futureTicket;
   bool finish = false;
+  bool visibilityController = true;
 
   _getTickets() async {
     var list = await ticketHelper.tickets();
@@ -72,10 +73,25 @@ class _TicketHistoryState extends State<TicketHistory> {
                   padding: const EdgeInsets.all(8.0),
                   itemCount: futureTicket.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      height: 278,
-                      child: Center(child: TicketBox(ticket: futureTicket[index])),
-                    );
+                    if(futureTicket[index].ticketPrice != null){
+                      visibilityController = true;
+                      return Visibility(
+                        visible: visibilityController,
+                        child: SizedBox(
+                          height: 278,
+                          child: Center(child: TicketBox(ticket: futureTicket[index])),
+                        ),
+                      );
+                    }else{
+                      visibilityController = false;
+                      return Visibility(
+                        visible: visibilityController,
+                        child: SizedBox(
+                          height: 278,
+                          child: Center(child: TicketBox(ticket: futureTicket[index])),
+                        ),
+                      );
+                    }
                   })
           ),
         ],
@@ -106,7 +122,7 @@ class _TicketBoxState extends State<TicketBox> {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => TicketMapScreen(ticket: widget.ticket)));
       },
-      child: Card(
+    child: Card(
         shape: RoundedRectangleBorder(
           side: BorderSide(
             color: secondaryColor,

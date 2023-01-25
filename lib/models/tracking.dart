@@ -128,13 +128,10 @@ class Tracking {
       if (!activeTicket) {
         timer.cancel();
         ticket.endTime = DateTime.now().toString();
-        futureNearbyStops = fetchNearbyStops(
-            currentPosition.latitude.toString(),
-            currentPosition.longitude.toString());
+        futureNearbyStops = fetchNearbyStops(currentPosition.latitude.toString(), currentPosition.longitude.toString());
         endPosition = currentPosition;
         futureNearbyStops.then((nearbyStops) {
-          ticket.endStation =
-              nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
+          ticket.endStation = nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name;
           ticket.endLatitude = endPosition.latitude;
           ticket.endLongitude = endPosition.longitude;
           ticket.ticketPrice = _calculateTicketPrice();
