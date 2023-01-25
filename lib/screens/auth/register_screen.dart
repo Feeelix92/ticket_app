@@ -5,17 +5,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:intl/intl.dart';
 
-
 class RegisterScreen extends StatefulWidget {
   final VoidCallback showLoginScreen;
-  const RegisterScreen({Key? key, required this.showLoginScreen}) : super(key: key);
+
+  const RegisterScreen({Key? key, required this.showLoginScreen})
+      : super(key: key);
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -32,7 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future signUp() async {
-    if(passwordConfirmed()){
+    if (passwordConfirmed()) {
       setState(() {
         isLoading = true;
       });
@@ -45,12 +45,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       //add Details
       addUserDetails(
-        _firstNameController.text.trim(),
-        _lastNameController.text.trim(),
-        _emailController.text.trim(),
-        _dateInput.text,
-        user.uid
-      );
+          _firstNameController.text.trim(),
+          _lastNameController.text.trim(),
+          _emailController.text.trim(),
+          _dateInput.text,
+          user.uid);
     }
 
     _storeUserDetails(
@@ -58,11 +57,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _lastNameController.text.trim(),
         _emailController.text.trim(),
         _dateInput.text,
-        user.uid
-    );
+        user.uid);
   }
 
-  _storeUserDetails(String firstName, String lastName, String email, String birthdate, String authId) async {
+  _storeUserDetails(String firstName, String lastName, String email,
+      String birthdate, String authId) async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setString('firstName', firstName);
@@ -72,7 +71,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     await prefs.setString('authId', authId);
   }
 
-  Future addUserDetails(String firstName, String lastName, String email, String birthdate, String authId) async{
+  Future addUserDetails(String firstName, String lastName, String email,
+      String birthdate, String authId) async {
     await FirebaseFirestore.instance.collection('users').add({
       'firstName': firstName,
       'lastName': lastName,
@@ -83,9 +83,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   bool passwordConfirmed() {
-    if(_passwordController.text.trim() == _confirmPasswordController.text.trim()){
+    if (_passwordController.text.trim() ==
+        _confirmPasswordController.text.trim()) {
       return true;
-    } else{
+    } else {
       return false;
     }
   }
@@ -96,15 +97,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         locale: const Locale('de'),
         initialDate: DateTime.now(),
         firstDate: DateTime(1900),
-        lastDate: DateTime.now()
-    );
+        lastDate: DateTime.now());
 
-    if(pickedDate != null ){
+    if (pickedDate != null) {
       String formattedDate = DateFormat('dd.MM.yyyy').format(pickedDate);
       setState(() {
         _dateInput.text = formattedDate;
       });
-    }else{
+    } else {
       print("Kein Datum gewählt");
     }
   }
@@ -125,192 +125,184 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: SafeArea(
         child: Center(
             child: SingleChildScrollView(
-              child: Column(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Registrieren',
+                style: TextStyle(fontSize: 52, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+
+              //firstName
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: TextField(
+                  controller: _firstNameController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                    labelText: 'Vorname',
+                    fillColor: accentColor2,
+                    filled: true,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              //lastName
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: TextField(
+                  controller: _lastNameController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                    labelText: 'Nachname',
+                    fillColor: accentColor2,
+                    filled: true,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              //age
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextField(
+                      controller: _dateInput,
+                      //editing controller of this TextField
+                      decoration: InputDecoration(
+                        icon: const Icon(Icons.calendar_month),
+                        //icon of text field
+                        labelText: "Geburtsdatum",
+                        filled: true,
+                        fillColor: accentColor2,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: primaryColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: secondaryColor),
+                        ),
+                      ),
+                      readOnly: true,
+                      //set it true, so that user will not able to edit text
+                      onTap: _selectBirthDate)),
+              const SizedBox(height: 10),
+
+              //eMail
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                    labelText: 'Email',
+                    fillColor: accentColor2,
+                    filled: true,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              //Password
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: TextField(
+                  obscureText: true,
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                    labelText: 'Password',
+                    fillColor: accentColor2,
+                    filled: true,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              //Password Check
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: TextField(
+                  obscureText: true,
+                  controller: _confirmPasswordController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: secondaryColor),
+                    ),
+                    labelText: 'Password Check',
+                    fillColor: accentColor2,
+                    filled: true,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              //Button
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: ElevatedButton(
+                    onPressed: signUp,
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50),
+                    ),
+                    child: isLoading
+                        ? CircularProgressIndicator(color: accentColor1)
+                        : const Text(
+                            'Registrieren',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                  )),
+
+              const SizedBox(height: 25.0),
+
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Registrieren',
+                    'Ich bin Nutzer',
                     style: TextStyle(
-                      fontSize: 52,
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 10),
-
-                  //firstName
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: TextField(
-                      controller: _firstNameController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primaryColor),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: secondaryColor),
-                        ),
-                        labelText: 'Vorname',
-                        fillColor: accentColor2,
-                        filled: true,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  //lastName
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: TextField(
-                      controller: _lastNameController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primaryColor),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: secondaryColor),
-                        ),
-                        labelText: 'Nachname',
-                        fillColor: accentColor2,
-                        filled: true,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  //age
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child:TextField(
-                        controller: _dateInput, //editing controller of this TextField
-                        decoration: InputDecoration(
-                          icon: const Icon(Icons.calendar_month), //icon of text field
-                          labelText: "Geburtsdatum",
-                          filled: true,
-                          fillColor: accentColor2,
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: primaryColor),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: secondaryColor),
-                          ),
-                        ),
-                        readOnly: true,
-                        //set it true, so that user will not able to edit text
-                        onTap: _selectBirthDate
-                      )
-                  ),
-                  const SizedBox(height: 10),
-
-                  //eMail
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: TextField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primaryColor),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: secondaryColor),
-                        ),
-                        labelText: 'Email',
-                        fillColor: accentColor2,
-                        filled: true,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  //Password
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: TextField(
-                      obscureText: true,
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primaryColor),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: secondaryColor),
-                        ),
-                        labelText: 'Password',
-                        fillColor: accentColor2,
-                        filled: true,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  //Password Check
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: TextField(
-                      obscureText: true,
-                      controller: _confirmPasswordController,
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: primaryColor),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: secondaryColor),
-                        ),
-                        labelText: 'Password Check',
-                        fillColor: accentColor2,
-                        filled: true,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  //Button
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: ElevatedButton(
-                        onPressed: signUp,
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                        ),
-                        child: isLoading
-                            ? CircularProgressIndicator(color: accentColor1)
-                            : const Text(
-                          'Registrieren',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                      )
-                  ),
-
-                  const SizedBox(height: 25.0),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Ich bin Nutzer',
+                  const SizedBox(width: 5),
+                  GestureDetector(
+                      onTap: widget.showLoginScreen,
+                      child: Text(
+                        'Login',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      GestureDetector(
-                          onTap: widget.showLoginScreen,
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                                color: accentColor1,
-                                fontWeight: FontWeight.bold
-                            ),
-                          )
-                      )
-                    ],
-                  )
+                            color: accentColor1, fontWeight: FontWeight.bold),
+                      ))
                 ],
-              ),
-            )
-        ),
+              )
+            ],
+          ),
+        )),
       ),
     );
   }
