@@ -99,7 +99,6 @@ class Tracking {
     if (activeTicket) {
       activeTicket = false;
       print("TRIP STOPED:");
-      _createBilling();
     }
   }
 
@@ -148,6 +147,7 @@ class Tracking {
               GeoPoint(endPosition.latitude, endPosition.longitude),
               ticket.endStation!,
               DateTime.parse(ticket.endTime!));
+          _createBilling();
         });
       }
     });
@@ -158,10 +158,31 @@ class Tracking {
     var month = DateTime(today.year, today.month);
     var nextMonth = DateTime(month.year, month.month + 1);
     var list = await billingHelper.getBillingsPerMonth(month.toString());
+    var tickets = await ticketHelper.tickets();
+    var monthlyAmount = 0.0;
+    var distanceAmount = 0.0;
 
-    for (var index in list){
-      if(index.month != month.toString()){
-        billingFuture = billingHelper.createBilling(month.toString(), 0.0, 0.0, false);
+    for (var index in tickets){
+      var ticketTime = DateTime.parse(index.endTime!);
+      var ticketMonth = DateTime(ticketTime.month);
+      if(ticketMonth == month){
+        monthlyAmount += index.ticketPrice!;
+        distanceAmount += index.calculatedDistance!;
+      }
+    }
+    if(list.isEmpty){
+      billingFuture = billingHelper.createBilling(month.toString(), monthlyAmount, distanceAmount, 0);
+    }else{
+      for (var index in list){
+        if(index.month != month.toString()){
+          billingFuture = billingHelper.createBilling(month.toString(), monthlyAmount, distanceAmount, 0);
+          getBilling();
+        }else{
+          billing = index;
+          billing.monthlyAmount = monthlyAmount;
+          billing.traveledDistance = distanceAmount;
+          billingHelper.updatebilling(billing);
+        }
       }
     }
   }

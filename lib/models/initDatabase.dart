@@ -41,7 +41,7 @@ class initDatabase {
   month String,
   monthlyAmount DOUBLE,
   traveledDistance DOUBLE,
-  paid Boolean
+  paid INTEGER
   );""";
 
   Future<Database> initializeDB() async {

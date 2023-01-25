@@ -7,9 +7,9 @@ class Billing {
   final int id;
   String? firebaseId;
   final String month;
-  final double monthlyAmount;
-  final double traveledDistance;
-  final bool paid;
+  double monthlyAmount;
+  double traveledDistance;
+  bool paid;
 
   Billing({
     required this.id,
@@ -48,12 +48,12 @@ class BillingDatabaseHelper {
     );
   }
 
-  Future<Billing> createBilling(String month, double monthlyAmount, double traveledDistance, bool paid) async {
+  Future<Billing> createBilling(String month, double monthlyAmount, double traveledDistance, int paid) async {
     final db = await initializeDB();
     final data = {'month': month, 'monthlyAmount': monthlyAmount, 'traveledDistance': traveledDistance, 'paid': paid};
     final id = await db.insert('billing', data,
         conflictAlgorithm: ConflictAlgorithm.replace);
-    return Billing(id: id, month: month, monthlyAmount: monthlyAmount, traveledDistance: traveledDistance, paid: paid, );
+    return Billing(id: id, month: month, monthlyAmount: monthlyAmount, traveledDistance: traveledDistance, paid: paid == 0 ? false : true);
   }
 
   Future<void> insertBilling(Billing billing) async {
