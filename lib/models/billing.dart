@@ -7,7 +7,6 @@ class Billing {
   final int id;
   String? firebaseId;
   final String month;
-  final String year;
   final double monthlyAmount;
   final double traveledDistance;
   final bool paid;
@@ -16,7 +15,6 @@ class Billing {
     required this.id,
     this.firebaseId,
     required this.month,
-    required this.year,
     required this.monthlyAmount,
     required this.traveledDistance,
     required this.paid,
@@ -28,7 +26,6 @@ class Billing {
       'id': id,
       'firebaseId': firebaseId,
       'month': month,
-      'year': year,
       'monthlyAmount': monthlyAmount,
       'traveledDistance': traveledDistance,
       'paid': paid,
@@ -38,7 +35,7 @@ class Billing {
 
   @override
   String toString() {
-    return 'Ticket{id: $id, firebaseId: $firebaseId, month: $month, year: $year, monthlyAmount: $monthlyAmount, traveledDistance: $traveledDistance, paid: $paid}';
+    return 'Ticket{id: $id, firebaseId: $firebaseId, month: $month, monthlyAmount: $monthlyAmount, traveledDistance: $traveledDistance, paid: $paid}';
   }
 }
 
@@ -51,12 +48,12 @@ class BillingDatabaseHelper {
     );
   }
 
-  Future<Billing> createBilling(String month, String year, double monthlyAmount, double traveledDistance, bool paid) async {
+  Future<Billing> createBilling(String month, double monthlyAmount, double traveledDistance, bool paid) async {
     final db = await initializeDB();
-    final data = {'month': month, 'year': year, 'monthlyAmount': monthlyAmount, 'traveledDistance': traveledDistance, 'paid': paid};
+    final data = {'month': month, 'monthlyAmount': monthlyAmount, 'traveledDistance': traveledDistance, 'paid': paid};
     final id = await db.insert('billing', data,
         conflictAlgorithm: ConflictAlgorithm.replace);
-    return Billing(id: id, month: month, year: year, monthlyAmount: monthlyAmount, traveledDistance: traveledDistance, paid: paid, );
+    return Billing(id: id, month: month, monthlyAmount: monthlyAmount, traveledDistance: traveledDistance, paid: paid, );
   }
 
   Future<void> insertBilling(Billing ticket) async {
@@ -87,7 +84,6 @@ class BillingDatabaseHelper {
         id: maps[i]['id'],
         firebaseId: maps[i]['firebaseId'],
         month: maps[i]['month'],
-        year: maps[i]['year'],
         monthlyAmount: maps[i]['monthlyAmount'],
         traveledDistance: maps[i]['traveledDistance'],
         paid: maps[i]['paid'],

@@ -39,7 +39,6 @@ class initDatabase {
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   firebaseId String,
   month String,
-  year String,
   monthlyAmount DOUBLE,
   traveledDistance DOUBLE,
   paid Boolean

@@ -50,10 +50,16 @@ class Tracking {
   late User user = FirebaseAuth.instance.currentUser!;
 
   // Billing
-  var billingtHelper = BillingDatabaseHelper();
+  var billingHelper = BillingDatabaseHelper();
+  late var billingFuture;
+  late Billing billing;
 
   void getTicket() async {
     ticket = await ticketFuture;
+  }
+
+  void getBilling() async {
+    billing = await billingFuture;
   }
 
   void saveLocationPoint() async {
@@ -141,9 +147,18 @@ class Tracking {
               GeoPoint(endPosition.latitude, endPosition.longitude),
               ticket.endStation!,
               DateTime.parse(ticket.endTime!));
+          _createBilling();
         });
       }
     });
+  }
+
+  _createBilling(){
+    var today = DateTime.now();
+    var month = DateTime(today.year, today.month);
+    var nextMonth = DateTime(month.year, month.month + 1);
+    billingFuture = billingHelper.createBilling(month.toString(), 0.0, 0.0, false);
+    // getBilling();
   }
 
   _calculateTicketPrice() {
