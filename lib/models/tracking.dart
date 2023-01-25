@@ -151,8 +151,7 @@ class Tracking {
 
   _calculateTicketPrice() {
     // BeeLine = Luftlinie der Fahrt
-    double beeLine = _getDistanceBetween(ticket.startLatitude!,
-        ticket.startLongitude!, ticket.endLatitude!, ticket.endLongitude!);
+    double beeLine = _getDistanceBetween(ticket.startLatitude!, ticket.startLongitude!, ticket.endLatitude!, ticket.endLongitude!);
     ticket.beeLine = double.parse((beeLine).toStringAsFixed(4));
     // Zeitunterschied
     DateTime startTime = DateTime.parse(ticket.startTime);
