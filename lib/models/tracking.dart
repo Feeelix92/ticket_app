@@ -195,44 +195,34 @@ class Tracking {
     }
   }
 
-  _calculateTicketPrice() {
-    // BeeLine = Luftlinie der Fahrt
-    double beeLine = _getDistanceBetween(ticket.startLatitude!, ticket.startLongitude!, ticket.endLatitude!, ticket.endLongitude!);
+  double _calculateTicketPrice() {
+    double beeLine = _getDistanceBetween(
+        ticket.startLatitude!,
+        ticket.startLongitude!,
+        ticket.endLatitude!,
+        ticket.endLongitude!);
     ticket.beeLine = double.parse((beeLine).toStringAsFixed(4));
-    // Zeitunterschied
     DateTime startTime = DateTime.parse(ticket.startTime);
     DateTime endTime = DateTime.parse(ticket.endTime!);
     Duration timeDifference = endTime.difference(startTime);
-    // Preisschlüssel
     double ticketPrice = 0.0;
     double serviceCharge = 1.60;
+    List<double> distances = [5, 10, 30, 50, 100];
     double kilometerPrice = 0.10;
-    double maxTicketPrice = 13.00;
-
-    // Ticket kostet erst Geld, wenn mindestens 100 m zurückgelegt wurden und 2 Minuten vergangen sind
-    if (beeLine >= 0.1 &&
-        calculatedDistance >= 0.1 &&
-        timeDifference.inSeconds >= 10) {
+    if (beeLine >= 0.1 && calculatedDistance >= 0.1 && timeDifference.inSeconds >= 120) {
       var distanceForPricing =
-          double.parse(((beeLine + calculatedDistance) / 2).toStringAsFixed(2));
-      // Tarifierung
-      if (distanceForPricing <= 5.0) {
-        ticketPrice = serviceCharge + (5.0 * kilometerPrice);
-      } else if (distanceForPricing > 5.0 && distanceForPricing <= 10.0) {
-        ticketPrice = serviceCharge + (10.0 * kilometerPrice);
-      } else if (distanceForPricing > 10.0 && distanceForPricing <= 30.0) {
-        ticketPrice = serviceCharge + (30.0 * kilometerPrice);
-      } else if (distanceForPricing > 30.0 && distanceForPricing <= 50.0) {
-        ticketPrice = serviceCharge + (50.0 * kilometerPrice);
-      } else if (distanceForPricing > 50.0 && distanceForPricing <= 100.0) {
-        ticketPrice = serviceCharge + (100.0 * kilometerPrice);
-      } else if (distanceForPricing > 100.0) {
-        ticketPrice = maxTicketPrice;
+      double.parse(((beeLine + calculatedDistance) / 2).toStringAsFixed(2));
+      for (int i = 0; i < distances.length; i++) {
+        if (distanceForPricing <= distances[i]) {
+          ticketPrice = kilometerPrice * distances[i] + serviceCharge;
+          break;
+        }
       }
-      return ticketPrice;
-    } else {
-      return ticketPrice;
+      if (distanceForPricing > 100.0) {
+        ticketPrice = 13.0;
+      }
     }
+    return ticketPrice;
   }
 
   // Funktion ermittelt die Luftlinie zwischen zwei Punkten in Kilometern
@@ -289,31 +279,32 @@ class Tracking {
 
   void checkGps() async {
     servicestatus = await Geolocator.isLocationServiceEnabled();
-    if (servicestatus) {
-      permission = await Geolocator.checkPermission();
-
-      if (permission == LocationPermission.denied) {
+    if (!servicestatus) {
+      if (kDebugMode) {
+        print("GPS Service is not enabled, turn on GPS location");
+      }
+      return;
+    }
+    permission = await Geolocator.checkPermission();
+    switch (permission) {
+      case LocationPermission.denied:
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           if (kDebugMode) {
             print('Location permissions are denied');
           }
-        } else if (permission == LocationPermission.deniedForever) {
-          if (kDebugMode) {
-            print("'Location permissions are permanently denied");
-          }
-        } else {
-          haspermission = true;
+          return;
         }
-      } else {
-        haspermission = true;
-      }
-      if (haspermission) {}
-    } else {
-      if (kDebugMode) {
-        print("GPS Service is not enabled, turn on GPS location");
-      }
+        break;
+      case LocationPermission.deniedForever:
+        if (kDebugMode) {
+          print("Location permissions are permanently denied");
+        }
+        return;
+      default:
+        break;
     }
+    haspermission = true;
   }
 
   void getLocationFromStream() async {
@@ -321,8 +312,6 @@ class Tracking {
     LocationSettings locationSettings = AndroidSettings(
         accuracy: LocationAccuracy.best,
         distanceFilter: 2,
-        //(Optional) Set foreground notification config to keep the app alive
-        //when going to the background
         foregroundNotificationConfig: const ForegroundNotificationConfig(
           notificationText:
               "Bitte die App nicht komplett schließen, Fahrt wird aufgenommen",
@@ -342,44 +331,3 @@ class Tracking {
     });
   }
 }
-
-// API TESTS!
-// @TODO cleanup
-// Fetching NearbyStops for current position
-// futureNearbyStops = fetchNearbyStops('50.3316448', '8.7602899');
-// futureNearbyStops.then((nearbyStops) {
-//   print('_________________________');
-//   print('nearby Stop:');
-//   print(nearbyStops.stopLocationOrCoordLocation![0].stopLocation?.name);
-// });
-// // Date
-// var currentYear = '${DateTime.now().year}';
-// var currentMonth = '${DateTime.now().month}'.padLeft(2,'0');
-// var currentDay = '${DateTime.now().day}'.padLeft(2,'0');
-// var currentDate = '$currentYear-$currentMonth-$currentDay';
-// // Time
-// var currentHour = '${DateTime.now().hour+1}'.padLeft(2,'0');
-// var currentMinute = '${DateTime.now().minute}'.padLeft(2,'0');
-// var currentTime = '$currentHour:$currentMinute';
-// // Fetching DepartureBoard for specific station at date and time
-// futureDepartureBoard = fetchDepartureBoard('Friedberg (Hessen) Bahnhof', currentDate, currentTime);
-// futureDepartureBoard.then((departureBoard) async {
-//   print('_________________________');
-//   print('next Connection:');
-//   print(departureBoard.departure![0].stop);
-//   print(departureBoard.departure![0].name);
-//   print(departureBoard.departure![0].direction);
-//   print(departureBoard.departure![0].date);
-//   print(departureBoard.departure![0].time);
-//   print(departureBoard.departure![0].rtTrack);
-//   print('_________________________');
-//   print('Journey Details:');
-//   var journeyRef = departureBoard.departure![0].journeyDetailRef?.ref;
-//   futureJourneyDetails = fetchJourneyDetails(journeyRef!);
-//   futureJourneyDetails.then((value) => value.stops?.stop?.forEach(
-//           (element) {
-//             print(element.name);
-//           }
-//         ));
-// });
-//End of API Tests
