@@ -50,10 +50,10 @@ class _TicketScreenState extends State<TicketScreen> {
     // _ride.add(LocationPoint(id: id, latitude: position.latitude, longitude: position.longitude, altitude: position.altitude, speed: position.speed, ticketid: ticketid, address: _getAddressFromLatLng())); //needs the IDs
     super.initState();
     // Timer Duration
-    const timerDuration = Duration(milliseconds: 1);
-    _timer = Timer.periodic(timerDuration, (timer) {
-      setState(() {});
-    });
+    // const timerDuration = Duration(milliseconds: 1);
+    // _timer = Timer.periodic(timerDuration, (timer) {
+    //   setState(() {});
+    // });
     if(mounted) {
       finish = true;
     }
@@ -61,52 +61,55 @@ class _TicketScreenState extends State<TicketScreen> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    // _timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Tracking trackingService = Provider.of<Tracking>(context);
     if (finish){
       return SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              if (trackingService.activeTicket)...[
-                TicketInformation(
-                  ticketHolderName: "$firstName $lastName",
-                  ticketId: trackingService.ticket.firebaseId??"Loading...",
-                  ticketDate: '${DateTime.parse(trackingService.ticket.startTime).day}.${DateTime.parse(trackingService.ticket.startTime).month}.${DateTime.parse(trackingService.ticket.startTime).year}',
-                  ticketTime: '${DateTime.parse(trackingService.ticket.startTime).hour}:${DateTime.parse(trackingService.ticket.startTime).minute > 10 ? DateTime.parse(trackingService.ticket.startTime).minute :  DateTime.parse(trackingService.ticket.startTime).minute.toString().padLeft(2, '0') }',
-                  latitude: trackingService.latitude.toString(),
-                  longitude: trackingService.longitude.toString(),
-                  address: trackingService.address,
-                ),
-              ],
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    buildStartTripButton(trackingService.startTrip, 'Fahrt starten', primaryColor),
-                    buildEndTripButton(trackingService.stopTrip, 'Fahrt beenden', secondaryColor),
+          child: Consumer<Tracking>(
+            builder: (context, trackingService, child){
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  if (trackingService.activeTicket)...[
+                    TicketInformation(
+                      ticketHolderName: "$firstName $lastName",
+                      ticketId: trackingService.ticket.firebaseId??"Loading...",
+                      ticketDate: '${DateTime.parse(trackingService.ticket.startTime).day}.${DateTime.parse(trackingService.ticket.startTime).month}.${DateTime.parse(trackingService.ticket.startTime).year}',
+                      ticketTime: '${DateTime.parse(trackingService.ticket.startTime).hour}:${DateTime.parse(trackingService.ticket.startTime).minute > 10 ? DateTime.parse(trackingService.ticket.startTime).minute :  DateTime.parse(trackingService.ticket.startTime).minute.toString().padLeft(2, '0') }',
+                      latitude: trackingService.latitude.toString(),
+                      longitude: trackingService.longitude.toString(),
+                      address: trackingService.address,
+                    ),
                   ],
-                ),
-              ),
-              if (trackingService.devModeEnabled) ...[
-                GpsTestData(
-                  latitude: trackingService.latitude.toString(),
-                  longitude: trackingService.longitude.toString(),
-                  altitude: trackingService.altitude.toString(),
-                  speed: trackingService.speed.toString(),
-                  address: trackingService.address,
-                )
-              ]
-            ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        buildStartTripButton(trackingService.startTrip, 'Fahrt starten', primaryColor),
+                        buildEndTripButton(trackingService.stopTrip, 'Fahrt beenden', secondaryColor),
+                      ],
+                    ),
+                  ),
+                  if (trackingService.devModeEnabled) ...[
+                    GpsTestData(
+                      latitude: trackingService.latitude.toString(),
+                      longitude: trackingService.longitude.toString(),
+                      altitude: trackingService.altitude.toString(),
+                      speed: trackingService.speed.toString(),
+                      address: trackingService.address,
+                    )
+                  ]
+                ],
+              );
+            },
           ),
         ),
       );

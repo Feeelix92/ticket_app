@@ -60,10 +60,12 @@ class Tracking with ChangeNotifier{
 
   void getTicket() async {
     ticket = await ticketFuture;
+    notifyListeners();
   }
 
   void getBilling() async {
     billing = await billingFuture;
+    notifyListeners();
   }
 
   void saveLocationPoint() async {
@@ -96,6 +98,7 @@ class Tracking with ChangeNotifier{
       // Timer to periodic save the LocationPoints
       calculatedDistance = 0.0;
       saveLocations();
+      notifyListeners();
     }
   }
 
@@ -103,6 +106,7 @@ class Tracking with ChangeNotifier{
     if (activeTicket) {
       activeTicket = false;
       print("TRIP STOPED:");
+      notifyListeners();
     }
   }
 
@@ -197,6 +201,7 @@ class Tracking with ChangeNotifier{
         }
       }
     }
+    notifyListeners();
   }
 
   double _calculateTicketPrice() {
@@ -226,6 +231,7 @@ class Tracking with ChangeNotifier{
         ticketPrice = 13.0;
       }
     }
+    notifyListeners();
     return ticketPrice;
   }
 
@@ -249,6 +255,7 @@ class Tracking with ChangeNotifier{
       ticket.firebaseId = savedTicket.id;
       ticketHelper.updateticket(ticket);
     });
+    notifyListeners();
   }
 
   Future stopFirebaseTicket(
@@ -261,6 +268,7 @@ class Tracking with ChangeNotifier{
       'endStation': endStation,
       'endTime': endTime
     });
+    notifyListeners();
   }
 
   void getAddressFromLatLng(double latitude, double longitude) async {
@@ -273,6 +281,7 @@ class Tracking with ChangeNotifier{
     } catch (e) {
       print(e);
     }
+    notifyListeners();
   }
 
   Future<Position> getLocation() async {
@@ -309,6 +318,7 @@ class Tracking with ChangeNotifier{
         break;
     }
     haspermission = true;
+    notifyListeners();
   }
 
   void getLocationFromStream() async {
