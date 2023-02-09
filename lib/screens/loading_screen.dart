@@ -4,8 +4,7 @@ import '../models/tracking.dart';
 import '../widgets/navigation_bar.dart';
 
 class LoadingScreen extends StatefulWidget {
-  final Tracking tracking;
-  const LoadingScreen(this.tracking, {super.key});
+  const LoadingScreen({super.key});
 
   @override
   State<LoadingScreen> createState() => _LoadingScreenState();
@@ -20,7 +19,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
     _timer = Timer(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => MyNavigationBar(
-          tracking: widget.tracking,
           title: 'Easy-Ticket',
         ),
       ));

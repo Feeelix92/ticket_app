@@ -12,11 +12,10 @@ import 'package:ticket_app/models/tracking.dart';
 import '../widgets/bold_styled_text.dart';
 import '../widgets/ticket_information.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class TicketScreen extends StatefulWidget {
-  final Tracking tracking;
-
-  const TicketScreen({Key? key, required this.tracking}) : super(key: key);
+    const TicketScreen({Key? key}) : super(key: key);
 
   @override
   State<TicketScreen> createState() => _TicketScreenState();
@@ -68,6 +67,7 @@ class _TicketScreenState extends State<TicketScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Tracking trackingService = Provider.of<Tracking>(context);
     if (finish){
       return SingleChildScrollView(
         child: Padding(
@@ -76,15 +76,15 @@ class _TicketScreenState extends State<TicketScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (widget.tracking.activeTicket)...[
+              if (trackingService.activeTicket)...[
                 TicketInformation(
                   ticketHolderName: "$firstName $lastName",
-                  ticketId: widget.tracking.ticket.firebaseId??"Loading...",
-                  ticketDate: '${DateTime.parse(widget.tracking.ticket.startTime).day}.${DateTime.parse(widget.tracking.ticket.startTime).month}.${DateTime.parse(widget.tracking.ticket.startTime).year}',
-                  ticketTime: '${DateTime.parse(widget.tracking.ticket.startTime).hour}:${DateTime.parse(widget.tracking.ticket.startTime).minute > 10 ? DateTime.parse(widget.tracking.ticket.startTime).minute :  DateTime.parse(widget.tracking.ticket.startTime).minute.toString().padLeft(2, '0') }',
-                  latitude: widget.tracking.latitude.toString(),
-                  longitude: widget.tracking.longitude.toString(),
-                  address: widget.tracking.address,
+                  ticketId: trackingService.ticket.firebaseId??"Loading...",
+                  ticketDate: '${DateTime.parse(trackingService.ticket.startTime).day}.${DateTime.parse(trackingService.ticket.startTime).month}.${DateTime.parse(trackingService.ticket.startTime).year}',
+                  ticketTime: '${DateTime.parse(trackingService.ticket.startTime).hour}:${DateTime.parse(trackingService.ticket.startTime).minute > 10 ? DateTime.parse(trackingService.ticket.startTime).minute :  DateTime.parse(trackingService.ticket.startTime).minute.toString().padLeft(2, '0') }',
+                  latitude: trackingService.latitude.toString(),
+                  longitude: trackingService.longitude.toString(),
+                  address: trackingService.address,
                 ),
               ],
               Padding(
@@ -92,18 +92,18 @@ class _TicketScreenState extends State<TicketScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    buildStartTripButton(widget.tracking.startTrip, 'Fahrt starten', primaryColor),
-                    buildEndTripButton(widget.tracking.stopTrip, 'Fahrt beenden', secondaryColor),
+                    buildStartTripButton(trackingService.startTrip, 'Fahrt starten', primaryColor),
+                    buildEndTripButton(trackingService.stopTrip, 'Fahrt beenden', secondaryColor),
                   ],
                 ),
               ),
-              if (widget.tracking.devModeEnabled) ...[
+              if (trackingService.devModeEnabled) ...[
                 GpsTestData(
-                  latitude: widget.tracking.latitude.toString(),
-                  longitude: widget.tracking.longitude.toString(),
-                  altitude: widget.tracking.altitude.toString(),
-                  speed: widget.tracking.speed.toString(),
-                  address: widget.tracking.address,
+                  latitude: trackingService.latitude.toString(),
+                  longitude: trackingService.longitude.toString(),
+                  altitude: trackingService.altitude.toString(),
+                  speed: trackingService.speed.toString(),
+                  address: trackingService.address,
                 )
               ]
             ],
@@ -115,6 +115,7 @@ class _TicketScreenState extends State<TicketScreen> {
   }
 
   Center buildStartTripButton(tripFunction, text, color) {
+    Tracking trackingService = Provider.of<Tracking>(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -122,9 +123,9 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: widget.tracking.activeTicket ?  null : tripFunction,
+            onPressed: trackingService.activeTicket ?  null : tripFunction,
             style: ButtonStyle(
-              backgroundColor: widget.tracking.activeTicket ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
+              backgroundColor: trackingService.activeTicket ?  MaterialStateProperty.all<Color>(accentColor3) : MaterialStateProperty.all<Color>(color),
             ),
             child: Text(
               text,
@@ -136,6 +137,7 @@ class _TicketScreenState extends State<TicketScreen> {
     );
   }
   Center buildEndTripButton(tripFunction, text, color) {
+    Tracking trackingService = Provider.of<Tracking>(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -143,9 +145,9 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: widget.tracking.activeTicket ? tripFunction : null,
+            onPressed: trackingService.activeTicket ? tripFunction : null,
             style: ButtonStyle(
-              backgroundColor: widget.tracking.activeTicket ?  MaterialStateProperty.all<Color>(color) : MaterialStateProperty.all<Color>(accentColor3),
+              backgroundColor: trackingService.activeTicket ?  MaterialStateProperty.all<Color>(color) : MaterialStateProperty.all<Color>(accentColor3),
             ),
             child: Text(
               text,

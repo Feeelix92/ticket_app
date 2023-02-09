@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ticket_app/widgets/qr.dart';
 import 'package:ticket_app/widgets/ticket_text.dart';
+
+import '../models/tracking.dart';
 
 class TicketInformation extends StatefulWidget {
   const TicketInformation({

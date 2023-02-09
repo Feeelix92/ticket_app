@@ -3,10 +3,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:ticket_app/models/tracking.dart';
 import '../models/locationPoint.dart';
+import 'package:provider/provider.dart';
+
 
 class MapScreen extends StatefulWidget {
-  final Tracking tracking;
-  const MapScreen({Key? key, required this.tracking})
+  const MapScreen({Key? key})
       : super(key: key);
 
   @override
@@ -20,34 +21,35 @@ class _MapScreenState extends State<MapScreen> {
   late LatLng centerPoint;
   late List<LatLng> route = [];
 
-  getLocations() async {
-    if(widget.tracking.activeTicket){
-      int id = widget.tracking.ticket.id;
-      futureTicket = await locationHelper.locationsFromTicketid(id.toInt());
-      for (var locationPoint in futureTicket) {
-        centerPoint = LatLng(locationPoint.latitude, locationPoint.longitude);
-        route.add(LatLng(locationPoint.latitude, locationPoint.longitude));
-      }
-      setState(() {
-        route = route;
-      });
-    }
-  }
+  // getLocations() async {
+  //   if(widget.tracking.activeTicket){
+  //     int id = widget.tracking.ticket.id;
+  //     futureTicket = await locationHelper.locationsFromTicketid(id.toInt());
+  //     for (var locationPoint in futureTicket) {
+  //       centerPoint = LatLng(locationPoint.latitude, locationPoint.longitude);
+  //       route.add(LatLng(locationPoint.latitude, locationPoint.longitude));
+  //     }
+  //     setState(() {
+  //       route = route;
+  //     });
+  //   }
+  // }
 
   @override
   void initState() {
-    getLocations();
+    // getLocations();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    Tracking trackingService = Provider.of<Tracking>(context);
     return FlutterMap(
         options: MapOptions(
             zoom: 13,
             maxZoom: 18,
             keepAlive: true,
-            center: LatLng(widget.tracking.currentPosition.latitude, widget.tracking.currentPosition.longitude)
+            center: LatLng(trackingService.currentPosition.latitude, trackingService.currentPosition.longitude)
         ),
         nonRotatedChildren: [
           AttributionWidget.defaultWidget(

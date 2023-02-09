@@ -11,7 +11,11 @@ import 'journey_detail.dart';
 import 'locationPoint.dart';
 import 'nearby_stops.dart';
 
-class Tracking {
+class Tracking with ChangeNotifier{
+  Future init() async {
+    print("init");
+    getLocationFromStream();
+  }
   //Dev Mode
   bool devModeEnabled = true;
 
@@ -328,6 +332,7 @@ class Tracking {
       altitude = position.altitude;
       speed = position.speed;
       getAddressFromLatLng(latitude, longitude);
+      notifyListeners();
     });
   }
 }

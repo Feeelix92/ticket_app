@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_app/models/tracking.dart';
 import 'package:ticket_app/screens/map_screen.dart';
@@ -11,8 +12,7 @@ import '../screens/auth/main_screen.dart';
 
 class MyNavigationBar extends StatefulWidget {
   final String title;
-  final Tracking tracking;
-  const MyNavigationBar({Key? key, required this.title, required this.tracking})
+  const MyNavigationBar({Key? key, required this.title})
       : super(key: key);
 
   @override
@@ -36,11 +36,12 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
   }
 
   List<Widget> _children() => [
-    TicketScreen(tracking: widget.tracking),
-    MapScreen(tracking: widget.tracking),
-    TicketHistory(tracking: widget.tracking),
-  ];
-  void onTappedBar(int index){
+        const TicketScreen(),
+        const MapScreen(),
+        const TicketHistory(),
+      ];
+
+  void onTappedBar(int index) {
     setState(() {
       _currentIndex = index;
     });
@@ -54,6 +55,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
+    Tracking trackingService = Provider.of<Tracking>(context);
     final List<Widget> children = _children();
     return Scaffold(
       appBar: AppBar(
@@ -68,14 +70,20 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
               decoration: BoxDecoration(
                 color: primaryColor,
               ),
-              child: Text('$firstName $lastName', style: TextStyle(color: accentColor2)),
+              child: Text('$firstName $lastName',
+                  style: TextStyle(color: accentColor2)),
             ),
             ListTile(
               title: const Text('Profil'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context){
-                  return const ProfileScreen();
-                },),);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const ProfileScreen();
+                    },
+                  ),
+                );
               },
             ),
             ListTile(
@@ -91,8 +99,9 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
                 child: MaterialButton(
                   onPressed: () => {
                     FirebaseAuth.instance.signOut(),
-                    Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return MainScreen(widget.tracking);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const MainScreen();
                     }))
                   },
                   color: primaryColor,

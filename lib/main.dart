@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 import 'package:ticket_app/screens/auth/main_screen.dart';
 import 'package:workmanager/workmanager.dart';
 import 'colors.dart';
@@ -30,24 +31,17 @@ Future<void> main() async {
   Workmanager().registerOneOffTask("Tracking", "_saveLocations");
 
   await Firebase.initializeApp();
-  runApp(MyApp(Tracking()));
+  runApp(
+      ChangeNotifierProvider(
+        create: (context) => Tracking(),
+        child: const MyApp(),
+      ),
+  );
 }
 
-class MyApp extends StatefulWidget {
-  final Tracking tracking;
-  const MyApp(this.tracking, {super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-    widget.tracking.checkGps();
-    widget.tracking.getLocationFromStream();
-  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -63,7 +57,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: generateMaterialColor(color: primaryColor),
         fontFamily: "Montserrat",
       ),
-      home: MainScreen(widget.tracking),
+      home: const MainScreen(),
     );
   }
 }
