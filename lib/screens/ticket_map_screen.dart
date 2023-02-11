@@ -32,16 +32,19 @@ class _TicketMapScreenState extends State<TicketMapScreen> {
       //print(centerPoint);
       route.add(LatLng(locationPoint.latitude, locationPoint.longitude));
     }
+    centerMap = LatLng(route.last.latitude, route.last.longitude);
     setState(() {
-      centerMap = LatLng(route.last.latitude, route.last.longitude);
       centerMapInitialized = true;
     });
+
   }
+
+
 
   @override
   void initState() {
-    _getLocations();
     super.initState();
+    _getLocations();
     if (mounted) {
       print('moin ');
     }
@@ -49,7 +52,7 @@ class _TicketMapScreenState extends State<TicketMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _getLocations();
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Reise'),
