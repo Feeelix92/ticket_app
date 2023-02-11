@@ -41,7 +41,9 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     Tracking trackingService = Provider.of<Tracking>(context);
-    _getLocations(trackingService.activeTicket, trackingService.ticket.id);
+    if( trackingService.ticketInitialized){
+      _getLocations(trackingService.activeTicket, trackingService.ticket.id);
+    }
     return Center(
       child: trackingService.positionInitialized
           ? FlutterMap(

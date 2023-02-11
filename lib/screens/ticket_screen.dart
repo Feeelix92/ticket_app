@@ -55,7 +55,7 @@ class _TicketScreenState extends State<TicketScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   if (trackingService.activeTicket) ...[
-                    if (trackingService.finish)
+                    if (trackingService.ticketInitialized)
                       TicketInformation(
                         ticketHolderName: "$firstName $lastName",
                         ticketId:

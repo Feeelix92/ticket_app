@@ -44,7 +44,7 @@ class _TicketInformationState extends State<TicketInformation> {
             TicketText(text: 'Datum: ${widget._ticketDate}'),
             TicketText(text: 'Uhrzeit: ${widget._ticketTime}'),
             Visibility(
-              visible: widget._ticketId != "Loading..." && trackingService.finish,
+              visible: widget._ticketId != "Loading..." && trackingService.ticketInitialized,
               child: QRCode(
                   firebaseId: widget._ticketId,),
             ),

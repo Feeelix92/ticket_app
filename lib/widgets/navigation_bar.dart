@@ -42,7 +42,7 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
       ];
 
   void onTappedBar(int index) {
-    setState(() {
+   setState(() {
       _currentIndex = index;
     });
   }
@@ -84,13 +84,6 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
                     },
                   ),
                 );
-              },
-            ),
-            ListTile(
-              title: const Text('Item 2'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
               },
             ),
             Expanded(
