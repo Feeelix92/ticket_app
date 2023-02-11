@@ -43,6 +43,7 @@ class _TicketHistoryState extends State<TicketHistory> {
   late List futureTicket;
   bool finish = false;
   bool visibilityController = true;
+  late double totalPrice = 0.00;
 
   _getTickets() async {
     var list = await ticketHelper.tickets();
@@ -50,6 +51,17 @@ class _TicketHistoryState extends State<TicketHistory> {
     setState(() {
       finish = true;
     });
+    sumTicketPrice();
+  }
+
+  sumTicketPrice(){
+    print(futureTicket.toString());
+    double total = futureTicket.fold(0, (sum, item)=> sum + item.ticketPrice);
+
+    setState(() {
+      totalPrice = total;
+    });
+    print(total);
   }
 
   @override
@@ -90,10 +102,10 @@ class _TicketHistoryState extends State<TicketHistory> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    TicketText(text: 'Abrechnungsbetrag:'),
+                  children: [
+                    const TicketText(text: 'Abrechnungsbetrag:'),
                     // @TODO add dynamic amount
-                    TicketText(text: '0.00 €'),
+                    TicketText(text: '$totalPrice €'),
                   ],
                 ),
               ],
