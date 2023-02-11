@@ -91,9 +91,8 @@ class _TicketScreenState extends State<TicketScreen> {
                       ],
                     ),
                   ),
-                  if (trackingService.activeTicket) ...[
-                    if (trackingService.devModeEnabled &&
-                        trackingService.positionInitialized)
+                  if (trackingService.activeTicket && trackingService.devModeEnabled) ...[
+                    if (trackingService.positionInitialized)
                       GpsTestData(
                         latitude:
                             trackingService.currentPosition.latitude.toString(),
