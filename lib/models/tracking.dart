@@ -59,6 +59,7 @@ class Tracking with ChangeNotifier {
 
   void getTicket() async {
     ticket = await ticketFuture;
+    ticketInitialized = true;
     notifyListeners();
   }
 
@@ -168,7 +169,6 @@ class Tracking with ChangeNotifier {
         });
       }
     });
-    ticketInitialized = true;
   }
 
   _createBilling() async {
