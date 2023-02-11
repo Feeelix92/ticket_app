@@ -28,8 +28,6 @@ class _TicketMapScreenState extends State<TicketMapScreen> {
     centerMapInitialized = false;
     futureTicket = await locationHelper.locationsFromTicketid(id.toInt());
     for (var locationPoint in futureTicket) {
-      print('test $locationPoint');
-
       centerPoint = LatLng(locationPoint.latitude, locationPoint.longitude);
       //print(centerPoint);
       route.add(LatLng(locationPoint.latitude, locationPoint.longitude));
