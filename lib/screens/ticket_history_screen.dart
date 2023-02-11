@@ -75,8 +75,8 @@ class _TicketHistoryState extends State<TicketHistory> {
                       visibilityController = true;
                       return Visibility(
                         visible: visibilityController,
-                        child: SizedBox(
-                          height: 278,
+                        child: FractionallySizedBox(
+
                           child: Center(child: TicketBox(ticket: futureTicket[index])),
                         ),
                       );
@@ -84,8 +84,7 @@ class _TicketHistoryState extends State<TicketHistory> {
                       visibilityController = false;
                       return Visibility(
                         visible: visibilityController,
-                        child: SizedBox(
-                          height: 278,
+                        child: FractionallySizedBox(
                           child: Center(child: TicketBox(ticket: futureTicket[index])),
                         ),
                       );
@@ -129,115 +128,133 @@ class _TicketBoxState extends State<TicketBox> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TicketText(
-                          text: 'Ticket-ID: ${widget.ticket.firebaseId}'),
-                      TicketText(
-                          text:
-                          'Datum: ${DateTime
-                              .parse(widget.ticket.startTime)
-                              .day}.${DateTime
-                              .parse(widget.ticket.startTime)
-                              .month}.${DateTime
-                              .parse(widget.ticket.startTime)
-                              .year}'),
-                    ],
+          child: Row(
+              mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children:[
+              Expanded(
+              flex: 5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                 'Ticket-ID: ${widget.ticket.firebaseId}',
+                            softWrap:true,
+                            ),
+                            TicketText(
+                                text:
+                                'Datum: ${DateTime
+                                    .parse(widget.ticket.startTime)
+                                    .day}.${DateTime
+                                    .parse(widget.ticket.startTime)
+                                    .month}.${DateTime
+                                    .parse(widget.ticket.startTime)
+                                    .year}'),
+                          ],
+                        ),
+                      ),
+                    ]),
                   ),
-                ]),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TicketText(
-                          text: 'Startbahnhof: ${widget.ticket.startStation}'),
-                      TicketText(
-                          text:
-                          'Startzeit: ${DateTime
-                              .parse(widget.ticket.startTime)
-                              .hour}:${DateTime
-                              .parse(widget.ticket.startTime)
-                              .minute > 10 ? DateTime
-                              .parse(widget.ticket.startTime)
-                              .minute : DateTime
-                              .parse(widget.ticket.startTime)
-                              .minute
-                              .toString()
-                              .padLeft(2, '0')}'),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                'Startbahnhof: ${widget.ticket.startStation}',
+                              softWrap:true,),
+                            TicketText(
+                                text:
+                                'Startzeit: ${DateTime
+                                    .parse(widget.ticket.startTime)
+                                    .hour}:${DateTime
+                                    .parse(widget.ticket.startTime)
+                                    .minute > 10 ? DateTime
+                                    .parse(widget.ticket.startTime)
+                                    .minute : DateTime
+                                    .parse(widget.ticket.startTime)
+                                    .minute
+                                    .toString()
+                                    .padLeft(2, '0')}'),
+                          ],
+                        ),
+                      ),
+                    ]),
                   ),
-                ]),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TicketText(
-                          text: 'Endbahnhof: ${widget.ticket.endStation}'),
-                      TicketText(
-                          text:
-                          'Endzeit: ${DateTime
-                              .parse(
-                              widget.ticket.endTime ?? "2012-02-27 00:00:00")
-                              .hour}:${DateTime
-                              .parse(
-                              widget.ticket.endTime ?? "2012-02-27 00:00:00")
-                              .minute > 10 ? DateTime
-                              .parse(
-                              widget.ticket.endTime ?? "2012-02-27 00:00:00")
-                              .minute : DateTime
-                              .parse(
-                              widget.ticket.endTime ?? "2012-02-27 00:00:00")
-                              .minute
-                              .toString()
-                              .padLeft(2, '0')}'),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                'Endbahnhof: ${widget.ticket.endStation}',
+                              softWrap:true,),
+                            TicketText(
+                                text:
+                                'Endzeit: ${DateTime
+                                    .parse(
+                                    widget.ticket.endTime ?? "2012-02-27 00:00:00")
+                                    .hour}:${DateTime
+                                    .parse(
+                                    widget.ticket.endTime ?? "2012-02-27 00:00:00")
+                                    .minute > 10 ? DateTime
+                                    .parse(
+                                    widget.ticket.endTime ?? "2012-02-27 00:00:00")
+                                    .minute : DateTime
+                                    .parse(
+                                    widget.ticket.endTime ?? "2012-02-27 00:00:00")
+                                    .minute
+                                    .toString()
+                                    .padLeft(2, '0')}'),
+                          ],
+                        ),
+                      ),
+                    ]),
                   ),
-                ]),
+                  ]),),
+
+                  Expanded(
+                    flex: 2,
+                    child:
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          QrImage(
+                              data: '${widget.ticket.firebaseId}',
+                              gapless: true,
+                              version: QrVersions.auto,
+                              size: 100,
+                              foregroundColor: Colors.black,
+                              errorStateBuilder: (cxt, err) {
+                                return const Center(
+                                  child: Text(
+                                    "Etwas läuft schief...",
+                                    textAlign: TextAlign.center,
+                                  ),
+                                );
+                              }),
+
+                          TicketText(text: 'Preis: ${widget.ticket.ticketPrice} €')
+                        ],
+                      ),
+                ),]
               ),
-              Row(children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TicketText(text: 'Preis: ${widget.ticket.ticketPrice} €')
-                  ],
-                ),
-              ]),
-              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Column(children: [
-                  QrImage(
-                      data: '${widget.ticket.firebaseId}',
-                      gapless: true,
-                      version: QrVersions.auto,
-                      size: 100,
-                      foregroundColor: Colors.black,
-                      errorStateBuilder: (cxt, err) {
-                        return const Center(
-                          child: Text(
-                            "Etwas läuft schief...",
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      })
-                ])
-              ]),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        );
   }
 }
