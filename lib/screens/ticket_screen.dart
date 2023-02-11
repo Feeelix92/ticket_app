@@ -1,13 +1,7 @@
-import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:intl/intl.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/models/initDatabase.dart';
-import 'package:ticket_app/models/csv_reader.dart';
 import 'package:ticket_app/models/tracking.dart';
 import '../widgets/bold_styled_text.dart';
 import '../widgets/ticket_information.dart';
@@ -22,11 +16,9 @@ class TicketScreen extends StatefulWidget {
 }
 
 class _TicketScreenState extends State<TicketScreen> {
-  // bool finish = false;
   final user = FirebaseAuth.instance.currentUser!;
   var firstName = "";
   var lastName = "";
-  late Timer _timer;
 
   getUserName() async {
     final prefs = await SharedPreferences.getInstance();
@@ -45,12 +37,10 @@ class _TicketScreenState extends State<TicketScreen> {
       initDatabase().initializeDB();
     }
     super.initState();
-    // finish = true;
   }
 
   @override
   void dispose() {
-    // _timer.cancel();
     super.dispose();
   }
 
@@ -74,8 +64,8 @@ class _TicketScreenState extends State<TicketScreen> {
                         '${DateTime.parse(trackingService.ticket.startTime).day}.${DateTime.parse(trackingService.ticket.startTime).month}.${DateTime.parse(trackingService.ticket.startTime).year}',
                         ticketTime:
                         '${DateTime.parse(trackingService.ticket.startTime).hour}:${DateTime.parse(trackingService.ticket.startTime).minute > 10 ? DateTime.parse(trackingService.ticket.startTime).minute : DateTime.parse(trackingService.ticket.startTime).minute.toString().padLeft(2, '0')}',
-                        latitude: trackingService.latitude.toString(),
-                        longitude: trackingService.longitude.toString(),
+                        latitude: trackingService.currentPosition.latitude.toString(),
+                        longitude: trackingService.currentPosition.longitude.toString(),
                         address: trackingService.address,
                       )
                     else
@@ -97,10 +87,10 @@ class _TicketScreenState extends State<TicketScreen> {
                   ),
                   if (trackingService.devModeEnabled) ...[
                     GpsTestData(
-                      latitude: trackingService.latitude.toString(),
-                      longitude: trackingService.longitude.toString(),
-                      altitude: trackingService.altitude.toString(),
-                      speed: trackingService.speed.toString(),
+                      latitude: trackingService.currentPosition.latitude.toString(),
+                      longitude: trackingService.currentPosition.longitude.toString(),
+                      altitude: trackingService.currentPosition.altitude.toString(),
+                      speed: trackingService.currentPosition.speed.toString(),
                       address: trackingService.address,
                     )
                   ]
