@@ -45,6 +45,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Tracking trackingService = Provider.of<Tracking>(context);
+    trackingService.init();
     return MaterialApp(
       title: 'Easy-Ticket',
       localizationsDelegates: const [

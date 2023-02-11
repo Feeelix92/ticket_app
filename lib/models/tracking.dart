@@ -52,6 +52,7 @@ class Tracking with ChangeNotifier{
   late Ticket ticket;
   bool activeTicket = false;
   late User user = FirebaseAuth.instance.currentUser!;
+  bool finish = false;
 
   // Billing
   var billingHelper = BillingDatabaseHelper();
@@ -111,6 +112,7 @@ class Tracking with ChangeNotifier{
   }
 
   Future<void> saveLocations() async {
+    finish = false;
     ticketFuture = ticketHelper.createTicket(DateTime.now().toString());
     getTicket();
     var counter = 0;
@@ -159,6 +161,7 @@ class Tracking with ChangeNotifier{
         });
       }
     });
+    finish = true;
   }
 
   _createBilling() async {

@@ -11,12 +11,10 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Tracking trackingService = Provider.of<Tracking>(context);
     return Scaffold(
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot){
-          trackingService.init();
           if(snapshot.hasData){
             return const LoadingScreen();
           } else{
