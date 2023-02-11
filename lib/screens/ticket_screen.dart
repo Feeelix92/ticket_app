@@ -79,7 +79,9 @@ class _TicketScreenState extends State<TicketScreen> {
                         address: trackingService.address,
                       )
                     else
-                      const Center(child: CircularProgressIndicator()),
+                      Center(child: CircularProgressIndicator(
+                        color: secondaryColor,
+                      )),
                   ],
                   Padding(
                     padding: const EdgeInsets.all(8.0),
