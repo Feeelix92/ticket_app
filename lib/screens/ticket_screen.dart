@@ -54,22 +54,25 @@ class _TicketScreenState extends State<TicketScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  if (trackingService.activeTicket)...[
+                  if (trackingService.activeTicket) ...[
                     if (trackingService.finish)
                       TicketInformation(
                         ticketHolderName: "$firstName $lastName",
                         ticketId:
-                        trackingService.ticket.firebaseId ?? "Loading...",
+                            trackingService.ticket.firebaseId ?? "Loading...",
                         ticketDate:
-                        '${DateTime.parse(trackingService.ticket.startTime).day}.${DateTime.parse(trackingService.ticket.startTime).month}.${DateTime.parse(trackingService.ticket.startTime).year}',
+                            '${DateTime.parse(trackingService.ticket.startTime).day}.${DateTime.parse(trackingService.ticket.startTime).month}.${DateTime.parse(trackingService.ticket.startTime).year}',
                         ticketTime:
-                        '${DateTime.parse(trackingService.ticket.startTime).hour}:${DateTime.parse(trackingService.ticket.startTime).minute > 10 ? DateTime.parse(trackingService.ticket.startTime).minute : DateTime.parse(trackingService.ticket.startTime).minute.toString().padLeft(2, '0')}',
-                        latitude: trackingService.currentPosition.latitude.toString(),
-                        longitude: trackingService.currentPosition.longitude.toString(),
+                            '${DateTime.parse(trackingService.ticket.startTime).hour}:${DateTime.parse(trackingService.ticket.startTime).minute > 10 ? DateTime.parse(trackingService.ticket.startTime).minute : DateTime.parse(trackingService.ticket.startTime).minute.toString().padLeft(2, '0')}',
+                        latitude:
+                            trackingService.currentPosition.latitude.toString(),
+                        longitude: trackingService.currentPosition.longitude
+                            .toString(),
                         address: trackingService.address,
                       )
                     else
-                      Center(child: CircularProgressIndicator(
+                      Center(
+                          child: CircularProgressIndicator(
                         color: secondaryColor,
                       )),
                   ],
@@ -85,15 +88,25 @@ class _TicketScreenState extends State<TicketScreen> {
                       ],
                     ),
                   ),
-                  if (trackingService.devModeEnabled) ...[
-                    GpsTestData(
-                      latitude: trackingService.currentPosition.latitude.toString(),
-                      longitude: trackingService.currentPosition.longitude.toString(),
-                      altitude: trackingService.currentPosition.altitude.toString(),
-                      speed: trackingService.currentPosition.speed.toString(),
-                      address: trackingService.address,
-                    )
-                  ]
+                  if (trackingService.activeTicket) ...[
+                    if (trackingService.devModeEnabled &&
+                        trackingService.positionInitialized)
+                      GpsTestData(
+                        latitude:
+                            trackingService.currentPosition.latitude.toString(),
+                        longitude: trackingService.currentPosition.longitude
+                            .toString(),
+                        altitude:
+                            trackingService.currentPosition.altitude.toString(),
+                        speed: trackingService.currentPosition.speed.toString(),
+                        address: trackingService.address,
+                      )
+                    else
+                      Center(
+                          child: CircularProgressIndicator(
+                        color: secondaryColor,
+                      )),
+                  ],
                 ],
               )));
     });

@@ -32,6 +32,7 @@ class TicketInformation extends StatefulWidget {
 class _TicketInformationState extends State<TicketInformation> {
   @override
   Widget build(BuildContext context) {
+    Tracking trackingService = Provider.of<Tracking>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Center(
@@ -43,7 +44,7 @@ class _TicketInformationState extends State<TicketInformation> {
             TicketText(text: 'Datum: ${widget._ticketDate}'),
             TicketText(text: 'Uhrzeit: ${widget._ticketTime}'),
             Visibility(
-              visible: widget._longitude != "",
+              visible: widget._ticketId != "Loading..." && trackingService.finish,
               child: QRCode(
                   firebaseId: widget._ticketId,),
             ),

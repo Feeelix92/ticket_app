@@ -36,8 +36,9 @@ class Tracking with ChangeNotifier {
   var oldLatitude = 0.0;
   var oldLongitude = 0.0;
   var calculatedDistance = 0.0;
+  bool positionInitialized = false;
 
-  var address = "";
+  String address = "";
   late Position currentPosition;
   late Position startPosition;
   late Position endPosition;
@@ -298,8 +299,10 @@ class Tracking with ChangeNotifier {
   }
 
   void _getLocation() async {
+    positionInitialized = false;
     currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
+    positionInitialized = true;
   }
 
   void _checkGps() async {
