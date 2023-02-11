@@ -269,7 +269,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       minimumSize: const Size.fromHeight(50),
                     ),
                     child: isLoading
-                        ? CircularProgressIndicator(color: accentColor1)
+                        ? CircularProgressIndicator(color: secondaryColor)
                         : const Text(
                             'Registrieren',
                             style: TextStyle(

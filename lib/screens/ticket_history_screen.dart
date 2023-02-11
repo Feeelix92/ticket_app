@@ -94,8 +94,10 @@ class _TicketHistoryState extends State<TicketHistory> {
         ],
       );
     }
-
-    return const Text('TicketHistory');
+    return Center(
+        child: CircularProgressIndicator(
+          color: secondaryColor,
+        ));
   }
 }
 
