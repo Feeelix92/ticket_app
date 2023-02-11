@@ -81,8 +81,11 @@ class _TicketScreenState extends State<TicketScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        buildStartTripButton(trackingService.startTrip,
-                            'Fahrt starten', primaryColor),
+                        if (!trackingService.activeTicket)...[
+                          buildStartTripButton(trackingService.startTrip,
+                              'Fahrt starten', primaryColor),
+                        ]
+                        else
                         buildEndTripButton(trackingService.stopTrip,
                             'Fahrt beenden', secondaryColor),
                       ],
@@ -121,7 +124,7 @@ class _TicketScreenState extends State<TicketScreen> {
           width: 200,
           height: 50,
           child: ElevatedButton(
-            onPressed: trackingService.activeTicket && !trackingService.positionInitialized? null : tripFunction,
+            onPressed: (trackingService.activeTicket && !trackingService.positionInitialized)? null : tripFunction,
             style: ButtonStyle(
               backgroundColor: trackingService.activeTicket
                   ? MaterialStateProperty.all<Color>(accentColor3)
