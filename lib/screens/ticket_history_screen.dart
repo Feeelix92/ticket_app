@@ -58,12 +58,13 @@ class _TicketHistoryState extends State<TicketHistory> {
 
   _filterTickets(){
     futureTicketsFiltered = futureTicket.where((t)=>DateTime.parse(t.startTime).month.toString() == selectedValue).length;
+    print('initial $selectedValue');
     print('moin $futureTicketsFiltered');
   }
 
   sumTicketPrice(){
     //DateTime.parse(futureTicket[index].startTime).month.toString() == selectedValue
-    print(futureTicket.toString());
+    print('test $futureTicket');
     print('1 $totalPrice');
     /*
     setState(() {
@@ -77,6 +78,7 @@ class _TicketHistoryState extends State<TicketHistory> {
 
     if(fTFiltered.isNotEmpty){
       setState(() {
+        totalPrice = 0.00;
         totalPrice = fTFiltered.fold(0, (sum, item)=> sum + item.ticketPrice);
       });
     } else{
