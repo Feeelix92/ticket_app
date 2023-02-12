@@ -33,6 +33,14 @@ class _TicketHistoryState extends State<TicketHistory> {
       const DropdownMenuItem(value: "2", child: Text("Februar")),
       const DropdownMenuItem(value: "3", child: Text("März")),
       const DropdownMenuItem(value: "4", child: Text("April")),
+      const DropdownMenuItem(value: "5", child: Text("Mai")),
+      const DropdownMenuItem(value: "6", child: Text("Juni")),
+      const DropdownMenuItem(value: "7", child: Text("Juli")),
+      const DropdownMenuItem(value: "8", child: Text("August")),
+      const DropdownMenuItem(value: "9", child: Text("September")),
+      const DropdownMenuItem(value: "10", child: Text("Oktober")),
+      const DropdownMenuItem(value: "11", child: Text("November")),
+      const DropdownMenuItem(value: "12", child: Text("Dezember")),
     ];
     return menuItems;
   }
