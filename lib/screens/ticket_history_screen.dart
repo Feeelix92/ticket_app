@@ -41,9 +41,10 @@ class _TicketHistoryState extends State<TicketHistory> {
   List<String> billingList = <String>['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
   var ticketHelper = TicketDatabaseHelper();
   late List futureTicket;
+  late int futureTicketsFiltered;
   bool finish = false;
   bool visibilityController = true;
-  late double totalPrice = 0.00;
+  double totalPrice = 0.00;
 
   _getTickets() async {
     var list = await ticketHelper.tickets();
@@ -52,16 +53,30 @@ class _TicketHistoryState extends State<TicketHistory> {
       finish = true;
     });
     sumTicketPrice();
+    _filterTickets();
+  }
+
+  _filterTickets(){
+    futureTicketsFiltered = futureTicket.where((t)=>DateTime.parse(t.startTime).month.toString() == selectedValue).length;
+    print('moin $futureTicketsFiltered');
   }
 
   sumTicketPrice(){
+    //DateTime.parse(futureTicket[index].startTime).month.toString() == selectedValue
     print(futureTicket.toString());
+    print('1 $totalPrice');
+    setState(() {
+      totalPrice = 0.0;
+    });
+    print('1-5 $totalPrice');
     double total = futureTicket.fold(0, (sum, item)=> sum + item.ticketPrice);
-
+    print('2 $total');
     setState(() {
       totalPrice = total;
+      total = 0.0;
     });
-    print(total);
+    print('3 $totalPrice');
+    print('4 $total');
   }
 
   @override
@@ -94,6 +109,8 @@ class _TicketHistoryState extends State<TicketHistory> {
                                 selectedValue = newValue!;
                               });
                               print(selectedValue);
+                              _filterTickets();
+                              sumTicketPrice();
                             },
                             items: dropdownItems
                         )
@@ -111,32 +128,33 @@ class _TicketHistoryState extends State<TicketHistory> {
               ],
             ),
           ),
-          Expanded(
-              child: ListView.builder(
-                  padding: const EdgeInsets.all(8.0),
-                  itemCount: futureTicket.length,
-                  itemBuilder: (BuildContext context, int index) {
+              Expanded(
+                  child: futureTicketsFiltered > 0
+                  ? ListView.builder(
+                      padding: const EdgeInsets.all(8.0),
+                      itemCount: futureTicket.length,
+                      itemBuilder: (BuildContext context, int index) {
+                          if(futureTicket[index].ticketPrice != null){
+                            visibilityController = true;
+                            return Visibility(
+                              visible: visibilityController,
+                              child: FractionallySizedBox(
 
-                    if(futureTicket[index].ticketPrice != null && DateTime.parse(futureTicket[index].startTime).month.toString() == selectedValue){
-                      visibilityController = true;
-                      return Visibility(
-                        visible: visibilityController,
-                        child: FractionallySizedBox(
-
-                          child: Center(child: TicketBox(ticket: futureTicket[index])),
-                        ),
-                      );
-                    }else{
-                      visibilityController = false;
-                      return Visibility(
-                        visible: visibilityController,
-                        child: FractionallySizedBox(
-                          child: Center(child: TicketBox(ticket: futureTicket[index])),
-                        ),
-                      );
-                    }
-                  })
-          ),
+                                child: Center(child: TicketBox(ticket: futureTicket[index])),
+                              ),
+                            );
+                          }else{
+                            visibilityController = false;
+                            return Visibility(
+                              visible: visibilityController,
+                              child: FractionallySizedBox(
+                                child: Center(child: TicketBox(ticket: futureTicket[index])),
+                              ),
+                            );
+                          }
+                      })
+                      : const Center(child: Text('No items')),
+              ),
         ],
       );
     }
