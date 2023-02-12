@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ticket_app/widgets/qr.dart';
 import 'package:ticket_app/widgets/ticket_text.dart';
+
+import '../models/tracking.dart';
 
 class TicketInformation extends StatefulWidget {
   const TicketInformation({
@@ -29,6 +32,7 @@ class TicketInformation extends StatefulWidget {
 class _TicketInformationState extends State<TicketInformation> {
   @override
   Widget build(BuildContext context) {
+    Tracking trackingService = Provider.of<Tracking>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Center(
@@ -40,7 +44,7 @@ class _TicketInformationState extends State<TicketInformation> {
             TicketText(text: 'Datum: ${widget._ticketDate}'),
             TicketText(text: 'Uhrzeit: ${widget._ticketTime}'),
             Visibility(
-              visible: widget._longitude != "",
+              visible: widget._ticketId != "Loading..." && trackingService.ticketInitialized,
               child: QRCode(
                   firebaseId: widget._ticketId,),
             ),

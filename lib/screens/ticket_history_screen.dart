@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/screens/ticket_map_screen.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -7,9 +8,7 @@ import '../widgets/ticket_text.dart';
 import '../models/tracking.dart';
 
 class TicketHistory extends StatefulWidget {
-  final Tracking tracking;
-
-  const TicketHistory({Key? key, required this.tracking}) : super(key: key);
+  const TicketHistory({Key? key}) : super(key: key);
 
   @override
   State<TicketHistory> createState() => _TicketHistoryState();
@@ -93,7 +92,8 @@ class _TicketHistoryState extends State<TicketHistory> {
   @override
   Widget build(BuildContext context) {
     if (finish) {
-      return Column(
+      return Consumer<Tracking>(builder: (context, trackingService, child) {
+        return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
@@ -116,13 +116,13 @@ class _TicketHistoryState extends State<TicketHistory> {
                               sumTicketPrice();
                             },
                             items: dropdownItems)),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                     const TicketText(text: 'Abrechnungsbetrag:'),
-                    TicketText(text: '${totalPrice.toStringAsFixed(2)} €'),
+                      TicketText(text: '${totalPrice.toStringAsFixed(2)} €'),
                   ],
                 ),
               ],
@@ -166,14 +166,16 @@ class _TicketHistoryState extends State<TicketHistory> {
                         size: 120,
                       ),
                       const Text('In diesem Monat bist du nicht gefahren.')
-                    ],
-                  )),
-          ),
-        ],
-      );
+                      ],
+                    )),
+          ],
+        );
+      });
     }
-
-    return const Text('TicketHistory');
+    return Center(
+        child: CircularProgressIndicator(
+      color: secondaryColor,
+    ));
   }
 }
 
@@ -266,8 +268,8 @@ class _TicketBoxState extends State<TicketBox> {
                                       Text(
                                         'Endbahnhof: ${widget.ticket.endStation}',
                                         softWrap: true,
-                                      ),
-                                      TicketText(
+
+                                      ),TicketText(
                                           text:
                                               'Endzeit: ${DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").hour}:${DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").minute > 10 ? DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").minute : DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").minute.toString().padLeft(2, '0')}'),
                                     ],
@@ -294,10 +296,10 @@ class _TicketBoxState extends State<TicketBox> {
                               child: Text(
                                 "Etwas läuft schief...",
                                 textAlign: TextAlign.center,
-                              ),
-                            );
-                          }),
-                      TicketText(
+
+                            ),
+                          );
+}),                      TicketText(
                           text:
                               'Preis: ${widget.ticket.ticketPrice?.toStringAsFixed(2)} €')
                     ],
