@@ -55,7 +55,7 @@ class _TicketHistoryState extends State<TicketHistory> {
   _filterTickets() {
     futureTicketsFiltered = futureTicket
         .where((t) =>
-            DateTime.parse(t.startTime).month.toString() == selectedValue)
+            DateTime.parse(t.startTime).month.toString() == selectedValue && t.ticketPrice != null)
         .length;
 
     futureTicketsFilteredList = futureTicket
@@ -65,13 +65,17 @@ class _TicketHistoryState extends State<TicketHistory> {
   }
 
   sumTicketPrice() {
+
+
     var fTFiltered = futureTicket.where(
         (t) => DateTime.parse(t.startTime).month.toString() == selectedValue);
 
-    if (fTFiltered.isNotEmpty) {
+    var nullFilteredTickets = fTFiltered.where((t) => t.ticketPrice != null);
+
+    if (nullFilteredTickets.isNotEmpty) {
       setState(() {
         totalPrice = 0.00;
-        totalPrice = fTFiltered.fold(0, (sum, item) => sum + item.ticketPrice);
+        totalPrice = nullFilteredTickets.fold(0, (sum, item) => sum + item.ticketPrice);
         if(totalPrice >= 49.0){
           totalPrice = 49.0;
         }
