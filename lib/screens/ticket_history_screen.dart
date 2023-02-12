@@ -63,6 +63,7 @@ class _TicketHistoryState extends State<TicketHistory> {
   var ticketHelper = TicketDatabaseHelper();
   late List futureTicket;
   late int futureTicketsFiltered;
+  late List futureTicketsFilteredList;
   bool finish = false;
   bool visibilityController = true;
   double totalPrice = 0.00;
@@ -70,11 +71,11 @@ class _TicketHistoryState extends State<TicketHistory> {
   _getTickets() async {
     var list = await ticketHelper.tickets();
     futureTicket = list;
+    _filterTickets();
+    sumTicketPrice();
     setState(() {
       finish = true;
     });
-    sumTicketPrice();
-    _filterTickets();
   }
 
   _filterTickets() {
@@ -82,8 +83,11 @@ class _TicketHistoryState extends State<TicketHistory> {
         .where((t) =>
             DateTime.parse(t.startTime).month.toString() == selectedValue)
         .length;
+
+    futureTicketsFilteredList = futureTicket.where((t) => DateTime.parse(t.startTime).month.toString() == selectedValue).toList();
     print('initial $selectedValue');
     print('moin $futureTicketsFiltered');
+    print('testtest $futureTicketsFilteredList');
   }
 
   sumTicketPrice() {
@@ -97,15 +101,23 @@ class _TicketHistoryState extends State<TicketHistory> {
 
      */
     print('1-5 $totalPrice');
+    print(futureTicket);
 
     var fTFiltered = futureTicket.where(
         (t) => DateTime.parse(t.startTime).month.toString() == selectedValue);
 
+    print('0');
     if (fTFiltered.isNotEmpty) {
+      print('1');
       setState(() {
+        print('1 $totalPrice');
         totalPrice = 0.00;
+        print('2 $totalPrice');
+        print('2-5 $fTFiltered');
         totalPrice = fTFiltered.fold(0, (sum, item) => sum + item.ticketPrice);
+        print('3 $totalPrice');
       });
+      print('2');
     } else {
       setState(() {
         totalPrice = 0.00;
@@ -173,15 +185,15 @@ class _TicketHistoryState extends State<TicketHistory> {
             child: futureTicketsFiltered > 0
                 ? ListView.builder(
                     padding: const EdgeInsets.all(8.0),
-                    itemCount: futureTicket.length,
+                    itemCount: futureTicketsFilteredList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      if (futureTicket[index].ticketPrice != null) {
+                      if (futureTicketsFilteredList[index].ticketPrice != null) {
                         visibilityController = true;
                         return Visibility(
                           visible: visibilityController,
                           child: FractionallySizedBox(
                             child: Center(
-                                child: TicketBox(ticket: futureTicket[index])),
+                                child: TicketBox(ticket: futureTicketsFilteredList[index])),
                           ),
                         );
                       } else {
@@ -190,7 +202,7 @@ class _TicketHistoryState extends State<TicketHistory> {
                           visible: visibilityController,
                           child: FractionallySizedBox(
                             child: Center(
-                                child: TicketBox(ticket: futureTicket[index])),
+                                child: TicketBox(ticket: futureTicketsFilteredList[index])),
                           ),
                         );
                       }
