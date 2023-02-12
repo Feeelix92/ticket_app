@@ -65,11 +65,26 @@ class _TicketHistoryState extends State<TicketHistory> {
     //DateTime.parse(futureTicket[index].startTime).month.toString() == selectedValue
     print(futureTicket.toString());
     print('1 $totalPrice');
+    /*
     setState(() {
       totalPrice = 0.0;
     });
+
+     */
     print('1-5 $totalPrice');
-    double total = futureTicket.fold(0, (sum, item)=> sum + item.ticketPrice);
+
+    var fTFiltered = futureTicket.where((t)=>DateTime.parse(t.startTime).month.toString() == selectedValue);
+
+    if(fTFiltered.isNotEmpty){
+      setState(() {
+        totalPrice = fTFiltered.fold(0, (sum, item)=> sum + item.ticketPrice);
+      });
+    } else{
+      setState(() {
+        totalPrice = 0.00;
+      });
+    }
+    /*
     print('2 $total');
     setState(() {
       totalPrice = total;
@@ -77,6 +92,7 @@ class _TicketHistoryState extends State<TicketHistory> {
     });
     print('3 $totalPrice');
     print('4 $total');
+     */
   }
 
   @override
