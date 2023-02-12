@@ -168,7 +168,7 @@ class _TicketHistoryState extends State<TicketHistory> {
                       const Text('In diesem Monat bist du nicht gefahren.')
                       ],
                     )),
-          ],
+          )],
         );
       });
     }
