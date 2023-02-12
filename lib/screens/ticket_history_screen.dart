@@ -346,7 +346,7 @@ class _TicketBoxState extends State<TicketBox> {
                               ),
                             );
                           }),
-                      TicketText(text: 'Preis: ${widget.ticket.ticketPrice} €')
+                      TicketText(text: 'Preis: ${widget.ticket.ticketPrice?.toStringAsFixed(2)} €')
                     ],
                   ),
                 ),
