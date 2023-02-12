@@ -73,6 +73,9 @@ class _TicketHistoryState extends State<TicketHistory> {
       setState(() {
         totalPrice = 0.00;
         totalPrice = fTFiltered.fold(0, (sum, item) => sum + item.ticketPrice);
+        if(totalPrice >= 49.0){
+          totalPrice = 49.0;
+        }
       });
     } else {
       setState(() {
