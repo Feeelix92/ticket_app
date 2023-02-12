@@ -155,7 +155,7 @@ class _TicketHistoryState extends State<TicketHistory> {
                   children: [
                     const TicketText(text: 'Abrechnungsbetrag:'),
                     // @TODO add dynamic amount
-                    TicketText(text: '$totalPrice €'),
+                    TicketText(text: '${totalPrice.toStringAsFixed(2)} €'),
                   ],
                 ),
               ],
@@ -187,7 +187,16 @@ class _TicketHistoryState extends State<TicketHistory> {
                         );
                       }
                     })
-                : Center(child: Column()),
+                : Center(child: Column(
+              children: [
+                Icon(
+                  Icons.train,
+                  color: primaryColor,
+                  size: 120,
+                ),
+                const Text('In diesem Monat bist du nicht gefahren.')
+              ],
+            )),
           ),
         ],
       );
