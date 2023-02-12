@@ -3,11 +3,8 @@ import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/screens/ticket_map_screen.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../models/ticket.dart';
-import '../widgets/dropdown.dart';
 import '../widgets/ticket_text.dart';
-
 import '../models/tracking.dart';
-import '../models/month.dart';
 
 class TicketHistory extends StatefulWidget {
   final Tracking tracking;
@@ -19,14 +16,6 @@ class TicketHistory extends StatefulWidget {
 }
 
 class _TicketHistoryState extends State<TicketHistory> {
-  String selectedValue = DateTime.now().month.toString();
-
-  List<Month> monthList = [
-    Month('Januar', 01),
-    Month('Februar', 02),
-    Month('März', 03),
-  ];
-
   List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
       const DropdownMenuItem(value: "1", child: Text("Januar")),
@@ -45,21 +34,7 @@ class _TicketHistoryState extends State<TicketHistory> {
     return menuItems;
   }
 
-  // @TODO make billingList dynamic
-  List<String> billingList = <String>[
-    'Januar',
-    'Februar',
-    'März',
-    'April',
-    'Mai',
-    'Juni',
-    'Juli',
-    'August',
-    'September',
-    'Oktober',
-    'November',
-    'Dezember'
-  ];
+  String selectedValue = DateTime.now().month.toString();
   var ticketHelper = TicketDatabaseHelper();
   late List futureTicket;
   late int futureTicketsFiltered;
@@ -124,7 +99,6 @@ class _TicketHistoryState extends State<TicketHistory> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const TicketText(text: 'Abrechnungzeitraum:'),
-                    // @TODO add dynamic date
                     Expanded(
                         child: DropdownButton(
                             value: selectedValue,
@@ -142,7 +116,6 @@ class _TicketHistoryState extends State<TicketHistory> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const TicketText(text: 'Abrechnungsbetrag:'),
-                    // @TODO add dynamic amount
                     TicketText(text: '${totalPrice.toStringAsFixed(2)} €'),
                   ],
                 ),
@@ -219,7 +192,7 @@ class _TicketBoxState extends State<TicketBox> {
           side: BorderSide(
             color: secondaryColor,
           ),
-          borderRadius: BorderRadius.circular(20.0), //<-- SEE HERE
+          borderRadius: BorderRadius.circular(20.0),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
