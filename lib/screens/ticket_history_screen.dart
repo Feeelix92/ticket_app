@@ -4,9 +4,7 @@ import 'package:ticket_app/colors.dart';
 import 'package:ticket_app/screens/ticket_map_screen.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../models/ticket.dart';
-import '../widgets/dropdown.dart';
 import '../widgets/ticket_text.dart';
-
 import '../models/tracking.dart';
 
 class TicketHistory extends StatefulWidget {
@@ -17,32 +15,72 @@ class TicketHistory extends StatefulWidget {
 }
 
 class _TicketHistoryState extends State<TicketHistory> {
-  // @TODO make billingList dynamic
-  List<String> billingList = <String>[
-    'Januar',
-    'Februar',
-    'März',
-    'April',
-    'Mai',
-    'Juni',
-    'Juli',
-    'August',
-    'September',
-    'Oktober',
-    'November',
-    'Dezember'
-  ];
+  List<DropdownMenuItem<String>> get dropdownItems {
+    List<DropdownMenuItem<String>> menuItems = [
+      const DropdownMenuItem(value: "1", child: Text("Januar")),
+      const DropdownMenuItem(value: "2", child: Text("Februar")),
+      const DropdownMenuItem(value: "3", child: Text("März")),
+      const DropdownMenuItem(value: "4", child: Text("April")),
+      const DropdownMenuItem(value: "5", child: Text("Mai")),
+      const DropdownMenuItem(value: "6", child: Text("Juni")),
+      const DropdownMenuItem(value: "7", child: Text("Juli")),
+      const DropdownMenuItem(value: "8", child: Text("August")),
+      const DropdownMenuItem(value: "9", child: Text("September")),
+      const DropdownMenuItem(value: "10", child: Text("Oktober")),
+      const DropdownMenuItem(value: "11", child: Text("November")),
+      const DropdownMenuItem(value: "12", child: Text("Dezember")),
+    ];
+    return menuItems;
+  }
+
+  String selectedValue = DateTime.now().month.toString();
   var ticketHelper = TicketDatabaseHelper();
   late List futureTicket;
+  late int futureTicketsFiltered;
+  late List futureTicketsFilteredList;
   bool finish = false;
   bool visibilityController = true;
+  double totalPrice = 0.00;
 
   _getTickets() async {
     var list = await ticketHelper.tickets();
     futureTicket = list;
+    _filterTickets();
+    sumTicketPrice();
     setState(() {
       finish = true;
     });
+  }
+
+  _filterTickets() {
+    futureTicketsFiltered = futureTicket
+        .where((t) =>
+            DateTime.parse(t.startTime).month.toString() == selectedValue)
+        .length;
+
+    futureTicketsFilteredList = futureTicket
+        .where((t) =>
+            DateTime.parse(t.startTime).month.toString() == selectedValue)
+        .toList();
+  }
+
+  sumTicketPrice() {
+    var fTFiltered = futureTicket.where(
+        (t) => DateTime.parse(t.startTime).month.toString() == selectedValue);
+
+    if (fTFiltered.isNotEmpty) {
+      setState(() {
+        totalPrice = 0.00;
+        totalPrice = fTFiltered.fold(0, (sum, item) => sum + item.ticketPrice);
+        if(totalPrice >= 49.0){
+          totalPrice = 49.0;
+        }
+      });
+    } else {
+      setState(() {
+        totalPrice = 0.00;
+      });
+    }
   }
 
   @override
@@ -56,44 +94,55 @@ class _TicketHistoryState extends State<TicketHistory> {
     if (finish) {
       return Consumer<Tracking>(builder: (context, trackingService, child) {
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-              child: Column(
-                children: [
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const TicketText(text: 'Abrechnungzeitraum:'),
+                    Expanded(
+                        child: DropdownButton(
+                            value: selectedValue,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedValue = newValue!;
+                              });
+                              _filterTickets();
+                              sumTicketPrice();
+                            },
+                            items: dropdownItems)),
+                    ],
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const TicketText(text: 'Abrechnungzeitraum:'),
-                      // @TODO add dynamic date
-                      Expanded(child: DynamicDropdownButton(list: billingList)),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      TicketText(text: 'Abrechnungsbetrag:'),
-                      // @TODO add dynamic amount
-                      TicketText(text: '0.00 €'),
-                    ],
-                  ),
-                ],
-              ),
+                    const TicketText(text: 'Abrechnungsbetrag:'),
+                      TicketText(text: '${totalPrice.toStringAsFixed(2)} €'),
+                  ],
+                ),
+              ],
             ),
-            Expanded(
-                child: ListView.builder(
+          ),
+          Expanded(
+            child: futureTicketsFiltered > 0
+                ? ListView.builder(
                     padding: const EdgeInsets.all(8.0),
-                    itemCount: futureTicket.length,
+                    itemCount: futureTicketsFilteredList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      if (futureTicket[index].ticketPrice != null) {
+                      if (futureTicketsFilteredList[index].ticketPrice !=
+                          null) {
                         visibilityController = true;
                         return Visibility(
                           visible: visibilityController,
                           child: FractionallySizedBox(
                             child: Center(
-                                child: TicketBox(ticket: futureTicket[index])),
+                                child: TicketBox(
+                                    ticket: futureTicketsFilteredList[index])),
                           ),
                         );
                       } else {
@@ -102,12 +151,24 @@ class _TicketHistoryState extends State<TicketHistory> {
                           visible: visibilityController,
                           child: FractionallySizedBox(
                             child: Center(
-                                child: TicketBox(ticket: futureTicket[index])),
+                                child: TicketBox(
+                                    ticket: futureTicketsFilteredList[index])),
                           ),
                         );
                       }
-                    })),
-          ],
+                    })
+                : Center(
+                    child: Column(
+                    children: [
+                      Icon(
+                        Icons.train,
+                        color: primaryColor,
+                        size: 120,
+                      ),
+                      const Text('In diesem Monat bist du nicht gefahren.')
+                      ],
+                    )),
+          )],
         );
       });
     }
@@ -143,7 +204,7 @@ class _TicketBoxState extends State<TicketBox> {
           side: BorderSide(
             color: secondaryColor,
           ),
-          borderRadius: BorderRadius.circular(20.0), //<-- SEE HERE
+          borderRadius: BorderRadius.circular(20.0),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -207,8 +268,8 @@ class _TicketBoxState extends State<TicketBox> {
                                       Text(
                                         'Endbahnhof: ${widget.ticket.endStation}',
                                         softWrap: true,
-                                      ),
-                                      TicketText(
+
+                                      ),TicketText(
                                           text:
                                               'Endzeit: ${DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").hour}:${DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").minute > 10 ? DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").minute : DateTime.parse(widget.ticket.endTime ?? "2012-02-27 00:00:00").minute.toString().padLeft(2, '0')}'),
                                     ],
@@ -235,10 +296,12 @@ class _TicketBoxState extends State<TicketBox> {
                               child: Text(
                                 "Etwas läuft schief...",
                                 textAlign: TextAlign.center,
-                              ),
-                            );
-                          }),
-                      TicketText(text: 'Preis: ${widget.ticket.ticketPrice} €')
+
+                            ),
+                          );
+}),                      TicketText(
+                          text:
+                              'Preis: ${widget.ticket.ticketPrice?.toStringAsFixed(2)} €')
                     ],
                   ),
                 ),
