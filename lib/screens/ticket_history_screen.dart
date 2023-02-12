@@ -59,7 +59,10 @@ class _TicketHistoryState extends State<TicketHistory> {
             DateTime.parse(t.startTime).month.toString() == selectedValue)
         .length;
 
-    futureTicketsFilteredList = futureTicket.where((t) => DateTime.parse(t.startTime).month.toString() == selectedValue).toList();
+    futureTicketsFilteredList = futureTicket
+        .where((t) =>
+            DateTime.parse(t.startTime).month.toString() == selectedValue)
+        .toList();
   }
 
   sumTicketPrice() {
@@ -128,13 +131,15 @@ class _TicketHistoryState extends State<TicketHistory> {
                     padding: const EdgeInsets.all(8.0),
                     itemCount: futureTicketsFilteredList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      if (futureTicketsFilteredList[index].ticketPrice != null) {
+                      if (futureTicketsFilteredList[index].ticketPrice !=
+                          null) {
                         visibilityController = true;
                         return Visibility(
                           visible: visibilityController,
                           child: FractionallySizedBox(
                             child: Center(
-                                child: TicketBox(ticket: futureTicketsFilteredList[index])),
+                                child: TicketBox(
+                                    ticket: futureTicketsFilteredList[index])),
                           ),
                         );
                       } else {
@@ -143,21 +148,23 @@ class _TicketHistoryState extends State<TicketHistory> {
                           visible: visibilityController,
                           child: FractionallySizedBox(
                             child: Center(
-                                child: TicketBox(ticket: futureTicketsFilteredList[index])),
+                                child: TicketBox(
+                                    ticket: futureTicketsFilteredList[index])),
                           ),
                         );
                       }
                     })
-                : Center(child: Column(
-              children: [
-                Icon(
-                  Icons.train,
-                  color: primaryColor,
-                  size: 120,
-                ),
-                const Text('In diesem Monat bist du nicht gefahren.')
-              ],
-            )),
+                : Center(
+                    child: Column(
+                    children: [
+                      Icon(
+                        Icons.train,
+                        color: primaryColor,
+                        size: 120,
+                      ),
+                      const Text('In diesem Monat bist du nicht gefahren.')
+                    ],
+                  )),
           ),
         ],
       );
@@ -287,7 +294,9 @@ class _TicketBoxState extends State<TicketBox> {
                               ),
                             );
                           }),
-                      TicketText(text: 'Preis: ${widget.ticket.ticketPrice?.toStringAsFixed(2)} €')
+                      TicketText(
+                          text:
+                              'Preis: ${widget.ticket.ticketPrice?.toStringAsFixed(2)} €')
                     ],
                   ),
                 ),
