@@ -63,7 +63,7 @@ class Departure {
   List<Product>? product;
   Notes? notes;
   Messages? messages;
-  List<String>? altId;
+  //List<String>? altId;
   List<Occupancy>? occupancy;
   String? name;
   String? type;
@@ -87,7 +87,7 @@ class Departure {
       this.product,
       this.notes,
       this.messages,
-      this.altId,
+      //this.altId,
       this.occupancy,
       this.name,
       this.type,
@@ -121,7 +121,7 @@ class Departure {
     notes = json['Notes'] != null ? Notes.fromJson(json['Notes']) : null;
     messages =
         json['Messages'] != null ? Messages.fromJson(json['Messages']) : null;
-    altId = json['altId'].cast<String>();
+    //altId = json['altId'].cast<String>();
     if (json['Occupancy'] != null) {
       occupancy = <Occupancy>[];
       json['Occupancy'].forEach((v) {
@@ -498,7 +498,7 @@ class AffectedStops {
 class StopLocation {
   LocationNotes? locationNotes;
   List<ProductAtStops>? productAtStops;
-  List<String>? altId;
+  //List<String>? altId;
   String? id;
   String? extId;
   String? name;
@@ -509,7 +509,7 @@ class StopLocation {
   StopLocation(
       {this.locationNotes,
       this.productAtStops,
-      this.altId,
+      //this.altId,
       this.id,
       this.extId,
       this.name,
@@ -527,7 +527,7 @@ class StopLocation {
         productAtStops!.add(ProductAtStops.fromJson(v));
       });
     }
-    altId = json['altId'].cast<String>();
+    //altId = json['altId'].cast<String>();
     id = json['id'];
     extId = json['extId'];
     name = json['name'];
@@ -604,7 +604,7 @@ class ProductAtStops {
 }
 
 class ValidFromStop {
-  List<String>? altId;
+  //List<String>? altId;
   String? name;
   String? id;
   String? extId;
@@ -613,7 +613,7 @@ class ValidFromStop {
   double? lat;
 
   ValidFromStop(
-      {this.altId,
+      {//this.altId,
       this.name,
       this.id,
       this.extId,
@@ -622,7 +622,7 @@ class ValidFromStop {
       this.lat});
 
   ValidFromStop.fromJson(Map<String, dynamic> json) {
-    altId = json['altId'].cast<String>();
+    //altId = json['altId'].cast<String>();
     name = json['name'];
     id = json['id'];
     extId = json['extId'];

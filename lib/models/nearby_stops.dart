@@ -68,7 +68,7 @@ class StopLocationOrCoordLocation {
 
 class StopLocation {
   LocationNotes? locationNotes;
-  List<String>? altId;
+  //List<String>? altId;
   int? timezoneOffset;
   String? id;
   String? extId;
@@ -81,7 +81,7 @@ class StopLocation {
 
   StopLocation(
       {this.locationNotes,
-        this.altId,
+        //this.altId,
         this.timezoneOffset,
         this.id,
         this.extId,
@@ -96,7 +96,7 @@ class StopLocation {
     locationNotes = json['LocationNotes'] != null
         ? LocationNotes.fromJson(json['LocationNotes'])
         : null;
-    altId = json['altId'].cast<String>();
+    //altId = json['altId'].cast<String>();
     timezoneOffset = json['timezoneOffset'];
     id = json['id'];
     extId = json['extId'];

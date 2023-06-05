@@ -113,7 +113,7 @@ class Stops {
 
 class Stop {
   Notes? notes;
-  List<String>? altId;
+  //List<String>? altId;
   String? name;
   String? id;
   String? extId;
@@ -132,7 +132,7 @@ class Stop {
 
   Stop(
       {this.notes,
-        this.altId,
+        //this.altId,
         this.name,
         this.id,
         this.extId,
@@ -151,7 +151,7 @@ class Stop {
 
   Stop.fromJson(Map<String, dynamic> json) {
     notes = json['Notes'] != null ? Notes.fromJson(json['Notes']) : null;
-    altId = json['altId'].cast<String>();
+    //altId = json['altId'].cast<String>();
     name = json['name'];
     id = json['id'];
     extId = json['extId'];
